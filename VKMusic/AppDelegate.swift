@@ -7,15 +7,73 @@
 //
 
 import UIKit
+import VK_ios_sdk
+
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
 
     var window: UIWindow?
-
+    var VKSdkInstance: VKSdk!
+    
+    func showHelloViewController(isErrorExist: Bool) {
+        let storyboard:UIStoryboard = UIStoryboard(name: "Hello", bundle: nil)
+        let navView = storyboard.instantiateInitialViewController() as! UINavigationController
+        let helloView = navView.viewControllers.first as! HelloViewController
+        self.VKSdkInstance.registerDelegate(helloView)
+        VKSdkInstance.uiDelegate = helloView
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        self.window?.rootViewController = helloView
+        self.window?.makeKeyAndVisible()
+    }
+    
+    //VKSdkDelegate Funcs
+    
+    func vkSdkAccessAuthorizationFinishedWithResult(result: VKAuthorizationResult!) {
+        //
+    }
+    
+    func vkSdkAccessTokenUpdated(newToken: VKAccessToken!, oldToken: VKAccessToken!) {
+        //
+    }
+    
+    func vkSdkTokenHasExpired(expiredToken: VKAccessToken!) {
+        //
+    }
+    
+    func vkSdkUserAuthorizationFailed(result: VKError!) {
+       // print(result.description)
+    }
+    
+    //VKSdkDelegate Funcs End
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        if #available(iOS 9.0, *) {
+            VKSdk.processOpenURL(url, fromApplication: UIApplicationOpenURLOptionsSourceApplicationKey)
+        } else {
+            VKSdk.processOpenURL(url, fromApplication: sourceApplication)
+        }
+        return true
+    }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        self.VKSdkInstance = VKSdk.initializeWithAppId("5066733")
+        self.VKSdkInstance.registerDelegate(self)
+        VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
+            if state == VKAuthorizationState.Authorized {
+                print("authorized")
+                VKSdk.forceLogout()
+            } else if state == VKAuthorizationState.Initialized {
+                if VKSdk.vkAppMayExists() {
+                VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS])
+                } else {
+                    self.showHelloViewController(false)
+                }
+            } else {
+                print(error)
+            }
+        
+        })
         return true
     }
 
