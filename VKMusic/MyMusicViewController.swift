@@ -1,5 +1,5 @@
 //
-//  MusicTableViewController.swift
+//  MyMusicViewController.swift
 //  VKMusic
 //
 //  Created by Kirill Varlamov on 01.11.15.
@@ -7,13 +7,13 @@
 //
 
 import UIKit
+import VK_ios_sdk
 
-class MusicTableViewController: UIViewController {
+class MyMusicViewController: MusicTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        dataManager.getDataFormVK("audio.get", params: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: dataManager.songs.count, "count": 15])
     }
 
     override func didReceiveMemoryWarning() {

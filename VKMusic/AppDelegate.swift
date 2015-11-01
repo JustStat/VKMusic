@@ -60,12 +60,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         self.VKSdkInstance = VKSdk.initializeWithAppId("5066733")
         self.VKSdkInstance.registerDelegate(self)
         VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
-            if state == VKAuthorizationState.Authorized {
-                print("authorized")
-                VKSdk.forceLogout()
-            } else if state == VKAuthorizationState.Initialized {
+            if state == VKAuthorizationState.Initialized {
                 if VKSdk.vkAppMayExists() {
-                VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS])
+                    VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS])
                 } else {
                     self.showHelloViewController(false)
                 }

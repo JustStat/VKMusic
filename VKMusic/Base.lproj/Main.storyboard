@@ -28,7 +28,7 @@
         <!--Моя музыка-->
         <scene sceneID="TfM-Mw-tNi">
             <objects>
-                <viewController id="m4a-Nc-riu" sceneMemberID="viewController">
+                <viewController id="m4a-Nc-riu" customClass="MyMusicViewController" customModule="VKMusic" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ZFs-p3-Sst"/>
                         <viewControllerLayoutGuide type="bottom" id="1Nt-9E-oW0"/>
@@ -37,52 +37,48 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xEt-hw-vrI">
-                                <rect key="frame" x="0.0" y="64" width="320" height="415"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="pjL-Uc-1gJ">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="471"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SongTableViewCell" rowHeight="48" id="PNp-fV-ZVu" customClass="SongTableViewCell" customModule="VKMusic" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SongTableViewCell" rowHeight="48" id="fIP-D3-ARE" customClass="SongTableViewCell" customModule="VKMusic" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="92" width="320" height="48"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="PNp-fV-ZVu" id="qj1-xj-YMV">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fIP-D3-ARE" id="zpD-90-XII">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="47.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dmf-hL-ADi">
-                                                    <rect key="frame" x="8" y="2" width="43" height="43"/>
-                                                    <animations/>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xTn-VK-m2f">
-                                                    <rect key="frame" x="59" y="26" width="182" height="13.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7xg-EO-78S">
+                                                    <rect key="frame" x="8" y="26" width="233" height="13.5"/>
                                                     <animations/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="182" id="0Cg-vH-w0N"/>
+                                                        <constraint firstAttribute="width" constant="233" id="6Rw-9o-8qE"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="9"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9kX-bz-lJm">
+                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="96m-cc-DPK">
                                                     <rect key="frame" x="290" y="16" width="15" height="16"/>
                                                     <animations/>
                                                     <state key="normal" image="More"/>
                                                     <connections>
-                                                        <action selector="MoreButtonTouchDown:" destination="PNp-fV-ZVu" eventType="touchDown" id="Lup-1a-aHa"/>
+                                                        <action selector="MoreButtonTouchDown:" destination="fIP-D3-ARE" eventType="touchDown" id="eht-zC-hCg"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lsE-of-oos">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qMo-1S-yUa">
                                                     <rect key="frame" x="249" y="22" width="33" height="11.5"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lhr-Kk-vIQ">
-                                                    <rect key="frame" x="59" y="8" width="182" height="15"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YT3-N5-mch">
+                                                    <rect key="frame" x="8" y="8" width="233" height="15"/>
                                                     <animations/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="182" id="sVg-6a-aIA"/>
+                                                        <constraint firstAttribute="width" constant="233" id="Vmp-xA-Xip"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -91,22 +87,36 @@
                                             </subviews>
                                             <animations/>
                                             <constraints>
-                                                <constraint firstItem="9kX-bz-lJm" firstAttribute="leading" secondItem="lsE-of-oos" secondAttribute="trailing" constant="8" id="BNS-cT-FqL"/>
-                                                <constraint firstItem="lsE-of-oos" firstAttribute="leading" secondItem="lhr-Kk-vIQ" secondAttribute="trailing" constant="8" id="Jak-vP-nom"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="9kX-bz-lJm" secondAttribute="trailing" constant="7" id="Y4t-Q8-IRS"/>
+                                                <constraint firstItem="YT3-N5-mch" firstAttribute="leading" secondItem="zpD-90-XII" secondAttribute="leadingMargin" id="0wb-co-XbF"/>
+                                                <constraint firstItem="7xg-EO-78S" firstAttribute="leading" secondItem="zpD-90-XII" secondAttribute="leadingMargin" id="1P5-i5-ahF"/>
+                                                <constraint firstItem="YT3-N5-mch" firstAttribute="top" secondItem="zpD-90-XII" secondAttribute="topMargin" id="8hg-0j-uYE"/>
+                                                <constraint firstItem="96m-cc-DPK" firstAttribute="leading" secondItem="YT3-N5-mch" secondAttribute="trailing" constant="49" id="I37-SV-VNe"/>
+                                                <constraint firstItem="96m-cc-DPK" firstAttribute="leading" secondItem="qMo-1S-yUa" secondAttribute="trailing" constant="8" id="XU3-Na-g97"/>
+                                                <constraint firstItem="96m-cc-DPK" firstAttribute="leading" secondItem="qMo-1S-yUa" secondAttribute="trailing" constant="8" id="fbo-zn-WOa"/>
+                                                <constraint firstItem="qMo-1S-yUa" firstAttribute="leading" secondItem="7xg-EO-78S" secondAttribute="trailing" constant="8" id="joD-AN-nnP"/>
+                                                <constraint firstItem="7xg-EO-78S" firstAttribute="top" secondItem="YT3-N5-mch" secondAttribute="bottom" constant="3" id="lOa-XF-ULG"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="96m-cc-DPK" secondAttribute="trailing" constant="7" id="pHu-Z0-teG"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="96m-cc-DPK" secondAttribute="trailing" constant="7" id="suL-Oa-4Hc"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <animations/>
                                         <connections>
-                                            <outlet property="MoreButton" destination="9kX-bz-lJm" id="vCJ-r3-oUf"/>
-                                            <outlet property="authorLabel" destination="xTn-VK-m2f" id="CZ5-dh-LcA"/>
-                                            <outlet property="coverImage" destination="dmf-hL-ADi" id="mEb-2b-Ksw"/>
-                                            <outlet property="durationLabel" destination="lsE-of-oos" id="SlK-kj-lkQ"/>
-                                            <outlet property="nameLabel" destination="lhr-Kk-vIQ" id="TRU-Uo-L37"/>
+                                            <outlet property="MoreButton" destination="96m-cc-DPK" id="G2C-p0-haC"/>
+                                            <outlet property="authorLabel" destination="7xg-EO-78S" id="5RB-p0-rVM"/>
+                                            <outlet property="durationLabel" destination="qMo-1S-yUa" id="fxy-VX-NKP"/>
+                                            <outlet property="nameLabel" destination="YT3-N5-mch" id="Cv9-LQ-wU8"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="m4a-Nc-riu" id="9CH-5X-n1e"/>
+                                    <outlet property="delegate" destination="m4a-Nc-riu" id="ioy-sp-wyV"/>
+                                </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8up-mA-swd">
+                                <rect key="frame" x="0.0" y="471" width="320" height="48"/>
+                                <animations/>
+                            </view>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

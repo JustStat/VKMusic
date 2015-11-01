@@ -17,7 +17,6 @@ class SongTableViewCell: UITableViewCell {
     var delegate: SongTableViewCellDelegate?
     
     @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var MoreButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!

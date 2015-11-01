@@ -13,6 +13,10 @@
 		1449AD6A1BE5E8980097CD03 /* VKSdkInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD691BE5E8980097CD03 /* VKSdkInfo.swift */; };
 		1449AD6E1BE6048B0097CD03 /* MusicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD6D1BE6048B0097CD03 /* MusicTableViewController.swift */; };
 		1449AD701BE604BF0097CD03 /* SongTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD6F1BE604BF0097CD03 /* SongTableViewCell.swift */; };
+		1449AD721BE609410097CD03 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD711BE609410097CD03 /* DataManager.swift */; };
+		1449AD741BE609B00097CD03 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD731BE609B00097CD03 /* Song.swift */; };
+		1449AD761BE61F100097CD03 /* MyMusicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD751BE61F100097CD03 /* MyMusicViewController.swift */; };
+		1449AD781BE626D60097CD03 /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD771BE626D60097CD03 /* DataBaseManager.swift */; };
 		147DA4A11BE50A0B008BBEC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147DA4A01BE50A0B008BBEC9 /* AppDelegate.swift */; };
 		147DA4A61BE50A0B008BBEC9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 147DA4A41BE50A0B008BBEC9 /* Main.storyboard */; };
 		147DA4A81BE50A0B008BBEC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 147DA4A71BE50A0B008BBEC9 /* Assets.xcassets */; };
@@ -25,6 +29,10 @@
 		1449AD691BE5E8980097CD03 /* VKSdkInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VKSdkInfo.swift; sourceTree = "<group>"; };
 		1449AD6D1BE6048B0097CD03 /* MusicTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTableViewController.swift; sourceTree = "<group>"; };
 		1449AD6F1BE604BF0097CD03 /* SongTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongTableViewCell.swift; sourceTree = "<group>"; };
+		1449AD711BE609410097CD03 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		1449AD731BE609B00097CD03 /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
+		1449AD751BE61F100097CD03 /* MyMusicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyMusicViewController.swift; sourceTree = "<group>"; };
+		1449AD771BE626D60097CD03 /* DataBaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
 		147DA49D1BE50A0B008BBEC9 /* VKMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VKMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		147DA4A01BE50A0B008BBEC9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		147DA4A51BE50A0B008BBEC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -73,12 +81,16 @@
 				147DA4A71BE50A0B008BBEC9 /* Assets.xcassets */,
 				147DA4A01BE50A0B008BBEC9 /* AppDelegate.swift */,
 				147DA4B21BE516D2008BBEC9 /* BridgingHeader.h */,
+				1449AD771BE626D60097CD03 /* DataBaseManager.swift */,
+				1449AD711BE609410097CD03 /* DataManager.swift */,
 				1449AD651BE5DB300097CD03 /* HelloViewController.swift */,
 				1449AD671BE5E6DC0097CD03 /* Hello.storyboard */,
 				147DA4A41BE50A0B008BBEC9 /* Main.storyboard */,
 				147DA4A91BE50A0B008BBEC9 /* LaunchScreen.storyboard */,
 				1449AD6D1BE6048B0097CD03 /* MusicTableViewController.swift */,
+				1449AD751BE61F100097CD03 /* MyMusicViewController.swift */,
 				1449AD691BE5E8980097CD03 /* VKSdkInfo.swift */,
+				1449AD731BE609B00097CD03 /* Song.swift */,
 				1449AD6F1BE604BF0097CD03 /* SongTableViewCell.swift */,
 				147DA4AC1BE50A0B008BBEC9 /* Info.plist */,
 			);
@@ -230,8 +242,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1449AD781BE626D60097CD03 /* DataBaseManager.swift in Sources */,
+				1449AD741BE609B00097CD03 /* Song.swift in Sources */,
 				1449AD661BE5DB300097CD03 /* HelloViewController.swift in Sources */,
+				1449AD721BE609410097CD03 /* DataManager.swift in Sources */,
 				1449AD6E1BE6048B0097CD03 /* MusicTableViewController.swift in Sources */,
+				1449AD761BE61F100097CD03 /* MyMusicViewController.swift in Sources */,
 				1449AD701BE604BF0097CD03 /* SongTableViewCell.swift in Sources */,
 				1449AD6A1BE5E8980097CD03 /* VKSdkInfo.swift in Sources */,
 				147DA4A11BE50A0B008BBEC9 /* AppDelegate.swift in Sources */,
