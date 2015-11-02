@@ -12,6 +12,7 @@
 #import <VK_ios_sdk/VKSdk.h>
 #import <FMDB/FMDB.h>
 #import <FMDB/FMDatabaseAdditions.h>
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 
 #endif /* BridgingHeader_h */

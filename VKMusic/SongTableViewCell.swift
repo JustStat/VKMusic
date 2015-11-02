@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SongTableViewCellDelegate {
-    func createAlertController(cell: SongTableViewCell)
+    func createCellAlertController(cell: SongTableViewCell)
 }
 
 class SongTableViewCell: UITableViewCell {
@@ -27,7 +27,7 @@ class SongTableViewCell: UITableViewCell {
     }
    
     @IBAction func MoreButtonTouchDown(sender: AnyObject) {
-        delegate?.createAlertController(self)
+        delegate?.createCellAlertController(self)
     }
     
 

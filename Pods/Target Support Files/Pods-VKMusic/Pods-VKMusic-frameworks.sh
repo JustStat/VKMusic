@@ -53,11 +53,13 @@ code_sign_if_enabled() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'Pods-VKMusic/FMDB.framework'
+  install_framework 'Pods-VKMusic/SVPullToRefresh.framework'
   install_framework 'Pods-VKMusic/SwiftyJSON.framework'
   install_framework 'Pods-VKMusic/VK_ios_sdk.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'Pods-VKMusic/FMDB.framework'
+  install_framework 'Pods-VKMusic/SVPullToRefresh.framework'
   install_framework 'Pods-VKMusic/SwiftyJSON.framework'
   install_framework 'Pods-VKMusic/VK_ios_sdk.framework'
 fi

@@ -16,6 +16,7 @@ class Song: NSObject {
     var localUrl: String!
     var id: Int!
     var ownerId: Int!
+    var isPlaying: Bool!
     
     init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int) {
         self.title = title
@@ -25,6 +26,7 @@ class Song: NSObject {
         self.localUrl = localUrl
         self.id = id
         self.ownerId = ownerId
+        self.isPlaying = false
     }
     
     func durationToString() -> String {

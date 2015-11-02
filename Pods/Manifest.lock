@@ -4,11 +4,13 @@ PODS:
   - FMDB/common (2.5)
   - FMDB/standard (2.5):
     - FMDB/common
+  - SVPullToRefresh (0.4.1)
   - SwiftyJSON (2.3.1)
   - VK-ios-sdk (1.3.1)
 
 DEPENDENCIES:
   - FMDB (from `https://github.com/ccgus/fmdb.git`, branch `swiftFramework`)
+  - SVPullToRefresh
   - SwiftyJSON (~> 2.3)
   - VK-ios-sdk
 
@@ -24,6 +26,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   FMDB: 8e59e93d20d76d0b135db26ecc83ae88d016076d
+  SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
   VK-ios-sdk: b0a6ed573cae94022f97229a6dedfb979f2f4f39
 

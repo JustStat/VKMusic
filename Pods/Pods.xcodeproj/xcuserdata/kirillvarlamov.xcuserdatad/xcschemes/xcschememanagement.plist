@@ -14,6 +14,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SVPullToRefresh.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>SwiftyJSON.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -27,22 +32,27 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>11DBDBF99F9CBB6E00ECB51B64CBE293</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
 		<key>37CF8BCA6DBCBF3436DDE8D037306A65</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4D8E300A1CDA13086B56C993560B1397</key>
+		<key>55AAB37F705390A42FBFD75EE9BD3532</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>65EB674F5BA83DCC5DD33605CF3437EC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>B9A04D3C9B208813656510FDA8ADAE02</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C873ECD25EC07833105A073C7EA8C963</key>
 		<dict>
 			<key>primary</key>
 			<true/>

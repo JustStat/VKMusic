@@ -15,13 +15,19 @@ class DataManager: NSObject {
     
     //MARK: Properties
     var songs = [Song]()
-    //    static var sharedInstance = DataManager()
+    var isBusy = false
+    var dataBaseManager = DataBaseManager()
     
-    func getDataFormVK(method: String, params: [NSObject: AnyObject]) {
-        let request = VKRequest(method: method, andParameters: params, andHttpMethod: "Get")
+    func getDataFormVK(request: VKRequest, refresh: Bool) {
+        if !isBusy {
+        self.isBusy = true
+        if refresh {
+            self.songs.removeAll()
+        }
         request.waitUntilDone = true
         request.executeWithResultBlock({(response) -> Void in
             let json = JSON(response.json)
+            print(json.description)
             let count = json["items"].count
             for var i = 0; i < count; i++ {
                 let artist = json["items"][i]["artist"].stringValue
@@ -33,9 +39,11 @@ class DataManager: NSObject {
                 let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
                 self.songs.append(song)
             }
+            self.isBusy = false
             }, errorBlock: {(error) -> Void in
                 print(error.description)
         })
+        }
     }
 
 }
