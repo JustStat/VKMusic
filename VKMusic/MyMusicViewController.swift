@@ -14,7 +14,7 @@ class MyMusicViewController: MusicTableViewController {
     @IBOutlet weak var playerInfoView: UIView!
     
     override func viewDidLoad() {
-        self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, "count": 16])
+        self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, "count": 51])
         super.viewDidLoad()
     }
     
@@ -23,7 +23,7 @@ class MyMusicViewController: MusicTableViewController {
             () -> Void in
             if !self.dataManager.isBusy {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: 0, "count": 16])
+                    self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: 0, "count": 51])
                     self.dataManager.getDataFormVK(self.request, refresh: true)
                     print("xcxzxc")
                     dispatch_async(dispatch_get_main_queue()) {
@@ -33,18 +33,18 @@ class MyMusicViewController: MusicTableViewController {
                 }
             }
         })
-        tableView.addInfiniteScrollingWithActionHandler({() -> Void in
-            if !self.dataManager.isBusy {
-                self.tableView.showsInfiniteScrolling = true
-                self.tableView.infiniteScrollingView.startAnimating()
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            self.tableView.infiniteScrollingView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
-            self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: self.dataManager.songs.count, "count": 15])
-            self.loadMore()
-                }
-            self.tableView.infiniteScrollingView.stopAnimating()
-            }
-        })
+//        tableView.addInfiniteScrollingWithActionHandler({() -> Void in
+//            if !self.dataManager.isBusy {
+//                self.tableView.showsInfiniteScrolling = true
+//                self.tableView.infiniteScrollingView.startAnimating()
+//                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+//            self.tableView.infiniteScrollingView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+//            self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: self.dataManager.songs.count, "count": 15])
+//            self.loadMore()
+//                }
+//            self.tableView.infiniteScrollingView.stopAnimating()
+//            }
+//        })
 
     }
     
@@ -52,10 +52,10 @@ class MyMusicViewController: MusicTableViewController {
 //        
 //    }
     
-//    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-//        
-//        //super.scrollViewWillBeginDragging(scrollView)
-//    }
+    override func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: self.dataManager.songs.count, "count": 50])
+        super.scrollViewWillBeginDragging(scrollView)
+    }
     
 
     override func didReceiveMemoryWarning() {

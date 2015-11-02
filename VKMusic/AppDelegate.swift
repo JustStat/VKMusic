@@ -11,7 +11,7 @@ import VK_ios_sdk
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var VKSdkInstance: VKSdk!
@@ -29,21 +29,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     
     //VKSdkDelegate Funcs
     
-    func vkSdkAccessAuthorizationFinishedWithResult(result: VKAuthorizationResult!) {
-        //
-    }
-    
-    func vkSdkAccessTokenUpdated(newToken: VKAccessToken!, oldToken: VKAccessToken!) {
-        //
-    }
-    
-    func vkSdkTokenHasExpired(expiredToken: VKAccessToken!) {
-        //
-    }
-    
-    func vkSdkUserAuthorizationFailed(result: VKError!) {
-       // print(result.description)
-    }
+//    func vkSdkAccessAuthorizationFinishedWithResult(result: VKAuthorizationResult!) {
+//        //
+//    }
+//    
+//    func vkSdkAccessTokenUpdated(newToken: VKAccessToken!, oldToken: VKAccessToken!) {
+//        //
+//    }
+//    
+//    func vkSdkTokenHasExpired(expiredToken: VKAccessToken!) {
+//        //
+//    }
+//    
+//    func vkSdkUserAuthorizationFailed(result: VKError!) {
+//       // print(result.description)
+//    }
     
     //VKSdkDelegate Funcs End
     
@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         self.VKSdkInstance = VKSdk.initializeWithAppId("5066733")
-        self.VKSdkInstance.registerDelegate(self)
+        //self.VKSdkInstance.registerDelegate(self)
         VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
             if state == VKAuthorizationState.Initialized {
                 self.showHelloViewController(false)

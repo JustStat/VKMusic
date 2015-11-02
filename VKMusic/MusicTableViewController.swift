@@ -30,7 +30,7 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         let cellIdentifier = "SongTableViewCell"
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
         print(indexPath.row)
-        if dataManager.songs.count >= indexPath.row {
+        if dataManager.songs.count > indexPath.row {
         let song = dataManager.songs[indexPath.row]
         cell.delegate = self
         cell.nameLabel.text = song.title
@@ -55,14 +55,25 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
     func loadMore() {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.dataManager.getDataFormVK(self.request, refresh: false)
-            }
-            dispatch_async(dispatch_get_main_queue()) {
-                self.tableView.reloadData()
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.tableView.reloadData()
+                }
+    
             }
     }
     
     
     //TableDataSource ENDS
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        let deltaOffset = maximumOffset - currentOffset
+        if deltaOffset <= 300 {
+            loadMore()
+        }
+    }
+    
     
     //MARK: TableIntaration FUNCS
     
@@ -101,15 +112,13 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             }
             dispatch_async(dispatch_get_main_queue()) {
                 imageView.image = coverImage
-//                imageView.reloadInputViews()
-//                alertController.reloadInputViews()
             }
         }
         titleView.backgroundColor = alertController.view.backgroundColor
-        let titleLabel = UILabel(frame: CGRectMake(85, 0, 170, 20))
+        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 90, 20))
         titleLabel.text = dataManager.songs[index].title
         titleLabel.font.fontWithSize(13)
-        let artistLabel = UILabel(frame: CGRectMake(85, 25, 170, 20))
+        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 90, 20))
         artistLabel.textColor = UIColor.lightGrayColor()
         artistLabel.text = dataManager.songs[index].artist
         artistLabel.font.fontWithSize(10)
