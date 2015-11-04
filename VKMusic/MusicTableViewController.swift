@@ -11,9 +11,11 @@ import VK_ios_sdk
 import SVPullToRefresh
 import AVFoundation
 
-class MusicTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SongTableViewCellDelegate {
+class MusicTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SongTableViewCellDelegate, UISearchBarDelegate, UISearchDisplayDelegate {
     
+    @IBOutlet weak var SearchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var playerInfoBar: PlayerInfoBar!
     
     //MARK: Properites
     var dataManager = DataManager()
@@ -21,22 +23,88 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
     var request: VKRequest!
     
     override func viewDidLoad() {
-        dataManager.getDataFormVK(self.request, refresh: false)
+        getReqest((self.tabBarController?.selectedIndex)!, filter: "")
+        if self.request != nil {
+            dataManager.getDataFormVK(self.request, refresh: false)
+            self.tableView.reloadData()
+            self.playerInfoBar.hidden = true
+        } else {
+            self.dataManager.songs = []
+        }
+        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        tableView.addPullToRefreshWithActionHandler({
+            () -> Void in
+            if !self.dataManager.isBusy {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    self.dataManager.songs.removeAll()
+                    self.getReqest((self.tabBarController?.selectedIndex)!, filter: "")
+                    if self.request != nil {
+                        self.dataManager.getDataFormVK(self.request, refresh: true)
+                        self.tableView.reloadData()
+                    } else if self.tabBarController?.selectedIndex == 1 {
+                        self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
+                    }
+                    print("xcxzxc")
+                    dispatch_async(dispatch_get_main_queue()) {
+                        sleep(2)
+                        self.tableView.pullToRefreshView.stopAnimating()
+                    }
+                }
+            }
+        })
+        if self.tabBarController?.selectedIndex == 1 {
+            dataManager.songs = []
+            dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
+            self.tableView.reloadData()
+        }
+
+    }
+    
+    func getReqest(index: Int, filter: String) {
+        switch index {
+        case 0:
+            self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.accessToken().userId, VK_API_OFFSET: self.dataManager.songs.count, "count": 51])
+            self.navigationItem.title = "Моя Музыка"
+        case 1:
+//            dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
+            self.navigationItem.title = "Загрузки"
+        case 2:
+            self.request = VKRequest(method: "audio.getPopular", andParameters:[VK_API_OFFSET: self.dataManager.songs.count, "count": 51])
+            self.navigationItem.title = "Популярное"
+        case 3:
+            self.request = VKRequest(method: "audio.getRecommendations", andParameters: [VK_API_OFFSET: self.dataManager.songs.count, "count": 51])
+            self.navigationItem.title = "Рекомендуемое"
+        case 4:
+            if filter != "" {
+            self.request = VKRequest(method: "audio.search", andParameters: [VK_API_Q:
+                filter,"auto_complete": "1","sort": "2", "count": "100"])
+            }
+        default:
+            print("Whoops")
+        }
     }
     
     // MARK: TableDataSource FUNCS
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier = "SongTableViewCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
+        let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
         print(indexPath.row)
-        if dataManager.songs.count > indexPath.row {
-        let song = dataManager.songs[indexPath.row]
+        //if dataManager.songs.count > indexPath.row {
+        var song: Song
+        if tableView == self.searchDisplayController!.searchResultsTableView {
+            song = self.dataManager.filteredTableData[indexPath.row]
+        } else {
+            song = dataManager.songs[indexPath.row]
+        }
         cell.delegate = self
         cell.nameLabel.text = song.title
         cell.authorLabel.text = song.artist
         cell.durationLabel.text = song.durationToString()
-        }
+       // }
         return cell
     }
     
@@ -49,17 +117,23 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataManager.songs.count
+        if tableView == self.searchDisplayController!.searchResultsTableView {
+            return self.dataManager.filteredTableData.count
+        } else {
+            return dataManager.songs.count
+        }
     }
     
     func loadMore() {
+        getReqest((self.tabBarController?.selectedIndex)!,filter: "")
+        if (self.request != nil) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.dataManager.getDataFormVK(self.request, refresh: false)
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
                 }
-    
             }
+        }
     }
     
     
@@ -79,17 +153,33 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
     
     
     func createCellAlertController(cell: SongTableViewCell) {
-        let index = tableView.indexPathForCell(cell)?.row
-        self.createAlertController(index!)
+        var filtered = false
+        var index = tableView.indexPathForCell(cell)?.row
+        if index == nil {
+            index = searchDisplayController?.searchResultsTableView.indexPathForCell(cell)?.row
+            filtered = true
+        }
+        self.createAlertController(index!, filtered: filtered)
     }
     
-    func createAlertController(index: Int) {
+    func createAlertController(index: Int, filtered: Bool) {
+        var songList = [Song]()
+        if filtered {
+            songList = self.dataManager.filteredTableData
+        } else {
+            songList = self.dataManager.songs
+        }
         let alertController = UIAlertController(title: "\n \n \n \n", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
         alertController.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
             (UIAlertAction) -> Void in
-            
+            //Add song to libruary
         }))
-        alertController.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: nil))
+        if dataManager.songs[index].localUrl == "" {
+            alertController.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: {
+                (UIAlertAction) -> Void in
+                    DataBaseManager.sharedInstance.addSongToTable(songList[index], table: "downloads")
+            }))
+        }
         alertController.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.view.tintColor = UIColor(red:0.27, green:0.40, blue:0.56, alpha:1.0)
         let titleView = UIView(frame: CGRectMake(alertController.view.frame.minX + 10, alertController.view.frame.minY + 10, 300, 50))
@@ -98,10 +188,10 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         let imageView = UIImageView(image: coverImage)
         imageView.frame = CGRectMake(0, 0, 80, 80)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            if self.dataManager.songs[index].localUrl != "" {
-                song = AVPlayerItem(URL: NSURL(string: self.dataManager.songs[index].localUrl)!)
+            if songList[index].localUrl != "" {
+                song = AVPlayerItem(URL: NSURL(string: songList[index].localUrl)!)
             } else {
-                song = AVPlayerItem(URL: NSURL(string: self.dataManager.songs[index].url)!)
+                song = AVPlayerItem(URL: NSURL(string: songList[index].url)!)
             }
             coverImage = UIImage(named: "DefCover")
             let metadata = song.asset.commonMetadata
@@ -115,12 +205,12 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
         titleView.backgroundColor = alertController.view.backgroundColor
-        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 90, 20))
-        titleLabel.text = dataManager.songs[index].title
+        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 110, 20))
+        titleLabel.text = songList[index].title
         titleLabel.font.fontWithSize(13)
-        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 90, 20))
+        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 110, 20))
         artistLabel.textColor = UIColor.lightGrayColor()
-        artistLabel.text = dataManager.songs[index].artist
+        artistLabel.text = songList[index].artist
         artistLabel.font.fontWithSize(10)
         titleView.addSubview(titleLabel)
         titleView.addSubview(artistLabel)
@@ -129,16 +219,64 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
+    //MARK: SearchDelegate FUNCS
     
+    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchString searchString: String?) -> Bool {
+        self.filterContentForSearchText(searchString!)
+        if self.tabBarController?.selectedIndex == 4 {
+            self.searchDisplayController?.searchResultsTableView.alpha = 0
+            return false
+        }
+        return true
+    }
+    
+    func searchDisplayController(controller: UISearchDisplayController, shouldReloadTableForSearchScope searchOption: Int) -> Bool {
+        self.filterContentForSearchText(self.searchDisplayController!.searchBar.text!)
+        if self.tabBarController?.selectedIndex == 4 {
+            return false
+        }
+        return true
+    }
+    
+    func filterContentForSearchText(searchText: String) {
+        // Filter the array using the filter method
+        self.searchDisplayController?.searchResultsTableView.hidden = true
+                self.dataManager.filteredTableData = self.dataManager.songs.filter({( song: Song) -> Bool in
+                var stringMatch = song.title.rangeOfString(searchText)
+                if stringMatch == nil {
+                    stringMatch = song.artist.rangeOfString(searchText)
+                }
+                return (stringMatch != nil)
+            })
 
-    /*
+    }
+
+    
+    
+    func searchDisplayController(controller: UISearchDisplayController, didHideSearchResultsTableView tableView: UITableView) {
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        if self.tabBarController?.selectedIndex == 4 {
+            self.getReqest(4, filter: searchBar.text!)
+            self.dataManager.getDataFormVK(self.request, refresh: true)
+            self.tableView.reloadData()
+            //self.filteredTableData = self.dataManager.songs
+//            self.dataManager.songs = []
+//            self.tableView.reloadData()
+        }
+        filterContentForSearchText(SearchBar.text!)
+        self.searchDisplayController?.active = false
+        
+    }
+    
+    
+    
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        
     }
-    */
 
 }

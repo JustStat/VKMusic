@@ -34,7 +34,7 @@
         <!--Моя музыка-->
         <scene sceneID="TfM-Mw-tNi">
             <objects>
-                <viewController id="m4a-Nc-riu" customClass="MyMusicViewController" customModule="VKMusic" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="m4a-Nc-riu" customClass="MusicTableViewController" customModule="VKMusic" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ZFs-p3-Sst"/>
                         <viewControllerLayoutGuide type="bottom" id="1Nt-9E-oW0"/>
@@ -43,7 +43,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8up-mA-swd">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8up-mA-swd" customClass="PlayerInfoBar" customModule="VKMusic" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="471" width="320" height="48"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Tc2-tj-bIz">
@@ -102,9 +102,18 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="408"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" id="inE-82-qHS">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <animations/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="m4a-Nc-riu" id="Yve-kv-NjX"/>
+                                    </connections>
+                                </searchBar>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SongTableViewCell" rowHeight="48" id="fIP-D3-ARE" customClass="SongTableViewCell" customModule="VKMusic" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="92" width="320" height="48"/>
+                                        <rect key="frame" x="0.0" y="72" width="320" height="48"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fIP-D3-ARE" id="zpD-90-XII">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="47.5"/>
@@ -201,13 +210,24 @@
                     <navigationItem key="navigationItem" title="Моя музыка" id="eI6-Oj-HVd"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="playerInfoView" destination="8up-mA-swd" id="hip-Hj-9BH"/>
+                        <outlet property="SearchBar" destination="inE-82-qHS" id="nSk-3l-fMK"/>
+                        <outlet property="playerInfoBar" destination="8up-mA-swd" id="vOP-ST-Pju"/>
+                        <outlet property="searchDisplayController" destination="2Ph-4h-KIX" id="phJ-1d-08b"/>
                         <outlet property="tableView" destination="pjL-Uc-1gJ" id="uwO-56-rRV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="arH-IQ-iIb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="2Ph-4h-KIX">
+                    <connections>
+                        <outlet property="delegate" destination="m4a-Nc-riu" id="RIi-yn-92y"/>
+                        <outlet property="searchBar" destination="inE-82-qHS" id="llG-Je-XFO"/>
+                        <outlet property="searchContentsController" destination="m4a-Nc-riu" id="BJy-2Q-zz7"/>
+                        <outlet property="searchResultsDataSource" destination="m4a-Nc-riu" id="Lwv-Wk-2be"/>
+                        <outlet property="searchResultsDelegate" destination="m4a-Nc-riu" id="AXU-Iq-Lm6"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="969" y="-24"/>
+            <point key="canvasLocation" x="-111" y="1588"/>
         </scene>
         <!--Моя музыка-->
         <scene sceneID="TME-Ha-lsh">
@@ -230,7 +250,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7tP-Or-q1S" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-95" y="-24"/>
+            <point key="canvasLocation" x="-103" y="788"/>
         </scene>
         <!--Player View Controller-->
         <scene sceneID="l3c-19-rBF">
@@ -507,7 +527,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RCU-29-GpR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="157" y="-755"/>
+            <point key="canvasLocation" x="-648" y="-659"/>
         </scene>
         <!--Загрузки-->
         <scene sceneID="Wpp-9s-0mv">
@@ -523,12 +543,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="kZM-0w-qnm"/>
+                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="v0v-RX-kFX"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dtD-xN-J4P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="781" y="-755"/>
+            <point key="canvasLocation" x="-179" y="-659"/>
         </scene>
         <!--Поиск-->
         <scene sceneID="qJE-8Q-b7L">
@@ -542,12 +562,12 @@
                         <animations/>
                     </navigationBar>
                     <connections>
-                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="5bX-MQ-9s7"/>
+                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="twa-LZ-pOt"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OSv-K8-uwO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1750" y="-250"/>
+            <point key="canvasLocation" x="861" y="788"/>
         </scene>
         <!--Популярное-->
         <scene sceneID="mom-ar-8hA">
@@ -564,12 +584,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="376-pl-qMZ"/>
+                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="SXB-7k-hSe"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tJj-fB-gIr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="509" y="516"/>
+            <point key="canvasLocation" x="-648" y="788"/>
         </scene>
         <!--Настройки-->
         <scene sceneID="kf8-Bf-gzC">
@@ -583,12 +603,12 @@
                         <animations/>
                     </navigationBar>
                     <connections>
-                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="ldM-De-Csc"/>
+                        <segue destination="aJk-FC-frP" kind="relationship" relationship="rootViewController" id="APQ-vi-t31"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rx5-jN-iFr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1984" y="516"/>
+            <point key="canvasLocation" x="560" y="-17"/>
         </scene>
         <!--Рекомендуемое-->
         <scene sceneID="gz5-lo-Tsq">
@@ -602,12 +622,33 @@
                         <animations/>
                     </navigationBar>
                     <connections>
-                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="dbS-9O-cOY"/>
+                        <segue destination="m4a-Nc-riu" kind="relationship" relationship="rootViewController" id="0fQ-GK-lW2"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iJS-W1-ugH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1420" y="540"/>
+            <point key="canvasLocation" x="356" y="788"/>
+        </scene>
+        <!--Настройки-->
+        <scene sceneID="sYG-rW-4Bf">
+            <objects>
+                <viewController id="aJk-FC-frP" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="31u-cF-0qn"/>
+                        <viewControllerLayoutGuide type="bottom" id="WGA-dE-Q9M"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hcP-yD-AdA">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Настройки" id="PuS-la-VSO"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Zit-CX-oda" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1266" y="-17"/>
         </scene>
     </scenes>
     <resources>
@@ -627,6 +668,6 @@
         <image name="TopRated" width="27" height="26"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="dbS-9O-cOY"/>
+        <segue reference="SXB-7k-hSe"/>
     </inferredMetricsTieBreakers>
 </document>

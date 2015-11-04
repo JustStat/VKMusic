@@ -15,8 +15,8 @@ class DataManager: NSObject {
     
     //MARK: Properties
     var songs = [Song]()
+    var filteredTableData = [Song]()
     var isBusy = false
-    var dataBaseManager = DataBaseManager()
     
     func getDataFormVK(request: VKRequest, refresh: Bool) {
         if !isBusy {
@@ -28,20 +28,35 @@ class DataManager: NSObject {
         request.executeWithResultBlock({(response) -> Void in
             let json = JSON(response.json)
             print(json.description)
-            let count = json["items"].count
-            for var i = 0; i < count; i++ {
-                let artist = json["items"][i]["artist"].stringValue
-                let title = json["items"][i]["title"].stringValue
-                let url = json["items"][i]["url"].stringValue
-                let duration = json["items"][i]["duration"].intValue
-                let id = json["items"][i]["id"].intValue
-                let ownerId = json["items"][i]["owner_id"].intValue
-                let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
-                self.songs.append(song)
+            var count = 0
+            if json["count"] == nil {
+                count = json.count
+                for var i = 0; i < count; i++ {
+                    let artist = json[i]["artist"].stringValue
+                    let title = json[i]["title"].stringValue
+                    let url = json[i]["url"].stringValue
+                    let duration = json[i]["duration"].intValue
+                    let id = json[i]["id"].intValue
+                    let ownerId = json["items"][i]["owner_id"].intValue
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
+                    self.songs.append(song)
+                }
+            } else {
+                count = json["items"].count
+                for var i = 0; i < count; i++ {
+                    let artist = json["items"][i]["artist"].stringValue
+                    let title = json["items"][i]["title"].stringValue
+                    let url = json["items"][i]["url"].stringValue
+                    let duration = json["items"][i]["duration"].intValue
+                    let id = json["items"][i]["id"].intValue
+                    let ownerId = json["items"][i]["owner_id"].intValue
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
+                    self.songs.append(song)
+                }
             }
-            self.isBusy = false
-            }, errorBlock: {(error) -> Void in
-                print(error.description)
+        self.isBusy = false
+        }, errorBlock: {(error) -> Void in
+            print(error.description)
         })
         }
     }

@@ -11,7 +11,6 @@ import AVFoundation
 import AVKit
 import MediaPlayer
 
-
 class PlayerViewController: UIViewController, AudioProviderDelegate {
     @IBOutlet weak var moreButton: UIButton!
     @IBOutlet weak var VolumeControlView: UIView!
@@ -52,7 +51,12 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
     }
     
     @IBAction func shuffleButtonClick(sender: AnyObject) {
-        //shuffling
+        if AudioProvider.sharedInstance.shuffled {
+            self.shuffleButton.setImage(UIImage(named: "Shuffle"), forState: UIControlState.Normal)
+        } else {
+            self.shuffleButton.setImage(UIImage(named: "shuffleFilled"), forState: UIControlState.Normal)
+        }
+        AudioProvider.sharedInstance.shuffle()
     }
     
     @IBAction func moreButtonClick(sender: AnyObject) {

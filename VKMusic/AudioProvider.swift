@@ -29,9 +29,11 @@ class AudioProvider: NSObject {
     var currentIndex  = 0
     var currentSong: Song!
     var coverImage: UIImage!
-    var playlist = [Song]();
+    var initPlaylist: [Song]!
+    var playlist = [Song]()
     static let sharedInstance = AudioProvider()
     var mode = AudioProvider.playerMode.noRepeat
+    var shuffled = false
     
     func startPlayer(index: Int) {
         var csong = AVPlayerItem!()
@@ -90,7 +92,24 @@ class AudioProvider: NSObject {
     }
     
     func shuffle() {
-        
+        if shuffled {
+            playlist = initPlaylist
+            for var i = 0; i < playlist.count; ++i {
+                if playlist[i].isPlaying {
+                    currentIndex = i
+                }
+            }
+        } else {
+            initPlaylist = playlist
+            currentIndex = 0
+            for i in 0 ..< (playlist.count - 1) {
+                let j = Int(arc4random_uniform(UInt32(playlist.count - i))) + i
+                if i != j {
+                    swap(&playlist[i], &playlist[j])
+                }
+            }
+            shuffled = true
+        }
     }
     
     func setPlayerMode() {

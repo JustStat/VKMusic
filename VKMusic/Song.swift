@@ -16,7 +16,7 @@ class Song: NSObject {
     var localUrl: String!
     var id: Int!
     var ownerId: Int!
-    var isPlaying: Bool!
+    var isPlaying = false
     
     init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int) {
         self.title = title
