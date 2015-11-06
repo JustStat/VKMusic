@@ -16,6 +16,7 @@ class DataManager: NSObject {
     //MARK: Properties
     var songs = [Song]()
     var filteredTableData = [Song]()
+    var searhReq = ""
     var isBusy = false
     
     func getDataFormVK(request: VKRequest, refresh: Bool) {
@@ -56,7 +57,8 @@ class DataManager: NSObject {
             }
         self.isBusy = false
         }, errorBlock: {(error) -> Void in
-            print(error.description)
+            self.songs.removeAll()
+            self.isBusy = false
         })
         }
     }

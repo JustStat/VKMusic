@@ -116,6 +116,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
         AudioProvider.sharedInstance.player.seekToTime(CMTimeMakeWithSeconds(Double(self.SongProgressSlider.value), AudioProvider.sharedInstance.player.currentTime().timescale))
        updateUI()
     }
+    
     func UpadateSliderValue() {
         if !self.isChangingTime {
         self.SongProgressSlider.value = Float(CMTimeGetSeconds(AudioProvider.sharedInstance.player.currentTime()))

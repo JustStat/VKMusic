@@ -29,7 +29,7 @@ class DataBaseManager: NSObject {
                 let req = db.executeQuery("SELECT * FROM \(table) WHERE id >= \(offset) ORDER BY id LIMIT 50", withArgumentsInArray: [])
                 if req != nil {
                     while req.next() {
-                        songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("id")), ownerId: Int(req.intForColumn("ownerId"))))
+                        songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("vkid")), ownerId: Int(req.intForColumn("ownerId"))))
                     }
                 }
             } else {
@@ -52,6 +52,19 @@ class DataBaseManager: NSObject {
             
         }
         db.close()
+    }
+    
+    func checkExistance(table: String, id: Int) -> Bool {
+        if db != nil {
+            db.open()
+            if db.tableExists("downloads") {
+                let rs = db.executeQuery("SELECT * FROM \(table) WHERE vkid = ?", withArgumentsInArray: [id])
+                if rs.next() {
+                    return true
+                }
+            }
+        }
+        return false
     }
     
 

@@ -63,12 +63,17 @@ typedef NS_ENUM(NSInteger, VKShareDialogControllerResult) {
 @property(nonatomic, strong) NSArray *requestedScope;
 
 /// You can receive information about sharing state
-@property(nonatomic, copy) void (^completionHandler)(VKShareDialogController *dialog, VKShareDialogControllerResult result);
+@property(nonatomic, copy) void (^completionHandler)(VKShareDialogControllerResult result);
 
 /// Flag meaning the share viewcontroller manage it's presentation state by itself
 @property(nonatomic, assign) BOOL dismissAutomatically;
 
-/// Contains post id created via share dialog. Example string: 123_4567890
-@property(nonatomic, readonly, copy) NSString *postId;
+/// Force share dialog to use in-app webview authorization
+@property(nonatomic, assign) BOOL authorizeInApp;
 
+/**
+Correctly presents current view controller in another
+@param viewController Parent view controller
+*/
+- (void)presentIn:(UIViewController *)viewController __deprecated;
 @end

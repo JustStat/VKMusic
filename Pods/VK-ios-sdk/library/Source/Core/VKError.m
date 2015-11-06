@@ -70,8 +70,8 @@
     }
     else {
         if (self.errorCode == VK_API_ERROR)
-            return [NSString stringWithFormat:@"<VKError: %p; Internal API error (%@, %@, %@})>",
-                                              self, self.apiError, self.errorReason, self.errorMessage];
+            return [NSString stringWithFormat:@"<VKError: %p; Internal API error {%@}>",
+                                              self, self.apiError];
         else if (self.errorCode == VK_API_CANCELED)
             return [NSString stringWithFormat:@"<VKError: %p; SDK error (request canceled)>", self];
         else if (self.errorCode == VK_API_REQUEST_NOT_PREPARED)

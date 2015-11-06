@@ -22,7 +22,6 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import <Foundation/Foundation.h>
-#import "NSString+MD5.h"
 
 @implementation NSString (MD5)
 

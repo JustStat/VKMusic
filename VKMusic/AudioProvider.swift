@@ -99,6 +99,7 @@ class AudioProvider: NSObject {
                     currentIndex = i
                 }
             }
+            shuffled = false
         } else {
             initPlaylist = playlist
             currentIndex = 0

@@ -47,14 +47,9 @@
 }
 
 + (VKRequest *)requestWithMethod:(NSString *)method
-                   andParameters:(NSDictionary *)parameters {
-    return [VKRequest requestWithMethod:method andParameters:parameters];
-}
-
-+ (VKRequest *)requestWithMethod:(NSString *)method
                    andParameters:(NSDictionary *)parameters
                    andHttpMethod:(NSString *)httpMethod {
-    return [VKRequest requestWithMethod:method andParameters:parameters];
+    return [VKRequest requestWithMethod:method andParameters:parameters andHttpMethod:httpMethod];
 }
 
 + (VKRequest *)uploadWallPhotoRequest:(UIImage *)image

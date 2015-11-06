@@ -20,9 +20,8 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <NSString+MD5.h>
-
 #import "VKSdk.h"
+#import "NSString+MD5.h"
 #import "OrderedDictionary.h"
 #import "VKAuthorizeController.h"
 #import "VKHTTPClient.h"
@@ -107,16 +106,13 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 @property(nonatomic, strong) VKResponse *response;
 /// This request error
 @property(nonatomic, strong) NSError *error;
-/// Language specified by user
-@property(nonatomic, copy) NSString *requestLang;
 /// Returns http operation that can be enqueued
 @property(nonatomic, readwrite, strong) NSOperation *executionOperation;
-
-@property(nonatomic, readwrite, strong) VKAccessToken *specialToken;
-
 @end
 
-@implementation VKRequest
+@implementation VKRequest {
+    NSString *_preferredLang;
+}
 
 
 - (void)dealloc {
@@ -131,29 +127,21 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 #pragma mark Init
 
 + (instancetype)requestWithMethod:(NSString *)method andParameters:(NSDictionary *)parameters andHttpMethod:(NSString *)httpMethod {
-    return [self requestWithMethod:method andParameters:parameters];
-}
-
-+ (instancetype)requestWithMethod:(NSString *)method
-                    andParameters:(NSDictionary *)parameters {
-    return [self requestWithMethod:method andParameters:parameters modelClass:nil];
-}
-
-+ (instancetype)requestWithMethod:(NSString *)method andParameters:(NSDictionary *)parameters andHttpMethod:(NSString *)httpMethod classOfModel:(Class)modelClass {
-    return [self requestWithMethod:method andParameters:parameters modelClass:modelClass];
-}
-
-+ (instancetype)requestWithMethod:(NSString *)method andParameters:(NSDictionary *)parameters modelClass:(Class)modelClass {
     VKRequest *newRequest = [self new];
     //Common parameters
-    newRequest.parseModel = modelClass != nil;
-    newRequest.requestTimeout = 25;
+    newRequest.parseModel = YES;
+    newRequest.requestTimeout = 30;
 
     newRequest.methodName = method;
     newRequest.methodParameters = parameters;
-    newRequest.httpMethod = @"POST";
-    newRequest.modelClass = modelClass;
+    newRequest.httpMethod = httpMethod;
     return newRequest;
+}
+
++ (instancetype)requestWithMethod:(NSString *)method andParameters:(NSDictionary *)parameters andHttpMethod:(NSString *)httpMethod classOfModel:(Class)modelClass {
+    VKRequest *request = [self requestWithMethod:method andParameters:parameters andHttpMethod:httpMethod];
+    request.modelClass = modelClass;
+    return request;
 }
 
 + (instancetype)photoRequestWithPostUrl:(NSString *)url withPhotos:(NSArray *)photoObjects; {
@@ -169,7 +157,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
     if (self = [super init]) {
         self.attemptsUsed = 0;
         //If system language is not supported, we use english
-        self.requestLang = @"en";
+        self.preferredLang = @"en";
         //By default there is 1 attempt for loading.
         self.attempts = 1;
         //By default we use system language.
@@ -181,7 +169,8 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
     return self;
 }
 
-- (NSString *)debugDescription {
+- (NSString *)description {
+//	return [NSString stringWithFormat:@"<VKRequest: %p>\nMethod: %@ (%@)\nparameters: %@", self, _methodName, _httpMethod, _methodParameters];
     return [NSString stringWithFormat:@"<VKRequest: %p; Method: %@ (%@)>", self, self.methodName, self.httpMethod];
 }
 
@@ -192,7 +181,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
     self.completeBlock = completeBlock;
     self.errorBlock = errorBlock;
 
-    if (!self.waitUntilDone) {
+    if (!_waitUntilDone) {
         [[VKRequestsScheduler instance] scheduleRequest:self];
     } else {
         [self start];
@@ -224,7 +213,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
             }
             [_preparedParameters setObject:value forKey:key];
         }
-        VKAccessToken *token = [VKSdk accessToken] ?: self.specialToken;
+        VKAccessToken *token = [VKSdk getAccessToken];
         if (token != nil) {
             if (token.accessToken != nil) {
                 [_preparedParameters setObject:token.accessToken forKey:VK_API_ACCESS_TOKEN];
@@ -232,14 +221,11 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
             if (!(self.secure || token.secret) || token.httpsRequired)
                 self.secure = YES;
         }
-        if (self.specialToken) {
-            self.secure = YES;
-        }
 
         //Set actual version of API
         [_preparedParameters setObject:[VKSdk instance].apiVersion forKey:@"v"];
         //Set preferred language for request
-        [_preparedParameters setObject:[self language] forKey:VK_API_LANG];
+        [_preparedParameters setObject:self.preferredLang forKey:VK_API_LANG];
         //Set current access token from SDK object
 
         if (self.secure) {
@@ -319,7 +305,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 - (void)start {
     self.response = nil;
     self.error = nil;
-
+    
     self.executionOperation = [self createExecutionOperation];
     if (_executionOperation == nil)
         return;
@@ -435,7 +421,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     self.error = [NSError errorWithVkError:[VKError errorWithCode:VK_API_CANCELED]];
     [self finishRequest];
-
+    
 }
 
 - (void)setupProgress:(VKHTTPOperation *)operation {
@@ -477,15 +463,6 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 - (BOOL)processCommonError:(VKError *)error {
     if (error.errorCode == VK_API_ERROR) {
         error.apiError.request = self;
-        if ([self.preventThisErrorsHandling containsObject:@(error.apiError.errorCode)]) {
-            return NO;
-        }
-        if (error.apiError.errorCode == 5) {
-            vksdk_dispatch_on_main_queue_now(^{
-                [error.apiError notiftAuthorizationFailed];
-            });
-            return NO;
-        }
         if (error.apiError.errorCode == 6) {
             //Too many requests per second
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (_waitMultiplier * NSEC_PER_SEC)), [[self class] processingQueue], ^{
@@ -497,13 +474,14 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
         if (error.apiError.errorCode == 14) {
             //Captcha
             vksdk_dispatch_on_main_queue_now(^{
-                [error.apiError notifyCaptchaRequired];
+                [[VKSdk instance].delegate vkSdkNeedCaptchaEnter:error.apiError];
             });
             return YES;
         }
         else if (error.apiError.errorCode == 16) {
             //Https required
-            [[VKSdk accessToken] setAccessTokenRequiredHTTPS];
+            VKAccessToken *token = [VKSdk getAccessToken];
+            token.httpsRequired = YES;
             [self repeat];
             return YES;
         }
@@ -522,13 +500,12 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 
 #pragma mark Properties
 
-- (NSString *)language {
-    NSString *lang = self.requestLang;
+- (NSString *)preferredLang {
+    NSString *lang = _preferredLang;
     if (self.useSystemLanguage) {
-        NSString *sysLang = [[[[[NSLocale preferredLanguages] firstObject] componentsSeparatedByString:@"_"] firstObject] lowercaseString];
-        if ([SUPPORTED_LANGS_ARRAY containsObject:sysLang]) {
-            lang = sysLang;
-        }
+        lang = [NSLocale preferredLanguages][0];
+        if (![SUPPORTED_LANGS_ARRAY containsObject:lang])
+            lang = _preferredLang;
     }
     return lang;
 }
@@ -541,7 +518,7 @@ void vksdk_dispatch_on_main_queue_now(void(^block)(void)) {
 }
 
 - (void)setPreferredLang:(NSString *)preferredLang {
-    self.requestLang = preferredLang;
+    _preferredLang = preferredLang;
     self.useSystemLanguage = NO;
 }
 

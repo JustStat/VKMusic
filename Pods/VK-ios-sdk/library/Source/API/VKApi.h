@@ -75,16 +75,7 @@ Create new request with parameters. See documentation for methods here https://v
 */
 + (VKRequest *)requestWithMethod:(NSString *)method
                    andParameters:(NSDictionary *)parameters
-                   andHttpMethod:(NSString *)httpMethod __deprecated;
-
-/**
- Create new request with parameters. See documentation for methods here https://vk.com/dev/methods
- @param method API-method name, e.g. audio.get
- @param parameters method parameters
- @return Complete request class for execute or configure method
- */
-+ (VKRequest *)requestWithMethod:(NSString *)method
-                   andParameters:(NSDictionary *)parameters;
+                   andHttpMethod:(NSString *)httpMethod;
 
 /**
 Uploads photo for wall post

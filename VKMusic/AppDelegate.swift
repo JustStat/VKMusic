@@ -11,41 +11,55 @@ import VK_ios_sdk
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
 
     var window: UIWindow?
     var VKSdkInstance: VKSdk!
+    static let sharedInstance = AppDelegate()
+    
+    func vkAuthorization() {
+        VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], revokeAccess: true, forceOAuth: false, inApp: true, display: VK_DISPLAY_IOS)
+    }
     
     func showHelloViewController(isErrorExist: Bool) {
         let storyboard:UIStoryboard = UIStoryboard(name: "Hello", bundle: nil)
         let navView = storyboard.instantiateInitialViewController() as! UINavigationController
         let helloView = navView.viewControllers.first as! HelloViewController
-        self.VKSdkInstance.registerDelegate(helloView)
-        VKSdkInstance.uiDelegate = helloView
+//        self.VKSdkInstance.registerDelegate(helloView)
+//        VKSdkInstance.uiDelegate = helloView
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.rootViewController = helloView
         self.window?.makeKeyAndVisible()
     }
     
-    //VKSdkDelegate Funcs
-    
-//    func vkSdkAccessAuthorizationFinishedWithResult(result: VKAuthorizationResult!) {
-//        //
-//    }
-//    
-//    func vkSdkAccessTokenUpdated(newToken: VKAccessToken!, oldToken: VKAccessToken!) {
-//        //
-//    }
-//    
-//    func vkSdkTokenHasExpired(expiredToken: VKAccessToken!) {
-//        //
-//    }
-//    
-//    func vkSdkUserAuthorizationFailed(result: VKError!) {
-//       // print(result.description)
-//    }
-    
-    //VKSdkDelegate Funcs End
+    //VK DELEGATE FUNCS
+    func vkSdkNeedCaptchaEnter(captchaError: VKError) { }
+    func vkSdkTokenHasExpired(expiredToken: VKAccessToken) {
+        print("test")
+    }
+    func vkSdkUserDeniedAccess(authorizationError: VKError) {
+        self.window?.makeKeyAndVisible()
+        
+    }
+    func vkSdkShouldPresentViewController(controller: UIViewController) {
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let storyboard = UIStoryboard(name: "Hello", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier("HelloView") as! HelloViewController
+        self.window?.rootViewController = vc
+        self.window?.makeKeyAndVisible()
+        self.window?.rootViewController?.presentViewController(controller, animated: true, completion: nil)
+    }
+    func vkSdkReceivedNewToken(newToken: VKAccessToken) {
+        //VKSdkInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        //VKInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
+        let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
+        self.window?.rootViewController = vc
+        self.window?.makeKeyAndVisible()
+        
+    }
+    //VK DELEGATE ENDS
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         if #available(iOS 9.0, *) {
@@ -57,17 +71,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        self.VKSdkInstance = VKSdk.initializeWithAppId("5066733")
-        //self.VKSdkInstance.registerDelegate(self)
-        VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
-            if state == VKAuthorizationState.Initialized {
-                self.showHelloViewController(false)
-            } else if error != nil {
-                print(error)
-            }
-        
-        })
+        VKSdk.initializeWithDelegate(self, andAppId: "5066733")
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if VKSdk.wakeUpSession() {
+            let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
+            self.window?.rootViewController = vc
+            self.window?.makeKeyAndVisible()
+        } else {
+            self.showHelloViewController(false)
+        }
         return true
+//        let sema = dispatch_semaphore_create(0)
+//        VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
+//            dispatch_semaphore_signal(sema)
+//            if state == VKAuthorizationState.Initialized {
+//                self.showHelloViewController(false)
+//            } else if state == VKAuthorizationState.Error {
+//                print("error")
+//            }
+//        })
+//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
+//        print("test")
     }
 
     func applicationWillResignActive(application: UIApplication) {
