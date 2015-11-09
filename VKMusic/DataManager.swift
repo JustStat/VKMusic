@@ -19,6 +19,7 @@ class DataManager: NSObject {
     var searhReq = ""
     var isBusy = false
     
+    
     func getDataFormVK(request: VKRequest, refresh: Bool) {
         if !isBusy {
         self.isBusy = true
@@ -38,8 +39,9 @@ class DataManager: NSObject {
                     let url = json[i]["url"].stringValue
                     let duration = json[i]["duration"].intValue
                     let id = json[i]["id"].intValue
+                    let local = DataBaseManager.sharedInstance.getLocalPath(id)
                     let ownerId = json["items"][i]["owner_id"].intValue
-                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
                 }
             } else {
@@ -50,17 +52,38 @@ class DataManager: NSObject {
                     let url = json["items"][i]["url"].stringValue
                     let duration = json["items"][i]["duration"].intValue
                     let id = json["items"][i]["id"].intValue
+                    let local = DataBaseManager.sharedInstance.getLocalPath(id)
                     let ownerId = json["items"][i]["owner_id"].intValue
-                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: "", id: id, ownerId: ownerId)
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
                 }
             }
-        self.isBusy = false
         }, errorBlock: {(error) -> Void in
             self.songs.removeAll()
-            self.isBusy = false
         })
+        self.isBusy = false
         }
+    }
+    
+    func addSongToVK(index: Int) {
+        let req = VKRequest(method: "audio.add", andParameters: [VK_API_OWNER_ID: self.songs[index].ownerId, "audio_id": self.songs[index].id], andHttpMethod: "GET")
+        req.executeWithResultBlock({
+            (response) -> Void in
+            let json = JSON(response.json)
+            let newId = json.int
+            DataBaseManager.sharedInstance.addSongNewId(self.songs[index].id, newId: newId!, table: "downloads")
+            }, errorBlock: {(error) -> Void in})
+
+    }
+    
+    func removeSongFromVK(index: Int) {
+        let req = VKRequest(method: "audio.delete", andParameters: ["audio_id": self.songs[index].id, "owner_id": self.songs[index].ownerId], andHttpMethod: "GET")
+        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(error) -> Void in})
+    }
+    
+    func removeSongFromDownloads(index: Int) {
+        DataBaseManager.sharedInstance.removeSong("downloads", id: self.songs[index].id)
+        do { try NSFileManager.defaultManager().removeItemAtPath(self.songs[index].localUrl)} catch{print("Error")}
     }
 
 }

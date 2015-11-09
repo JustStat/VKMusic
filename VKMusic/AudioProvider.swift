@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import AVKit
+import MediaPlayer
 
 protocol AudioProviderDelegate {
     func playerDidFinishPlaying(note: NSNotification)
@@ -26,7 +27,7 @@ class AudioProvider: NSObject {
     }
     
     var player = AVPlayer()
-    var currentIndex  = 0
+    var currentIndex  = -1
     var currentSong: Song!
     var coverImage: UIImage!
     var initPlaylist: [Song]!
@@ -50,11 +51,15 @@ class AudioProvider: NSObject {
             }
             
         }
-        
         player = AVPlayer(playerItem: csong)
         try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: csong)
         player.play()
+        let keys = NSArray(array: [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate])
+        let values = NSArray(array: [playlist[index].title, playlist[index].artist, playlist[index].duration, 1])
+        let mediaInfo = NSDictionary(object: values, forKey: keys)
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = mediaInfo as? [String : AnyObject]
+        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         currentSong = playlist[index]
         currentIndex = index
         currentSong.isPlaying = true
@@ -65,16 +70,19 @@ class AudioProvider: NSObject {
         player.pause()
     }
     
+    
     func playerDidFinishPlaying(note: NSNotification) {
         if self.mode == AudioProvider.playerMode.songRepeat {
             startPlayer(currentIndex)
-        } else {
+        } else if self.mode == AudioProvider.playerMode.noRepeat {
+            self.forward()
             self.delegate?.playerDidFinishPlaying(note)
         }
     }
     
     func rewind() {
         if currentIndex != 0 {
+            self.playlist[currentIndex].isPlaying = false
             currentIndex = currentIndex - 1
             startPlayer(currentIndex)
         } else {
@@ -84,6 +92,7 @@ class AudioProvider: NSObject {
     
     func forward() {
         if currentIndex < playlist.count - 1 {
+            self.playlist[currentIndex].isPlaying = false
             currentIndex = currentIndex + 1
             startPlayer(currentIndex)
         } else if self.mode == AudioProvider.playerMode.playListRepeat {
@@ -102,8 +111,9 @@ class AudioProvider: NSObject {
             shuffled = false
         } else {
             initPlaylist = playlist
-            currentIndex = 0
-            for i in 0 ..< (playlist.count - 1) {
+            swap(&playlist[currentIndex], &playlist[0])
+             currentIndex = 0
+            for i in 1 ..< (playlist.count - 1) {
                 let j = Int(arc4random_uniform(UInt32(playlist.count - i))) + i
                 if i != j {
                     swap(&playlist[i], &playlist[j])

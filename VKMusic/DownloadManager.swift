@@ -16,8 +16,8 @@ class FileDownloadInfo: NSObject {
     var downloadProgress = 0.0
     var isDownloading = false
     var downloadComplete = false
-    var taskId = -1
     var cellIndex: Int!
+    var cell: SongTableViewCell!
 
 }
 
@@ -26,7 +26,7 @@ class DownloadManager: NSObject {
     var session: NSURLSession!
     var arrFileDownloadData: NSMutableArray!
     var docDirectoryURL: NSURL!
-    var downloadSongsList = [Song]()
+    var downloadSongsList = [Int: FileDownloadInfo]()
     
     var sessionConfiguration: NSURLSessionConfiguration!
     

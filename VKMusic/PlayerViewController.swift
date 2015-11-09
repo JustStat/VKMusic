@@ -10,6 +10,7 @@ import UIKit
 import AVFoundation
 import AVKit
 import MediaPlayer
+import VK_ios_sdk
 
 class PlayerViewController: UIViewController, AudioProviderDelegate {
     @IBOutlet weak var moreButton: UIButton!
@@ -29,6 +30,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
     var currentSongIndex = 0
     var isChangingTime = false
     var wasPlaying = false
+    var dataManager = DataManager()
     @IBAction func startEditingTime(sender: AnyObject) {
         self.isChangingTime = true
         if AudioProvider.sharedInstance.player.rate == 1.0 {
@@ -60,30 +62,80 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
     }
     
     @IBAction func moreButtonClick(sender: AnyObject) {
+        let songList = AudioProvider.sharedInstance.playlist
+        let index = AudioProvider.sharedInstance.currentIndex
+        let exist = DataBaseManager.sharedInstance.checkExistance("downloads", id: songList[index].id)
         let alertController = UIAlertController(title: "\n \n \n \n", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
-        alertController.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
-            (UIAlertAction) -> Void in
+        if songList[index].ownerId != Int(VKSdk.getAccessToken().userId) && !exist {
+            alertController.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
+                (UIAlertAction) -> Void in
+                self.dataManager.addSongToVK(index)
+            }))
+        }
+        if songList[index].ownerId == Int(VKSdk.getAccessToken().userId) {
+            alertController.addAction(UIAlertAction(title: "Удалить из \"Моя музыка\"", style: UIAlertActionStyle.Default, handler: {
+                (alert) -> Void in
+                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(songList[index].title) \(songList[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
+                alertController.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.Default, handler: {
+                    (action) -> Void in
+                    self.dataManager.removeSongFromVK(index)
+                }))
+                alertController.addAction(UIAlertAction(title: "Отмена", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }))
+        }
+        
+        if self.tabBarController?.selectedIndex < 2 && exist {
+            alertController.addAction(UIAlertAction(title: "Удалить из \"Загрузки\"", style: UIAlertActionStyle.Default, handler: {
+                (alert) -> Void in
+                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(songList[index].title) \(songList[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
+                alertController.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.Default, handler: {
+                    (action) -> Void in
+                    self.dataManager.removeSongFromDownloads(index)
+                }))
+                alertController.addAction(UIAlertAction(title: "Отмена", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }))
             
-        }))
-        alertController.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: nil))
+        }
         alertController.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
         alertController.view.tintColor = UIColor(red:0.27, green:0.40, blue:0.56, alpha:1.0)
         let titleView = UIView(frame: CGRectMake(alertController.view.frame.minX + 10, alertController.view.frame.minY + 10, 300, 50))
-        let imageView = UIImageView(image: AudioProvider.sharedInstance.coverImage)
+        var song: AVPlayerItem!
+        var coverImage = UIImage(named: "DefCover")
+        let imageView = UIImageView(image: coverImage)
         imageView.frame = CGRectMake(0, 0, 80, 80)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            if songList[index].localUrl != "" {
+                song = AVPlayerItem(URL: NSURL(string: songList[index].localUrl)!)
+            } else {
+                song = AVPlayerItem(URL: NSURL(string: songList[index].url)!)
+            }
+            coverImage = UIImage(named: "DefCover")
+            let metadata = song.asset.commonMetadata
+            for item in metadata {
+                if item.commonKey  == "artwork" {
+                    coverImage = UIImage(data: item.value as! NSData)
+                }
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                imageView.image = coverImage
+            }
+        }
         titleView.backgroundColor = alertController.view.backgroundColor
-        let titleLabel = UILabel(frame: CGRectMake(85, 0, 170, 20))
-        titleLabel.text = AudioProvider.sharedInstance.currentSong.title
+        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 110, 20))
+        titleLabel.text = songList[index].title
         titleLabel.font.fontWithSize(13)
-        let artistLabel = UILabel(frame: CGRectMake(85, 25, 170, 20))
+        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 110, 20))
         artistLabel.textColor = UIColor.lightGrayColor()
-        artistLabel.text = AudioProvider.sharedInstance.currentSong.artist
+        artistLabel.text = songList[index].artist
         artistLabel.font.fontWithSize(10)
         titleView.addSubview(titleLabel)
         titleView.addSubview(artistLabel)
         titleView.addSubview(imageView)
         alertController.view.addSubview(titleView)
         self.presentViewController(alertController, animated: true, completion: nil)
+
     }
     
     @IBAction func rewindButtonClick(sender: AnyObject) {
@@ -169,6 +221,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
+        volumeControl.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha: 0.2)
         self.VolumeControlView.addSubview(volumeControl)
         //self.view addSubview: myVolumeView];
         //self.volumeSlider.value = AVAudioSession.sharedInstance().outputVolume
@@ -196,6 +249,13 @@ class PlayerViewController: UIViewController, AudioProviderDelegate {
                 } else {
                     self.playModeButton.setImage(UIImage(named: "RepeatOne"), forState: UIControlState.Normal)
                 }
+                
+                if AudioProvider.sharedInstance.shuffled {
+                    self.shuffleButton.setImage(UIImage(named: "suffleFilled"), forState: UIControlState.Normal)
+                } else {
+                    self.shuffleButton.setImage(UIImage(named: "Shuffle"), forState: UIControlState.Normal)
+                }
+
                 
             }
             

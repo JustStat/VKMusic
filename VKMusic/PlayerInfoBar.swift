@@ -34,7 +34,7 @@ class PlayerInfoBar: UIView {
     }
     
     @IBAction func moreButtonClick(sender: AnyObject) {
-//        self.delegate.createAlertController(AudioProvider.sharedInstance.currentIndex, filtered: false)
+        self.delegate.createAlertController(AudioProvider.sharedInstance.currentIndex, filtered: false, fromPlayBar: true)
     }
     
     @IBAction func playerButtonClick(sender: AnyObject) {

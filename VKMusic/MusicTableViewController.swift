@@ -10,8 +10,9 @@ import UIKit
 import VK_ios_sdk
 import SVPullToRefresh
 import AVFoundation
+import SwiftyJSON
 
-class MusicTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SongTableViewCellDelegate, UISearchBarDelegate, UISearchDisplayDelegate, NSURLSessionDelegate, NSURLSessionDownloadDelegate
+class MusicTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SongTableViewCellDelegate, UISearchBarDelegate, UISearchDisplayDelegate, NSURLSessionDelegate, NSURLSessionDownloadDelegate, AudioProviderDelegate
 {
     
     @IBOutlet weak var SearchBar: UISearchBar!
@@ -31,23 +32,46 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
 
     
     override func viewDidLoad() {
-        getReqest((self.tabBarController?.selectedIndex)!, filter: "")
-        self.downloadManager = DownloadManager(title: "\(counter.sharedInstance.index++)", delegate: self)
-//        self.tableView.delegate = self
-//        self.tableView.dataSource = self
-        if self.request != nil {
-            dataManager.getDataFormVK(self.request, refresh: false)
-            self.tableView.reloadData()
-        } else {
-            self.dataManager.songs = []
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            self.getReqest((self.tabBarController?.selectedIndex)!, filter: "")
+            self.downloadManager = DownloadManager(title: "\(counter.sharedInstance.index++)", delegate: self)
+            AudioProvider.sharedInstance.delegate = self
+            self.tableView.delegate = self
+            self.tableView.dataSource = self
+            if self.request != nil {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.dataManager.getDataFormVK(self.request, refresh: false)
+                    self.tableView.reloadData()
+                }
+            } else {
+                self.dataManager.songs = []
+            }
         }
         
+    }
+
+    
+    func playerDidFinishPlaying(note: NSNotification) {
+        self.playerInfoBar.updateUI()
+        self.tableView.reloadData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        AudioProvider.sharedInstance.delegate = self
+        if AudioProvider.sharedInstance.currentSong != nil {
+            self.playerInfoBar.hidden = false
+            self.playerInfoBar.updateUI()
+        } else {
+            self.playerInfoBar.hidden = true
+        }
+        self.tableView.reloadData()
+
     }
     
     override func viewDidAppear(animated: Bool) {
         tableView.addPullToRefreshWithActionHandler({
             () -> Void in
-            if !self.dataManager.isBusy {
+            if !self.dataManager.isBusy  {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     self.dataManager.songs.removeAll()
                     self.getReqest((self.tabBarController?.selectedIndex)!, filter: "")
@@ -67,19 +91,12 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             }
         })
         self.playerInfoBar.delegate = self
-        
         if self.tabBarController?.selectedIndex == 1 {
             dataManager.songs = []
             dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
+            self.navigationItem.title = "Загрузки"
             self.tableView.reloadData()
         }
-        if AudioProvider.sharedInstance.currentSong != nil {
-            self.playerInfoBar.hidden = false
-            self.playerInfoBar.updateUI()
-        } else {
-            self.playerInfoBar.hidden = true
-        }
-
     }
     
     func getReqest(index: Int, var filter: String) {
@@ -90,9 +107,6 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             self.request = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId, VK_API_OFFSET: self.dataManager.songs.count, "count": 50], andHttpMethod: "GET")
             }
             self.navigationItem.title = "Моя Музыка"
-        case 1:
-//            dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
-            self.navigationItem.title = "Загрузки"
         case 2:
             self.request = VKRequest(method: "audio.getPopular", andParameters:[VK_API_OFFSET: self.dataManager.songs.count, "count": 50], andHttpMethod: "GET")
             self.navigationItem.title = "Популярное"
@@ -127,6 +141,27 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             song = dataManager.songs[indexPath.row]
         }
         cell.delegate = self
+        if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == song.id {
+            cell.backgroundColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha: 0.2)
+        } else {
+            cell.backgroundColor = UIColor.whiteColor()
+        }
+        if song.downloadId != -1  {
+            if self.downloadManager.downloadSongsList[song.downloadId]!.isDownloading {
+                cell.progressBar = UIProgressView(frame: CGRectMake(0, 0, cell.frame.width, 2))
+                let cellRect = self.tableView.rectForRowAtIndexPath(indexPath)
+                let asr = self.tableView.convertRect(cellRect, fromView: self.view)
+                cell.progressBar.center = CGPoint(x: (asr.maxX - asr.minX)/2, y: (asr.maxY - asr.minY))
+                cell.progressBar.progressTintColor = UIColor(red: 69/255, green:  102/255, blue:  142/255, alpha: 1)
+                cell.addSubview(cell.progressBar!)
+                self.downloadManager.downloadSongsList[song.downloadId]?.cell = cell
+                self.downloadManager.downloadSongsList[song.downloadId]?.cellIndex = indexPath.row
+            }
+        } else {
+            if cell.progressBar != nil {
+                cell.progressBar.removeFromSuperview()
+            }
+            }
         cell.nameLabel.text = song.title
         cell.authorLabel.text = song.artist
         cell.durationLabel.text = song.durationToString()
@@ -140,14 +175,13 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         AudioProvider.sharedInstance.playlist = dataManager.songs
         vc.currentSongIndex = indexPath.row
         self.showDetailViewController(vc, sender: self)
+        if AudioProvider.sharedInstance.shuffled {
+            AudioProvider.sharedInstance.shuffle()
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == self.searchDisplayController!.searchResultsTableView {
-            return self.dataManager.filteredTableData.count
-        } else {
-            return dataManager.songs.count
-        }
+        return dataManager.songs.count
     }
     
     func loadMore() {
@@ -169,7 +203,7 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         let currentOffset = scrollView.contentOffset.y
         let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
         let deltaOffset = maximumOffset - currentOffset
-        if deltaOffset <= 300 {
+        if deltaOffset <= 300 && self.dataManager.songs.count > 0 {
             loadMore()
         }
     }
@@ -185,22 +219,24 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             index = searchDisplayController?.searchResultsTableView.indexPathForCell(cell)?.row
             filtered = true
         }
-        self.createAlertController(index!, filtered: filtered)
+        self.createAlertController(index!, filtered: filtered, fromPlayBar: false)
     }
     
-    func createAlertController(index: Int, filtered: Bool) {
-        let exist = DataBaseManager.sharedInstance.checkExistance("downloads", id: self.dataManager.songs[index].id)
+    func createAlertController(index: Int, filtered: Bool, fromPlayBar: Bool) {
         var songList = [Song]()
         if filtered {
             songList = self.dataManager.filteredTableData
+        } else if fromPlayBar {
+            songList = AudioProvider.sharedInstance.playlist
         } else {
             songList = self.dataManager.songs
         }
+        let exist = DataBaseManager.sharedInstance.checkExistance("downloads", id: songList[index].id)
         let alertController = UIAlertController(title: "\n \n \n \n", message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
-        if self.dataManager.songs[index].ownerId != Int(VKSdk.getAccessToken().userId) {
+        if songList[index].ownerId != Int(VKSdk.getAccessToken().userId) && !exist {
             alertController.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
             (UIAlertAction) -> Void in
-            //Add song to libruary
+                self.dataManager.addSongToVK(index)
             }))
         }
         if !exist {
@@ -208,48 +244,44 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
                 (UIAlertAction) -> Void in
                 let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0)) as! SongTableViewCell
                 let rowIndex = self.tableView.indexPathForCell(cell)
-                let cellIdentifier = "SongTableViewCell"
-                let Acell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: rowIndex!) as! SongTableViewCell;
-                Acell.progressBar = UIProgressView(frame: CGRectMake(0, 0, Acell.frame.width, 2))
-                let cellRect = self.tableView.rectForRowAtIndexPath(rowIndex!)
-                let asr = self.tableView.convertRect(cellRect, fromView: self.view)
-                Acell.progressBar.center = CGPoint(x: (asr.maxX - asr.minX)/2, y: (asr.maxY - asr.minY))
-                Acell.progressBar.progressTintColor = UIColor(red: 69/255, green:  102/255, blue:  142/255, alpha: 1)
-                Acell.addSubview(Acell.progressBar!)
-                self.tableView.reloadRowsAtIndexPaths([rowIndex!], withRowAnimation: UITableViewRowAnimation.None)
-                let song  = self.dataManager.songs[index]
-                let fdi = song.downloadInfo
-                if fdi.taskId == -1 {
-                        fdi.downloadTask = self.downloadManager.session.downloadTaskWithURL(NSURL(string: self.dataManager.songs[index].url)!)
-                        fdi.taskId = fdi.downloadTask.taskIdentifier
-                        fdi.cellIndex = index
+                let song  = songList[index]
+                let fdi = FileDownloadInfo()
+                if song.downloadId == -1 {
+                        fdi.downloadTask = self.downloadManager.session.downloadTaskWithURL(NSURL(string: songList[index].url)!)
                         fdi.isDownloading = true
-                        self.downloadManager.downloadSongsList.append(song)
+                        self.downloadManager.downloadSongsList[fdi.downloadTask.taskIdentifier] = fdi
                         fdi.downloadTask.resume()
+                        self.downloadManager.downloadSongsList[fdi.downloadTask.taskIdentifier] = fdi
+                        song.downloadId = fdi.downloadTask.taskIdentifier
                 }
+                self.tableView.reloadRowsAtIndexPaths([rowIndex!], withRowAnimation: UITableViewRowAnimation.None)
             }))
         }
-        if self.dataManager.songs[index].ownerId == Int(VKSdk.getAccessToken().userId) {
+        if songList[index].ownerId == Int(VKSdk.getAccessToken().userId) {
             alertController.addAction(UIAlertAction(title: "Удалить из \"Моя музыка\"", style: UIAlertActionStyle.Default, handler: {
                 (alert) -> Void in
-                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(self.dataManager.songs[index].title) \(self.dataManager.songs[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
+                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(songList[index].title) \(songList[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
                 alertController.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.Default, handler: {
                     (action) -> Void in
-                    //
+                    self.dataManager.removeSongFromVK(index)
+                    self.tableView.reloadData()
                 }))
                 alertController.addAction(UIAlertAction(title: "Отмена", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
             }))
         }
         
         if self.tabBarController?.selectedIndex < 2 && exist {
             alertController.addAction(UIAlertAction(title: "Удалить из \"Загрузки\"", style: UIAlertActionStyle.Default, handler: {
                 (alert) -> Void in
-                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(self.dataManager.songs[index].title) \(self.dataManager.songs[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
+                let alertController = UIAlertController(title: "Удаление", message: "Вы действительно хотите удалить \(songList[index].title) \(songList[index].artist)", preferredStyle: UIAlertControllerStyle.Alert)
                 alertController.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.Default, handler: {
                     (action) -> Void in
-                    //
+                    self.dataManager.removeSongFromDownloads(index)
+                    self.tableView.reloadData()
                 }))
                 alertController.addAction(UIAlertAction(title: "Отмена", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
             }))
 
         }
@@ -349,13 +381,15 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
     
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         print("downloaded \(100*totalBytesWritten/totalBytesExpectedToWrite)")
-        let index = self.getFileDownloadInfoIndexWithTaskIdentifire(downloadTask.taskIdentifier)
-         let fdi =  self.downloadManager.downloadSongsList[index].downloadInfo
+        let index = downloadTask.taskIdentifier
+         let fdi =  self.downloadManager.downloadSongsList[index]
         NSOperationQueue.mainQueue().addOperationWithBlock({
-            fdi.downloadProgress = Double(totalBytesWritten)/Double(totalBytesExpectedToWrite)
-            let progress = Float(fdi.downloadProgress)
-            let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: fdi.cellIndex, inSection: 0)) as! SongTableViewCell
-            cell.progressBar.progress = Float(progress)
+            fdi!.downloadProgress = Double(totalBytesWritten)/Double(totalBytesExpectedToWrite)
+            let progress = Float(fdi!.downloadProgress)
+//            let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: fdi.cellIndex, inSection: 0)) as! SongTableViewCell
+            if fdi!.cell != nil {
+                fdi!.cell.progressBar.progress = Float(progress)
+            }
         })
 //        cell.progressBar.reloadInputViews()
 //        cell.reloadInputViews()
@@ -370,16 +404,19 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
             do { try NSFileManager.defaultManager().removeItemAtURL(destURL)} catch {}
         }
         do {try NSFileManager.defaultManager().copyItemAtURL(location, toURL: destURL)} catch {}
-        let index = self.getFileDownloadInfoIndexWithTaskIdentifire(downloadTask.taskIdentifier)
+        let index = downloadTask.taskIdentifier
         if  self.downloadManager.downloadSongsList.count != 0 {
-            let fdi =  self.downloadManager.downloadSongsList[index].downloadInfo
-             self.downloadManager.downloadSongsList.removeAtIndex(index)
+            let fdi =  self.downloadManager.downloadSongsList[index]
+            fdi?.isDownloading = false
             NSOperationQueue.mainQueue().addOperationWithBlock({
-            let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: fdi.cellIndex, inSection: 0)) as! SongTableViewCell
-            cell.progressBar.removeFromSuperview()
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: fdi.cellIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)})
-            self.dataManager.songs[fdi.cellIndex].localUrl = destURL.path!
-            DataBaseManager.sharedInstance.addSongToTable(self.dataManager.songs[fdi.cellIndex], table: "downloads")
+                let cellPath = NSIndexPath(forRow: fdi!.cellIndex, inSection: 0)
+                self.dataManager.songs[fdi!.cellIndex].localUrl = destURL.path!
+                fdi?.isDownloading = false
+                self.dataManager.songs[fdi!.cellIndex].downloadId = -1
+            DataBaseManager.sharedInstance.addSongToTable(self.dataManager.songs[fdi!.cellIndex], table: "downloads")
+                self.tableView.reloadRowsAtIndexPaths([cellPath], withRowAnimation: UITableViewRowAnimation.None)
+                self.downloadManager.downloadSongsList.removeValueForKey(index)
+            })
         }
         print("dowload complete")
     }
@@ -388,14 +425,7 @@ class MusicTableViewController: UIViewController, UITableViewDataSource, UITable
         print(error?.description)
     }
     
-    func getFileDownloadInfoIndexWithTaskIdentifire(taskId: CLong) -> (Int) {
-        for var i = 0; i <  self.downloadManager.downloadSongsList.count; ++i {
-            if self.downloadManager.downloadSongsList[i].downloadInfo.taskId == taskId {
-                return i
-            }
-        }
-        return 0
-    }
+    //AudioProviderDelegate FUNCS
     
     
     // MARK: - Navigation

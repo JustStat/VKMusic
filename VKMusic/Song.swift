@@ -17,7 +17,7 @@ class Song: NSObject {
     var id: Int!
     var ownerId: Int!
     var isPlaying = false
-    var downloadInfo: FileDownloadInfo!
+    var downloadId: Int
     
     init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int) {
         self.title = title
@@ -28,7 +28,7 @@ class Song: NSObject {
         self.id = id
         self.ownerId = ownerId
         self.isPlaying = false
-        self.downloadInfo = FileDownloadInfo()
+        self.downloadId = -1
     }
     
     func durationToString() -> String {

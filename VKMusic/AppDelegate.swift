@@ -55,6 +55,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         //VKInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
         let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
+        vc.customizableViewControllers = nil
+        vc.moreNavigationController.view.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        UIProgressView.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
         self.window?.rootViewController = vc
         self.window?.makeKeyAndVisible()
         
@@ -77,6 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         if VKSdk.wakeUpSession() {
             let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
             self.window?.rootViewController = vc
+            vc.customizableViewControllers = nil
+            vc.moreNavigationController.view.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+            UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+            UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             self.window?.makeKeyAndVisible()
         } else {
             self.showHelloViewController(false)
@@ -93,7 +101,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
 //        })
 //        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
 //        print("test")
+        
     }
+    
+    override func remoteControlReceivedWithEvent(event: UIEvent?) {
+        if event!.type == UIEventType.RemoteControl {
+            if event!.subtype == UIEventSubtype.RemoteControlPlay {
+                print("received remote play")
+                AudioProvider.sharedInstance.player.play()
+            } else if event!.subtype == UIEventSubtype.RemoteControlPause {
+                print("received remote pause")
+                AudioProvider.sharedInstance.player.pause()
+            } else if event!.subtype == UIEventSubtype.RemoteControlNextTrack {
+                print("received nex")
+                AudioProvider.sharedInstance.forward()
+            } else if event!.subtype == UIEventSubtype.RemoteControlPreviousTrack {
+                AudioProvider.sharedInstance.rewind()
+            }
+        }
+    }
+    
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
