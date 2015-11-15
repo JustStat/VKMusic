@@ -1,16 +1,30 @@
 PODS:
+  - Alamofire (3.1.2)
+  - BTNavigationDropdownMenu (0.1.8)
+  - DZNEmptyDataSet (1.7.2)
   - FMDB (2.5):
     - FMDB/standard (= 2.5)
   - FMDB/common (2.5)
   - FMDB/standard (2.5):
     - FMDB/common
-  - SVPullToRefresh (0.4.1)
+  - LLACircularProgressView (0.1.1)
+  - MBProgressHUD (0.9.1)
+  - PKRevealController (2.0.6)
+  - SDWebImage (3.7.3):
+    - SDWebImage/Core (= 3.7.3)
+  - SDWebImage/Core (3.7.3)
   - SwiftyJSON (2.3.1)
   - VK-ios-sdk (1.2.2)
 
 DEPENDENCIES:
+  - Alamofire (~> 3.0)
+  - BTNavigationDropdownMenu
+  - DZNEmptyDataSet
   - FMDB (from `https://github.com/ccgus/fmdb.git`, branch `swiftFramework`)
-  - SVPullToRefresh
+  - LLACircularProgressView
+  - MBProgressHUD (~> 0.9.1)
+  - PKRevealController
+  - SDWebImage (~> 3.7)
   - SwiftyJSON (~> 2.3)
   - VK-ios-sdk (~> 1.2.2)
 
@@ -25,8 +39,14 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ccgus/fmdb.git
 
 SPEC CHECKSUMS:
+  Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
+  BTNavigationDropdownMenu: 23403214197d8fb208dd0ad996e3d236748473c9
+  DZNEmptyDataSet: 0ec00bfc230d7450997b60c127afdd0b9f24f3b6
   FMDB: 8e59e93d20d76d0b135db26ecc83ae88d016076d
-  SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
+  LLACircularProgressView: e179b0728217e9013cd07c2fadc7caa0c35b9199
+  MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
+  PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
+  SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
   SwiftyJSON: 592b53bee5ef3dd9b3bebc6b9cb7ee35426ae8c3
   VK-ios-sdk: f4b7df0d4e277e06d60fef6dc472be4260eeda6d
 

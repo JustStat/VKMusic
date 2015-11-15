@@ -20,6 +20,8 @@ class PlayerInfoBar: UIView {
     @IBOutlet weak var songProgress: UIProgressView!
     @IBOutlet weak var playerButton: UIButton!
     
+    static var sharedInstance = PlayerInfoBar()
+    
     var delegate: MusicTableViewController!
     
     func updateUI() {
@@ -43,5 +45,21 @@ class PlayerInfoBar: UIView {
         vc.currentSongIndex = AudioProvider.sharedInstance.currentIndex
         self.delegate.showDetailViewController(vc, sender: self)
     }
+    
+    @IBAction func playButtonClick(sender: AnyObject) {
+        if AudioProvider.sharedInstance.player.rate == 0.0 {
+            if AudioProvider.sharedInstance.last {
+                AudioProvider.sharedInstance.startPlayer(AudioProvider.sharedInstance.currentIndex)
+                AudioProvider.sharedInstance.last = false
+            } else {
+                AudioProvider.sharedInstance.player.play()
+                (sender as! UIBarButtonItem).image = UIImage(named:"Pause")            }
+        } else {
+            AudioProvider.sharedInstance.player.pause()
+            (sender as! UIBarButtonItem).image = UIImage(named:"Play")
+        }
+        
+    }
+
 
 }

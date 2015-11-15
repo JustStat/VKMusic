@@ -52,14 +52,26 @@ code_sign_if_enabled() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework 'Pods-VKMusic/Alamofire.framework'
+  install_framework 'Pods-VKMusic/BTNavigationDropdownMenu.framework'
+  install_framework 'Pods-VKMusic/DZNEmptyDataSet.framework'
   install_framework 'Pods-VKMusic/FMDB.framework'
-  install_framework 'Pods-VKMusic/SVPullToRefresh.framework'
+  install_framework 'Pods-VKMusic/LLACircularProgressView.framework'
+  install_framework 'Pods-VKMusic/MBProgressHUD.framework'
+  install_framework 'Pods-VKMusic/PKRevealController.framework'
+  install_framework 'Pods-VKMusic/SDWebImage.framework'
   install_framework 'Pods-VKMusic/SwiftyJSON.framework'
   install_framework 'Pods-VKMusic/VK_ios_sdk.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework 'Pods-VKMusic/Alamofire.framework'
+  install_framework 'Pods-VKMusic/BTNavigationDropdownMenu.framework'
+  install_framework 'Pods-VKMusic/DZNEmptyDataSet.framework'
   install_framework 'Pods-VKMusic/FMDB.framework'
-  install_framework 'Pods-VKMusic/SVPullToRefresh.framework'
+  install_framework 'Pods-VKMusic/LLACircularProgressView.framework'
+  install_framework 'Pods-VKMusic/MBProgressHUD.framework'
+  install_framework 'Pods-VKMusic/PKRevealController.framework'
+  install_framework 'Pods-VKMusic/SDWebImage.framework'
   install_framework 'Pods-VKMusic/SwiftyJSON.framework'
   install_framework 'Pods-VKMusic/VK_ios_sdk.framework'
 fi

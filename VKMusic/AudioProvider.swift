@@ -14,6 +14,7 @@ import MediaPlayer
 protocol AudioProviderDelegate {
     func playerDidFinishPlaying(note: NSNotification)
     //func updatePlayerInfoBar()
+    func loadMore()
 }
 
 class AudioProvider: NSObject {
@@ -35,8 +36,10 @@ class AudioProvider: NSObject {
     static let sharedInstance = AudioProvider()
     var mode = AudioProvider.playerMode.noRepeat
     var shuffled = false
+    var last = false
     
     func startPlayer(index: Int) {
+        last = false
         var csong = AVPlayerItem!()
         if playlist[index].localUrl != "" {
             csong = AVPlayerItem(URL: NSURL(fileURLWithPath: playlist[index].localUrl))
@@ -52,15 +55,15 @@ class AudioProvider: NSObject {
             
         }
         player = AVPlayer(playerItem: csong)
+        try! AVAudioSession.sharedInstance().setActive(true)
         try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "playerDidFinishPlaying:", name: AVPlayerItemDidPlayToEndTimeNotification, object: csong)
         player.play()
-        let keys = NSArray(array: [MPMediaItemPropertyAlbumTitle, MPMediaItemPropertyAlbumArtist, MPMediaItemPropertyPlaybackDuration, MPNowPlayingInfoPropertyPlaybackRate])
-        let values = NSArray(array: [playlist[index].title, playlist[index].artist, playlist[index].duration, 1])
-        let mediaInfo = NSDictionary(object: values, forKey: keys)
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = mediaInfo as? [String : AnyObject]
         UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
         currentSong = playlist[index]
+        let mediaImage = MPMediaItemArtwork(image: coverImage)
+        let mediaInfo: [String: AnyObject] = [MPMediaItemPropertyArtist : currentSong.artist, MPMediaItemPropertyTitle : currentSong.title, MPMediaItemPropertyPlaybackDuration: currentSong.duration, MPMediaItemPropertyArtwork: mediaImage]
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = mediaInfo
         currentIndex = index
         currentSong.isPlaying = true
         
@@ -97,6 +100,11 @@ class AudioProvider: NSObject {
             startPlayer(currentIndex)
         } else if self.mode == AudioProvider.playerMode.playListRepeat {
             startPlayer(0)
+        } else {
+            last = true
+        }
+        if playlist.count - currentIndex < 2 {
+            self.delegate?.loadMore()
         }
     }
     

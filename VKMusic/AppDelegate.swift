@@ -54,12 +54,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         //VKInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
-        let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
-        vc.customizableViewControllers = nil
-        vc.moreNavigationController.view.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-        UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-        UIProgressView.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        let vc = storyboard.instantiateViewControllerWithIdentifier("revealController")
         self.window?.rootViewController = vc
+        UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
         self.window?.makeKeyAndVisible()
         
     }
@@ -79,10 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if VKSdk.wakeUpSession() {
-            let vc = storyboard.instantiateViewControllerWithIdentifier("MainTabController") as! UITabBarController
+            let vc = storyboard.instantiateViewControllerWithIdentifier("revealController")
             self.window?.rootViewController = vc
-            vc.customizableViewControllers = nil
-            vc.moreNavigationController.view.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             self.window?.makeKeyAndVisible()
@@ -90,17 +86,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
             self.showHelloViewController(false)
         }
         return true
-//        let sema = dispatch_semaphore_create(0)
-//        VKSdk.wakeUpSession([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], completeBlock: {(state, error) -> Void in
-//            dispatch_semaphore_signal(sema)
-//            if state == VKAuthorizationState.Initialized {
-//                self.showHelloViewController(false)
-//            } else if state == VKAuthorizationState.Error {
-//                print("error")
-//            }
-//        })
-//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER)
-//        print("test")
         
     }
     

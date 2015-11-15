@@ -4,7 +4,37 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Alamofire.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>BTNavigationDropdownMenu.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>DZNEmptyDataSet.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>FMDB.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>LLACircularProgressView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>MBProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PKRevealController.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -14,7 +44,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>SVPullToRefresh.xcscheme</key>
+		<key>SDWebImage.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -32,7 +62,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1EE2F5DA677F900D88D4FBE9E9A17E9B</key>
+		<key>0788A32DE4536E6AEDAA1ED494CFB404</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -42,17 +72,47 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>55AAB37F705390A42FBFD75EE9BD3532</key>
+		<key>5FB0A7F45D6EAFA1EDAD103BD46D2EF8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>65EB674F5BA83DCC5DD33605CF3437EC</key>
+		<key>82257F3FCA6E3124C367FE84874C645F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9666688CB41B38A9914616144C9C7A3E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9868391039D3B3174D0657D7F080BF07</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>9C91D6EDF3C65DDD4FCB4212EEDE2644</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AB8910AAC3A67FCC30F0DF7900558499</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>B9A04D3C9B208813656510FDA8ADAE02</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C7FEBAC4A1CCE8778E9D956D67A35B32</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F377EDE1E3C9F2AA4BDE8301791234DD</key>
 		<dict>
 			<key>primary</key>
 			<true/>

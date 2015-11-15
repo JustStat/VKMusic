@@ -20,10 +20,9 @@ class SongTableViewCell: UITableViewCell {
     @IBOutlet weak var MoreButton: UIButton!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var authorLabel: UILabel!
-    var progressBar: UIProgressView!
     override func awakeFromNib() {
         super.awakeFromNib()
-       // downloadProgress.hidden = true
+       
     }
    
     @IBAction func MoreButtonTouchDown(sender: AnyObject) {

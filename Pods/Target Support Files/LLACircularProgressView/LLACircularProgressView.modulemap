@@ -1,0 +1,6 @@
+framework module LLACircularProgressView {
+  umbrella header "LLACircularProgressView-umbrella.h"
+
+  export *
+  module * { export * }
+}
