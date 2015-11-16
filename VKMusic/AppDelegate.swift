@@ -81,6 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
             self.window?.rootViewController = vc
             UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+            UINavigationBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+            UISearchBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
             self.window?.makeKeyAndVisible()
         } else {
             self.showHelloViewController(false)

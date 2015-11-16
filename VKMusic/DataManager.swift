@@ -13,11 +13,17 @@ import FMDB
 
 class DataManager: NSObject {
     
+    enum ErrorType {
+        case NoConnection
+        case NoContent
+    }
+    
     //MARK: Properties
     var songs = [Song]()
     var filteredTableData = [Song]()
     var searhReq = ""
     var isBusy = false
+    var error: ErrorType!
     
     
     func getDataFormVK(request: VKRequest, refresh: Bool, onlyMine: Bool) {
@@ -33,6 +39,9 @@ class DataManager: NSObject {
             var count = 0
             if json["count"] == nil {
                 count = json.count
+                if count == 0 {
+                    self.error == .NoContent
+                }
                 for var i = 0; i < count; i++ {
                     let artist = json[i]["artist"].stringValue
                     let title = json[i]["title"].stringValue
@@ -50,9 +59,13 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
+                    self.error = nil
                 }
             } else {
                 count = json["items"].count
+                if count == 0 {
+                    self.error == .NoContent
+                }
                 for var i = 0; i < count; i++ {
                     let artist = json["items"][i]["artist"].stringValue
                     let title = json["items"][i]["title"].stringValue
@@ -71,10 +84,12 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
+                    self.error = nil
                 }
             }
         }, errorBlock: {(error) -> Void in
             self.songs.removeAll()
+            self.error = .NoConnection
         })
         self.isBusy = false
         }

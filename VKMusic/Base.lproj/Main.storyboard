@@ -164,7 +164,7 @@
                         <barButtonItem key="leftBarButtonItem" image="MainMenu" id="SWZ-Gd-Hui"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="j1G-j2-bPo">
                             <connections>
-                                <segue destination="OdU-KJ-18K" kind="showDetail" id="aEd-fQ-QlY"/>
+                                <segue destination="OdU-KJ-18K" kind="showDetail" identifier="SearchSegue" id="aEd-fQ-QlY"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

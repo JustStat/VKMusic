@@ -18,6 +18,7 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
         self.searchBar.scopeButtonTitles = ["Моя музыка", "Загрузки", "ВКонтакте"]
         self.searchBar.showsScopeBar = true
         self.searchBar.showsCancelButton = true
+        self.searchBar.becomeFirstResponder()
     }
     
     override func viewWillAppear(animated: Bool){
@@ -27,7 +28,6 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
         headerView.addSubview(searchBar)
         self.navigationController!.view.addSubview(headerView)
         self.tableView.contentInset = UIEdgeInsetsMake(88,0,0,0);
-        self.searchBar.becomeFirstResponder()
     }
     
     override func prefersStatusBarHidden() -> Bool {

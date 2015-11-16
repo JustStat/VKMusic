@@ -16,7 +16,7 @@ import DZNEmptyDataSet
 import PKRevealController
 import MBProgressHUD
 
-class MusicTableViewController: UITableViewController, SongTableViewCellDelegate,  AudioProviderDelegate, PKRevealing, UISearchControllerDelegate, SongAlertControllerDelegate, DownloadTableViewCellDelegate  {
+class MusicTableViewController: UITableViewController, SongTableViewCellDelegate,  AudioProviderDelegate, PKRevealing, UISearchControllerDelegate, SongAlertControllerDelegate, DownloadTableViewCellDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
     
     @IBOutlet weak var openBackTableButton: UIBarButtonItem!
     var dataManager = DataManager()
@@ -31,6 +31,8 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         self.refreshControl?.addTarget(self, action: Selector("refreshData"), forControlEvents: UIControlEvents.ValueChanged)
         openBackTableButton.target = self.revealViewController()
         openBackTableButton.action = Selector("revealToggle:")
+        self.tableView.emptyDataSetDelegate = self
+        self.tableView.emptyDataSetSource = self
         if self.number != 1 {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.request = self.dataManager.getReqest(self.number)
@@ -75,6 +77,11 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: 0)
                 dispatch_async(dispatch_get_main_queue()) {
+                    if self.dataManager.songs.count == 0 {
+                     self.dataManager.error = DataManager.ErrorType.NoContent
+                    } else {
+                        self.dataManager.error = nil
+                    }
                     self.tableView.reloadData()
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                 }
@@ -152,7 +159,6 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         self.playerInfoBar.playerButton = playerButton
         self.playerInfoBar.titleLabel = titleLabel
         self.playerInfoBar.artistLabel = artistLabel
-        //        self.playerInfoBar.moreButton = moreButton
         self.playerInfoBar.addSubview(playerButton)
         let barButton = UIBarButtonItem(customView: self.playerInfoBar)
         self.setToolbarItems([playPauseButton, barButton, moreButton], animated: true)
@@ -251,6 +257,11 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     
     func addSongToVKAlertActonClick(song: Song) {
         self.dataManager.addSongToVK(song)
+        let HUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        HUD.customView = UIImageView(image: UIImage(named: "Checked"))
+        HUD.mode = MBProgressHUDMode.CustomView
+        HUD.labelText = "Добавлено"
+        HUD.hide(true, afterDelay: 2)
     }
     
     func addSongToDownloads(song: Song) {
@@ -260,13 +271,18 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     
     func removeSongFromVKAlertActionClick(song: Song, index: Int) {
         self.dataManager.removeSongFromVK(song)
-        self.dataManager.songs.removeAtIndex(index)
+        if self.number == 0 {
+            self.dataManager.songs.removeAtIndex(index)
+        }
         self.tableView.reloadData()
     }
     
     func removeSongFromDownloadsAlertActionClick(song: Song, index: Int) {
         self.dataManager.removeSongFromDownloads(song)
-        self.dataManager.songs.removeAtIndex(index)
+        if self.number == 1 {
+            self.dataManager.songs.removeAtIndex(index)
+        }
+        reloadTable()
         self.tableView.reloadData()
     }
     
@@ -308,6 +324,11 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             }
         } else if self.number == 1 {
             self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: 0)
+            if self.dataManager.songs.count == 0 {
+                self.dataManager.error = DataManager.ErrorType.NoContent
+            } else {
+                self.dataManager.error = nil
+            }
         }
         self.tableView.reloadData()
         if self.refreshControl != nil {
@@ -315,54 +336,101 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         }
     }
     
-    //MARK: SearchDelegate FUNCS
+    //MARK: EmptyDataSetDelegate FUNCS
     
-    // SearchDelegate ENDS
+    func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
+        if self.dataManager.error != nil {
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                return UIImage(named: "NoInternet")
+            } else {
+                return UIImage(named: "NoContent")
+            }
+        }
+        return UIImage()
+    }
     
-    //MARK: URLSessionsDownloadsDelegate FUNCS
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            let text:String!
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                text = "Ошибка подлючения к серверам Вконтакте"
+            } else {
+                if self.number == 1 {
+                    text = "Вы пока ничего не загрузили"
+                } else {
+                    text = "Список музыки ВКонтаке пуст"
+                }
+            }
+            let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(18), NSForegroundColorAttributeName: UIColor.grayColor()]
+            return NSAttributedString(string: text, attributes: attrs)
+        }
+        return NSAttributedString()
+    }
     
-//    func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-//        print("downloaded \(100*totalBytesWritten/totalBytesExpectedToWrite)")
-//        let index = downloadTask.taskIdentifier
-//        let fdi =  self.downloadManager.downloadSongsList[index]
-//        NSOperationQueue.mainQueue().addOperationWithBlock({
-////            fdi!.downloadProgress = Double(totalBytesWritten)/Double(totalBytesExpectedToWrite)
-////            let progress = Float(fdi!.downloadProgress)
-////            //            let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: fdi.cellIndex, inSection: 0)) as! SongTableViewCell
-////            if fdi!.cell != nil {
-//////                fdi!.cell.progressBar.progress = Float(progress)
-////            }
-//        })
-//        //        cell.progressBar.reloadInputViews()
-//        //        cell.reloadInputViews()
-//        
-//    }
-//    
-//    func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-//        let destFileName = downloadTask.originalRequest?.URL?.lastPathComponent
-////        let destURL = self.downloadManager.docDirectoryURL.URLByAppendingPathComponent(destFileName!)
-//        
-////        if NSFileManager.defaultManager().fileExistsAtPath(destURL.path!) {
-////            do { try NSFileManager.defaultManager().removeItemAtURL(destURL)} catch {}
-////        }
-////        do {try NSFileManager.defaultManager().copyItemAtURL(location, toURL: destURL)} catch {}
-////        let index = downloadTask.taskIdentifier
-////        if  self.downloadManager.downloadSongsList.count != 0 {
-////            let fdi =  self.downloadManager.downloadSongsList[index]
-////            fdi?.isDownloading = false
-////            NSOperationQueue.mainQueue().addOperationWithBlock({
-////                let cellPath = NSIndexPath(forRow: fdi!.cellIndex, inSection: 0)
-////                self.dataManager.songs[fdi!.cellIndex].localUrl = destURL.path!
-////                fdi?.isDownloading = false
-////                self.dataManager.songs[fdi!.cellIndex].downloadId = -1
-////                DataBaseManager.sharedInstance.addSongToTable(self.dataManager.songs[fdi!.cellIndex], table: "downloads")
-////                self.tableView.reloadRowsAtIndexPaths([cellPath], withRowAnimation: UITableViewRowAnimation.None)
-////                self.downloadManager.downloadSongsList.removeValueForKey(index)
-////            })
-////        }
-//        print("dowload complete")
-//    }
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            let text:String!
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                text = "Проверьте интернет подключение и перезагрузите таблицу"
+            } else {
+                if self.number == 1 {
+                    text = "Самое время подумать, какие песни взять с собой в дорогу"
+                } else {
+                    text = "Самое время добавить свои любимые песни в медатеку"
+                }
+            }
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = NSLineBreakMode.ByWordWrapping
+            paragraph.alignment = NSTextAlignment.Center
+            let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14), NSForegroundColorAttributeName: UIColor.lightGrayColor(), NSParagraphStyleAttributeName: paragraph]
+            return NSAttributedString(string: text, attributes: attrs)
+        }
+        return NSAttributedString()
+    }
     
+    func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            if self.dataManager.error == DataManager.ErrorType.NoContent {
+                let text = "Поиск"
+                let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(20), NSForegroundColorAttributeName:  UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)]
+                return NSAttributedString(string: text, attributes: attrs)
+            }
+        }
+        return nil
+    }
+    
+    func backgroundColorForEmptyDataSet(scrollView: UIScrollView!) -> UIColor! {
+        return UIColor.whiteColor()
+    }
+    
+    func verticalOffsetForEmptyDataSet(scrollView: UIScrollView!) -> CGFloat {
+        return self.tableView.frame.size.height/16
+    }
+    
+    func emptyDataSetShouldDisplay(scrollView: UIScrollView!) -> Bool {
+        if self.dataManager.error != nil {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+            return true
+        } else {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            return false
+        }
+    }
+    
+    func emptyDataSetShouldAllowTouch(scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowScroll(scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetDidTapButton(scrollView: UIScrollView!) {
+        performSegueWithIdentifier("SearchSegue", sender: self)
+    }
+    // EmptyDataSetDelegate ENDS
+    
+
     func playerDidFinishPlaying(note: NSNotification) {
         self.tableView.reloadData()
         self.updatePlayerInfoBar()

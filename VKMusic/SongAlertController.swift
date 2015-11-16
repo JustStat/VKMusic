@@ -22,13 +22,22 @@ class SongAlertController: UIAlertController {
     var delegate: SongAlertControllerDelegate?
     var song: Song!
     var index: Int!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "\n \n \n \n"
         self.message = ""
-//         UIAlertControllerStyle.ActionSheet
         let exist = DataBaseManager.sharedInstance.checkExistance("downloads", id: self.song.id)
+        if #available(iOS 9.0, *) {
+            
+        } else {
+            self.addAction(UIAlertAction(title: "", style: UIAlertActionStyle.Default, handler: nil))
+            self.addAction(UIAlertAction(title: "", style: UIAlertActionStyle.Default, handler: nil))
+            for button in self.actions {
+                print(button.description)
+                (button).enabled = false
+            }
+        }
         if self.song.ownerId != Int(VKSdk.getAccessToken().userId) {
             self.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in
@@ -58,6 +67,7 @@ class SongAlertController: UIAlertController {
         self.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
         self.view.tintColor = UIColor(red:0.27, green:0.40, blue:0.56, alpha:1.0)
         let titleView = UIView(frame: CGRectMake(self.view.frame.minX + 10, self.view.frame.minY + 10, 300, 50))
+        titleView.backgroundColor = self.view.backgroundColor
         var song: AVPlayerItem!
         var coverImage = UIImage(named: "DefCover")
         let imageView = UIImageView(image: coverImage)
@@ -79,7 +89,6 @@ class SongAlertController: UIAlertController {
                 imageView.image = coverImage
             }
         }
-        titleView.backgroundColor = self.view.backgroundColor
         let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 110, 20))
         titleLabel.text = self.song.title
         titleLabel.font.fontWithSize(13)
