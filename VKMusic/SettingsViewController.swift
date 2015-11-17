@@ -11,12 +11,14 @@ import VK_ios_sdk
 import SwiftyJSON
 import Alamofire
 import SDWebImage
+import PKRevealController
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, PKRevealing {
 
     @IBOutlet weak var deauthorizeButton: UIButton!
     @IBOutlet weak var userName: UILabel!
     @IBOutlet weak var userImage: UIImageView!
+    @IBOutlet weak var openBackTableButton: UIBarButtonItem!
     
     @IBAction func unSignVK() {
         VKSdk.forceLogout()
@@ -38,6 +40,8 @@ class SettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        openBackTableButton.target = self.revealViewController()
+        openBackTableButton.action = Selector("revealToggle:")
         Alamofire.request(.GET, "http://api.vkontakte.ru/method/users.get?uids="+VKSdk.getAccessToken().userId+"&fields=photo_200").responseJSON(completionHandler: {(response) -> Void in
 //            if response.result.value != nil {
             let json = JSON(response.result.value!)
@@ -59,6 +63,9 @@ class SettingsViewController: UIViewController {
     }
     
     
+    @IBAction func OpenGitHubURL(sender: AnyObject) {
+        UIApplication.sharedApplication().openURL(NSURL(string: "https://github.com/JustStat/VKMusic")!)
+    }
     
 
     /*

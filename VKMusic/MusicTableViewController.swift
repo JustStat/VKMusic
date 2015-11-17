@@ -149,10 +149,10 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             stateImage = UIImage(named:"Pause")
         }
 
-        let playPauseButton = UIBarButtonItem(image: stateImage, style: UIBarButtonItemStyle.Bordered, target: self, action: nil)
+        let playPauseButton = UIBarButtonItem(image: stateImage, style: UIBarButtonItemStyle.Plain, target: self, action: nil)
         playPauseButton.target = self.playerInfoBar
         playPauseButton.action = Selector("playButtonClick:")
-        let moreButton = UIBarButtonItem(image: UIImage(named: "More"), style: UIBarButtonItemStyle.Bordered, target: self, action: nil)
+        let moreButton = UIBarButtonItem(image: UIImage(named: "More"), style: UIBarButtonItemStyle.Plain, target: self, action: nil)
         moreButton.target = self.playerInfoBar
         moreButton.action = Selector("moreButtonClick:")
         self.playerInfoBar.playerButton = playerButton
