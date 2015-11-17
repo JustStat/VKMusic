@@ -162,7 +162,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
-        volumeControl.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha: 0.2)
+        volumeControl.tintColor = GlobalConstants.colors.VKBlue
         self.VolumeControlView.addSubview(volumeControl)
         if AudioProvider.sharedInstance.playlist.count != 0 {
             if currentSongIndex >= 0 {

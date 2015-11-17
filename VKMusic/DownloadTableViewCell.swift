@@ -26,7 +26,7 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
     func updateProgress(progress: Float) {
         print(progress)
         progressView.backgroundColor = self.backgroundColor
-        progressView.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        progressView.tintColor = GlobalConstants.colors.VKBlue
         progressView.setProgress(progress, animated: true)
     }
     

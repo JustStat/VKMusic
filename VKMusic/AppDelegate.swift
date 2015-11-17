@@ -56,8 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         //VKInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
         let vc = storyboard.instantiateViewControllerWithIdentifier("revealController")
         self.window?.rootViewController = vc
-        UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-        UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        UITabBar.appearance().tintColor = GlobalConstants.colors.VKBlue
+        UISlider.appearance().tintColor = GlobalConstants.colors.VKBlue
+        UINavigationBar.appearance().tintColor = GlobalConstants.colors.VKBlue
+        UISearchBar.appearance().tintColor = GlobalConstants.colors.VKBlue
         self.window?.makeKeyAndVisible()
         
     }
@@ -79,10 +81,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         if VKSdk.wakeUpSession() {
             let vc = storyboard.instantiateViewControllerWithIdentifier("revealController")
             self.window?.rootViewController = vc
-            UITabBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-            UISlider.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-            UINavigationBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
-            UISearchBar.appearance().tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+            UITabBar.appearance().tintColor = GlobalConstants.colors.VKBlue
+            UISlider.appearance().tintColor = GlobalConstants.colors.VKBlue
+            UINavigationBar.appearance().tintColor = GlobalConstants.colors.VKBlue
+            UISearchBar.appearance().tintColor = GlobalConstants.colors.VKBlue
             self.window?.makeKeyAndVisible()
         } else {
             self.showHelloViewController(false)

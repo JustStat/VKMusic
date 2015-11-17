@@ -65,7 +65,7 @@ class SongAlertController: UIAlertController {
                 }))
         }
         self.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
-        self.view.tintColor = UIColor(red:0.27, green:0.40, blue:0.56, alpha:1.0)
+        self.view.tintColor = GlobalConstants.colors.VKBlue
         let titleView = UIView(frame: CGRectMake(self.view.frame.minX + 10, self.view.frame.minY + 10, 300, 50))
         titleView.backgroundColor = self.view.backgroundColor
         var song: AVPlayerItem!

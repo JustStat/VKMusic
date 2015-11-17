@@ -64,9 +64,6 @@ class DataManager: NSObject {
                 }
             } else {
                 count = json["items"].count
-                if count == 0 {
-                    self.error == .NoContent
-                }
                 for var i = 0; i < count; i++ {
                     let artist = json["items"][i]["artist"].stringValue
                     let title = json["items"][i]["title"].stringValue

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating {
+class MainMenuTableViewController: UITableViewController {
     
     struct menuItem {
         var title: String!
@@ -51,7 +51,7 @@ class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, U
         let cell = tableView.dequeueReusableCellWithIdentifier("menuItemCell", forIndexPath: indexPath)
         cell.imageView?.image = menuItems[indexPath.row].image
         cell.textLabel?.text = menuItems[indexPath.row].title
-        cell.textLabel?.textColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        cell.textLabel?.textColor = GlobalConstants.colors.VKBlue
         return cell
     }
     
@@ -75,55 +75,7 @@ class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, U
         self.revealViewController().setFrontViewPosition(FrontViewPosition.LeftSideMost, animated: true)
 
     }
-    
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-    
-    func updateSearchResultsForSearchController(searchController: UISearchController) {
-        
-    }
-    
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        searchBar.showsCancelButton = true
-        self.revealViewController().setFrontViewPosition(FrontViewPosition.Right, animated: true)
-    }
-    
-    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
-        self.revealViewController().setFrontViewPosition(FrontViewPosition.RightMostRemoved, animated: true)
-    }
-    
     func addMenuItem(title: String, image: UIImage) {
         var item = menuItem()
         item.title = title
@@ -138,10 +90,5 @@ class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, U
         addMenuItem("Рекомендуемое", image: UIImage(named: "Recom")!)
         addMenuItem("Настройки", image: UIImage(named: "Settings")!)
     }
-
-
-     //MARK: - Navigation
-
-     //In a storyboard-based application, you will often want to do a little preparation before navigation
     
 }

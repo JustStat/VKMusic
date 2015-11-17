@@ -17,7 +17,7 @@ class HelloViewController: UIViewController {
     //MARK: VKSdkUIDelegate FUNCS
     
     func vkSdkDidDismissViewController(controller: UIViewController!) {
-        
+        //
     }
     
     func vkSdkNeedCaptchaEnter(captchaError: VKError!) {
@@ -36,15 +36,5 @@ class HelloViewController: UIViewController {
 
     @IBAction func AuthorizeButtonClick(sender: AnyObject) {
         AppDelegate.sharedInstance.vkAuthorization()
-//        VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], withOptions: VKAuthorizationOptions.DisableSafariController)
-//        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-//        let mainBarController = storyBoard.instantiateInitialViewController() as! UITabBarController
-//        self.presentViewController(mainBarController, animated: true, completion: nil)
-//    } else {
-//    let alertController = UIAlertController(title: "Ошибка!", message: "Произошла ошибка авторизации! Попробуйте авторизоваться снова", preferredStyle: UIAlertControllerStyle.Alert)
-//    alertController.addAction(UIAlertAction(title: "Ок", style: UIAlertActionStyle.Default, handler: nil))
-//    self.presentViewController(alertController, animated: true, completion: nil)
-
-
     }
 }

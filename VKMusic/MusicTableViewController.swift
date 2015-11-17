@@ -112,7 +112,6 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
 //    }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return self.dataManager.songs.count
     }
     
@@ -162,7 +161,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         self.playerInfoBar.addSubview(playerButton)
         let barButton = UIBarButtonItem(customView: self.playerInfoBar)
         self.setToolbarItems([playPauseButton, barButton, moreButton], animated: true)
-        self.navigationController?.toolbar.tintColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)
+        self.navigationController?.toolbar.tintColor = GlobalConstants.colors.VKBlue
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -173,9 +172,12 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             DownloadManager.sharedInstance.downloadSongsList[song.id]?.delegate = cell
             cell.titleLabel.text = song.title
             cell.artistLabel.text = song.artist
-            cell.delegate = self 
+            cell.delegate = self
+            cell.preservesSuperviewLayoutMargins = false
+            cell.separatorInset = UIEdgeInsetsZero
+            cell.layoutMargins = UIEdgeInsetsZero
             if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == song.id {
-                cell.backgroundColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha: 0.2)
+                cell.backgroundColor = GlobalConstants.colors.VKBlueAlpha
             } else {
                 cell.backgroundColor = UIColor.whiteColor()
             }
@@ -187,8 +189,11 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             cell.authorLabel.text = song.artist
             cell.durationLabel.text = song.durationToString()
             cell.delegate = self
+            cell.preservesSuperviewLayoutMargins = false
+            cell.separatorInset = UIEdgeInsetsZero
+            cell.layoutMargins = UIEdgeInsetsZero
             if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == song.id {
-                cell.backgroundColor = UIColor(red:0.14, green:0.43, blue:0.69, alpha: 0.2)
+                cell.backgroundColor = GlobalConstants.colors.VKBlueAlpha
             } else {
                 cell.backgroundColor = UIColor.whiteColor()
             }
@@ -392,7 +397,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         if self.dataManager.error != nil {
             if self.dataManager.error == DataManager.ErrorType.NoContent {
                 let text = "Поиск"
-                let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(20), NSForegroundColorAttributeName:  UIColor(red:0.14, green:0.43, blue:0.69, alpha:1.0)]
+                let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(20), NSForegroundColorAttributeName:  GlobalConstants.colors.VKBlue]
                 return NSAttributedString(string: text, attributes: attrs)
             }
         }
