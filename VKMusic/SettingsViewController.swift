@@ -39,6 +39,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Alamofire.request(.GET, "http://api.vkontakte.ru/method/users.get?uids="+VKSdk.getAccessToken().userId+"&fields=photo_200").responseJSON(completionHandler: {(response) -> Void in
+//            if response.result.value != nil {
             let json = JSON(response.result.value!)
             print(json.description)
             let userImagePath = json["response"][0]["photo_200"].stringValue
@@ -47,6 +48,8 @@ class SettingsViewController: UIViewController {
             self.userImage.layer.cornerRadius = self.userImage.frame.size.width / 2
             self.userImage.clipsToBounds = true
             self.userName.text = fullName
+//            } else {
+//            }
         })
     }
     

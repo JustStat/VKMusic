@@ -45,6 +45,8 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
         let FingerTap = UITapGestureRecognizer(target: self, action: Selector("cancelTask"))
         self.progressView.addGestureRecognizer(FingerTap)
         self.addSubview(self.progressView)
+        self.progressView.center = CGPoint(x: self.frame.maxX - self.downloadControllerView.frame.width / 2 - 10, y: self.center.y)
+
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

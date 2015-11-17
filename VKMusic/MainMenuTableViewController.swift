@@ -22,6 +22,7 @@ class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addMenuItems()
+        self.tableView.tableFooterView = UIView(frame: CGRectZero)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -139,14 +140,8 @@ class MainMenuTableViewController: UITableViewController, UISearchBarDelegate, U
     }
 
 
-    /*
-    // MARK: - Navigation
+     //MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     //In a storyboard-based application, you will often want to do a little preparation before navigation
+    
 }

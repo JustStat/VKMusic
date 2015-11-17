@@ -441,7 +441,8 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "SearchSegue" {
+            ((segue.destinationViewController as! UINavigationController).viewControllers.first as! SearchTableViewController).startIndex = self.number
+        }
     }
 }

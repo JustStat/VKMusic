@@ -11,6 +11,7 @@ import UIKit
 class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, UISearchResultsUpdating {
     
     var searchBar: UISearchBar!
+    var startIndex = 0
 
     override func viewDidLoad() {
         self.searchBar = UISearchBar(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 88))
@@ -19,6 +20,11 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
         self.searchBar.showsScopeBar = true
         self.searchBar.showsCancelButton = true
         self.searchBar.becomeFirstResponder()
+        if self.startIndex < 3 {
+            self.searchBar.selectedScopeButtonIndex = self.startIndex
+        } else {
+            self.searchBar.selectedScopeButtonIndex = 2
+        }
     }
     
     override func viewWillAppear(animated: Bool){

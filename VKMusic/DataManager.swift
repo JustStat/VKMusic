@@ -39,9 +39,6 @@ class DataManager: NSObject {
             var count = 0
             if json["count"] == nil {
                 count = json.count
-                if count == 0 {
-                    self.error == .NoContent
-                }
                 for var i = 0; i < count; i++ {
                     let artist = json[i]["artist"].stringValue
                     let title = json[i]["title"].stringValue
@@ -59,7 +56,11 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
-                    self.error = nil
+                    if self.songs.count == 0 {
+                        self.error = .NoContent
+                    } else {
+                        self.error = nil
+                    }
                 }
             } else {
                 count = json["items"].count
@@ -84,7 +85,11 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
-                    self.error = nil
+                    if self.songs.count == 0 {
+                        self.error = .NoContent
+                    } else {
+                        self.error = nil
+                    }
                 }
             }
         }, errorBlock: {(error) -> Void in
