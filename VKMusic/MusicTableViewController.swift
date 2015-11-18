@@ -129,7 +129,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         let titleLabel = UILabel(frame: CGRectMake(0, 0, playerButton.frame.width - 60, 19))
         titleLabel.text = AudioProvider.sharedInstance.currentSong.title
         titleLabel.textAlignment = NSTextAlignment.Center
-        titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.font = UIFont.systemFontOfSize(15)
         titleLabel.backgroundColor = UIColor.clearColor()
         playerButton.addSubview(titleLabel)
         titleLabel.center = CGPoint(x: playerButton.center.x, y: playerButton.center.y
@@ -137,8 +137,8 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         let artistLabel = UILabel(frame: titleLabel.frame)
         artistLabel.text = AudioProvider.sharedInstance.currentSong.artist
         artistLabel.textAlignment = NSTextAlignment.Center
+        artistLabel.font = UIFont.systemFontOfSize(13)
         artistLabel.backgroundColor = UIColor.clearColor()
-        artistLabel.adjustsFontSizeToFitWidth = true
         playerButton.addSubview(artistLabel)
         artistLabel.center = CGPoint(x: playerButton.center.x, y: playerButton.center.y
             + 10)
@@ -192,6 +192,11 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             cell.preservesSuperviewLayoutMargins = false
             cell.separatorInset = UIEdgeInsetsZero
             cell.layoutMargins = UIEdgeInsetsZero
+            if song.localUrl != "" {
+                cell.downloadedMark.hidden = false
+            } else {
+                cell.downloadedMark.hidden = true
+            }
             if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == song.id {
                 cell.backgroundColor = GlobalConstants.colors.VKBlueAlpha
             } else {
@@ -360,10 +365,15 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             if self.dataManager.error == DataManager.ErrorType.NoConnection {
                 text = "Ошибка подлючения к серверам Вконтакте"
             } else {
-                if self.number == 1 {
-                    text = "Вы пока ничего не загрузили"
-                } else {
+                switch self.number {
+                case 0:
                     text = "Список музыки ВКонтаке пуст"
+                case 1:
+                    text = "Вы пока ничего не загрузили"
+                case 3:
+                    text = "Нет рекомендаций"
+                default:
+                    text = ""
                 }
             }
             let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(18), NSForegroundColorAttributeName: UIColor.grayColor()]
@@ -378,10 +388,15 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
             if self.dataManager.error == DataManager.ErrorType.NoConnection {
                 text = "Проверьте интернет подключение и перезагрузите таблицу"
             } else {
-                if self.number == 1 {
-                    text = "Самое время подумать, какие песни взять с собой в дорогу"
-                } else {
+                switch self.number {
+                case 0:
                     text = "Самое время добавить свои любимые песни в медатеку"
+                case 1:
+                    text = "Самое время подумать, какие песни взять с собой в дорогу"
+                case 3:
+                    text = "К сожалению, на данный момент мы ничего не можем вам порекомендовать"
+                default:
+                    text = ""
                 }
             }
             let paragraph = NSMutableParagraphStyle()

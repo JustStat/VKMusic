@@ -46,7 +46,7 @@ class DataManager: NSObject {
                     let duration = json[i]["duration"].intValue
                     let id = json[i]["id"].intValue
                     let local = DataBaseManager.sharedInstance.getLocalPath(id)
-                    let ownerId = json["items"][i]["owner_id"].intValue
+                    let ownerId = json[i]["owner_id"].intValue
                     if onlyMine {
                         if VKSdk.getAccessToken() != nil {
                             if ownerId != Int(VKSdk.getAccessToken().userId) {
@@ -105,7 +105,9 @@ class DataManager: NSObject {
             let json = JSON(response.json)
             let newId = json.int
             DataBaseManager.sharedInstance.addSongNewId(song.id, newId: newId!, table: "downloads")
-            }, errorBlock: {(error) -> Void in})
+            }, errorBlock: {(error) -> Void in
+                print(error.description)
+        })
 
     }
     

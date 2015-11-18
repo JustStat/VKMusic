@@ -157,12 +157,11 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     }
     
     override func viewWillAppear(animated: Bool) {
-        self.SongTtitleLabel.adjustsFontSizeToFitWidth = true
-        self.SongArtistLabel.adjustsFontSizeToFitWidth = true
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
         volumeControl.tintColor = GlobalConstants.colors.VKBlue
+        volumeControl.frame = self.VolumeControlView.frame
         self.VolumeControlView.addSubview(volumeControl)
         if AudioProvider.sharedInstance.playlist.count != 0 {
             if currentSongIndex >= 0 {

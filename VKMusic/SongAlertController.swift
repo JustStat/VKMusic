@@ -89,10 +89,10 @@ class SongAlertController: UIAlertController {
                 imageView.image = coverImage
             }
         }
-        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 110, 20))
+        let titleLabel = UILabel(frame: CGRectMake(85, 0, titleView.frame.width - 50, 20))
         titleLabel.text = self.song.title
         titleLabel.font.fontWithSize(13)
-        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 110, 20))
+        let artistLabel = UILabel(frame: CGRectMake(85, 25, titleView.frame.width - 50, 20))
         artistLabel.textColor = UIColor.lightGrayColor()
         artistLabel.text = self.song.artist
         artistLabel.font.fontWithSize(10)

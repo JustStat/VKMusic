@@ -25,7 +25,7 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
     
     func updateProgress(progress: Float) {
         print(progress)
-        progressView.backgroundColor = self.backgroundColor
+        progressView.backgroundColor = UIColor.clearColor()
         progressView.tintColor = GlobalConstants.colors.VKBlue
         progressView.setProgress(progress, animated: true)
     }
@@ -40,15 +40,16 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.progressView = LLACircularProgressView(frame: self.downloadControllerView.frame)
+        self.progressView = LLACircularProgressView(frame: CGRectMake(0, 0, 35, 35))
         self.progressView.progress = 0
         let FingerTap = UITapGestureRecognizer(target: self, action: Selector("cancelTask"))
         self.progressView.addGestureRecognizer(FingerTap)
-        self.addSubview(self.progressView)
-        self.progressView.center = CGPoint(x: self.frame.maxX - self.downloadControllerView.frame.width / 2 - 10, y: self.center.y)
+        self.downloadControllerView.addSubview(self.progressView)
+//        self.addSubview(self.progressView)
+//        self.progressView.center = CGPoint(x: self.frame.maxX - self.progressView.frame.width / 2 - 10, y: self.center.y)
 
     }
-
+    
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
