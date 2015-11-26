@@ -156,7 +156,7 @@ class DataBaseManager: NSObject {
                     while req.next() {
                         let title = req.stringForColumn("name")
                         let owner = 180051661
-                        let id = req.intForColumn("albumId")
+                        let id = req.intForColumn("albumLocalId")
                         playlists.append(Playlist(name: title, owner: owner, id: Int(id),isLocal: true))
                     }
                 return playlists
@@ -174,7 +174,7 @@ class DataBaseManager: NSObject {
             if !db.tableExists("playlists") {
                 db.executeUpdate("CREATE TABLE playlists (albumLocalId NUMBER, albumId NUMBER, name TEXT)", withArgumentsInArray: [])
             }
-            let req = db.executeQuery("SELECT * FROM playlists WHERE albumId = ?", withArgumentsInArray: [playlist.id])
+            let req = db.executeQuery("SELECT * FROM playlists WHERE albumLocalId = ?", withArgumentsInArray: [playlist.id])
             if req != nil && !req.next() {
                 let req = db.executeQuery("SELECT COUNT(*) FROM playlists", withArgumentsInArray: [])
                 if req != nil && req.next() {

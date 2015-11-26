@@ -202,7 +202,7 @@ class DataManager: NSObject {
             req.executeWithResultBlock({(response) -> Void in
                 let json = JSON(response.json)
                 print(json.description)
-                album_id = Int(json["album_id"].intValue)
+                album_id = Int(json["albumId"].intValue)
             }, errorBlock: {(error) -> Void in
                 album_id = -1
             })
