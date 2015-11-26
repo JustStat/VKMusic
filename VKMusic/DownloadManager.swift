@@ -37,7 +37,7 @@ class DownloadManager: NSObject {
     
     static var sharedInstance = DownloadManager()
     
-    func donloadSong(song: Song) {
+    func donloadSong(song: Song, playlistId: Int) {
         self.downloadSongsList[song.id] = FileDownloadInfo()
         DataBaseManager.sharedInstance.addSongToTable(song, table: "downloads")
         self.downloadSongsList[song.id]?.downloadTask = Alamofire.download(.GET, song.url, destination: destination)
@@ -64,6 +64,11 @@ class DownloadManager: NSObject {
                     let URL = self.destination(NSURL(string: "")!, response!)
                     song.localUrl = URL.path
                     DataBaseManager.sharedInstance.setLocalPath(song.id, local: song.localUrl)
+                    if playlistId > 0 {
+                        DataBaseManager.sharedInstance.addSongToTable(song, table: "playlist\(playlistId)")
+                    }
+                    
+                    
                 }
         }
         

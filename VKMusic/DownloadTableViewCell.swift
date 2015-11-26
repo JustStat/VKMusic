@@ -25,7 +25,7 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
     
     func updateProgress(progress: Float) {
         print(progress)
-        progressView.backgroundColor = UIColor.clearColor()
+        progressView.backgroundColor = self.backgroundColor
         progressView.tintColor = GlobalConstants.colors.VKBlue
         progressView.setProgress(progress, animated: true)
     }
@@ -45,8 +45,7 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
         let FingerTap = UITapGestureRecognizer(target: self, action: Selector("cancelTask"))
         self.progressView.addGestureRecognizer(FingerTap)
         self.downloadControllerView.addSubview(self.progressView)
-//        self.addSubview(self.progressView)
-//        self.progressView.center = CGPoint(x: self.frame.maxX - self.progressView.frame.width / 2 - 10, y: self.center.y)
+        progressView.backgroundColor = self.backgroundColor
 
     }
     

@@ -65,8 +65,14 @@ class MainMenuTableViewController: UITableViewController {
         }
         }
 
-        if indexPath.row == 4 {
+        if indexPath.row == 5 {
             let vc = storyboard!.instantiateViewControllerWithIdentifier("SettingsVC") as! SettingsViewController
+            let nvc = self.revealViewController().frontViewController as! UINavigationController
+            nvc.setViewControllers([vc], animated: false)
+        }
+        
+        if indexPath.row == 4 {
+            let vc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistsTableViewController") as! PlaylistsTableViewController
             let nvc = self.revealViewController().frontViewController as! UINavigationController
             nvc.setViewControllers([vc], animated: false)
         }
@@ -88,6 +94,7 @@ class MainMenuTableViewController: UITableViewController {
         addMenuItem("Загрузки", image: UIImage(named: "Downloads")!)
         addMenuItem("Популярное", image: UIImage(named: "TopRated")!)
         addMenuItem("Рекомендуемое", image: UIImage(named: "Recom")!)
+        addMenuItem("Плейлисты", image: UIImage(named: "Playlists")!)
         addMenuItem("Настройки", image: UIImage(named: "Settings")!)
     }
     

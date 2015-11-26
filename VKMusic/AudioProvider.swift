@@ -119,8 +119,10 @@ class AudioProvider: NSObject {
             shuffled = false
         } else {
             initPlaylist = playlist
-            swap(&playlist[currentIndex], &playlist[0])
-             currentIndex = 0
+            if currentIndex != 0 {
+                swap(&playlist[currentIndex], &playlist[0])
+                currentIndex = 0
+            }
             for i in 1 ..< (playlist.count - 1) {
                 let j = Int(arc4random_uniform(UInt32(playlist.count - i))) + i
                 if i != j {

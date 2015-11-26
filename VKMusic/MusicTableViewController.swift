@@ -16,26 +16,46 @@ import DZNEmptyDataSet
 import PKRevealController
 import MBProgressHUD
 
-class MusicTableViewController: UITableViewController, SongTableViewCellDelegate,  AudioProviderDelegate, PKRevealing, UISearchControllerDelegate, SongAlertControllerDelegate, DownloadTableViewCellDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+class MusicTableViewController: UITableViewController, SongTableViewCellDelegate,  AudioProviderDelegate, PKRevealing, UISearchControllerDelegate, SongAlertControllerDelegate, DownloadTableViewCellDelegate, DZNEmptyDataSetSource, DZNEmptyDataSetDelegate, AddSongToPlaylistTableViewCellDelegate {
+    
+    enum MusicVCType {
+        case Playlist
+        case AddToPlaylist
+        case Normal
+    }
     
     @IBOutlet weak var openBackTableButton: UIBarButtonItem!
     var dataManager = DataManager()
-    var downloadManager: DownloadManager!
+    var type: MusicVCType = .Normal
     var playerInfoBar: PlayerInfoBar!
     var request: VKRequest!
     var number = 0
+    var playlist: Playlist!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if self.type == .AddToPlaylist {
+            self.navigationItem.rightBarButtonItem = nil
+            self.navigationItem.leftBarButtonItem = nil
+        }
+        if self.type == .Playlist {
+            self.navigationItem.rightBarButtonItems?.append(UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: Selector("showAddViewController")))
+            self.navigationItem.leftBarButtonItem = nil
+ 
+        }
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         self.refreshControl?.addTarget(self, action: Selector("refreshData"), forControlEvents: UIControlEvents.ValueChanged)
         openBackTableButton.target = self.revealViewController()
         openBackTableButton.action = Selector("revealToggle:")
         self.tableView.emptyDataSetDelegate = self
         self.tableView.emptyDataSetSource = self
-        if self.number != 1 {
+        if self.number != 1 && self.number != 5{
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                self.request = self.dataManager.getReqest(self.number)
+                if self.number != 6 {
+                self.request = self.dataManager.getReqest(self.number, params: [String: AnyObject]())
+                } else if !self.playlist.isLocal{
+                    self.request = self.dataManager.getReqest(self.number, params: ["albumId":self.playlist.id])
+                }
                 AudioProvider.sharedInstance.delegate = self
                 self.tableView.delegate = self
                 self.tableView.dataSource = self
@@ -47,20 +67,30 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
                     }
                 } else {
                     self.dataManager.songs = []
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
                 }
             }
-        } else if self.number == 1 {
-            self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: 0)
         }
+        
         switch self.number {
         case 0:
+            if self.type == .Normal {
             self.navigationItem.title = "Моя музыка"
+            } else {
+                self.navigationItem.title = "Добавление в плейлист ВК"
+            }
         case 1:
-            self.navigationItem.title = "Загрузки"
+            if self.type == .Normal {
+                self.navigationItem.title = "Загрузки"
+            } else {
+                self.navigationItem.title = "Добавление в локальный плейлист"
+            }
         case 2:
             self.navigationItem.title = "Популярное"
         case 3:
             self.navigationItem.title = "Рекомендуемое"
+        case 6:
+            self.navigationItem.title = self.playlist.name
         default:
             print("error")
         }   
@@ -73,9 +103,14 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     override func viewWillAppear(animated: Bool) {
-        if self.number == 1 {
+        if self.number == 1 || self.number == 6 {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: 0)
+                if self.number == 6 && self.playlist.isLocal {
+                    self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(self.playlist.id)", offset: 0)
+                    
+                } else if self.number == 1 {
+                    self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: 0)
+                }
                 dispatch_async(dispatch_get_main_queue()) {
                     if self.dataManager.songs.count == 0 {
                      self.dataManager.error = DataManager.ErrorType.NoContent
@@ -182,6 +217,18 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
                 cell.backgroundColor = UIColor.whiteColor()
             }
             return cell
+        } else if self.type == .AddToPlaylist {
+            let cellIdentifier = "AddSongToPlaylistTableViewCell"
+            let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! AddSongToPlaylistTableViewCell
+            cell.titleLabel.text = song.title
+            cell.artistLabel.text = song.title
+            cell.delegate = self
+            if DataBaseManager.sharedInstance.checkExistance("playlist\(self.playlist.id)", id: song.id) {
+            cell.AddSongToPlaylistButton.imageView?.image = UIImage(named: "CheckedFilled")
+            cell.AddSongToPlaylistButton.userInteractionEnabled = false
+            }
+            //cell.delegate = self
+            return cell
         } else {
             let cellIdentifier = "SongTableViewCell"
             let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SongTableViewCell
@@ -218,8 +265,8 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     func loadMore() {
-        if self.number != 1 {
-            self.request = self.dataManager.getReqest(self.number)
+        if self.number != 1 && self.number != 6 {
+            self.request = self.dataManager.getReqest(self.number, params: [String: AnyObject]())
             if (self.request != nil) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: false)
@@ -228,6 +275,10 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
                     }
                 }
             }
+        } else if self.number == 6 && !self.playlist.isLocal{
+            self.request = self.dataManager.getReqest(self.number, params: ["albumId":self.playlist.id])
+        } else if self.number == 6 && self.playlist.isLocal {
+            self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(self.playlist.id)", offset: self.dataManager.songs.count)
         } else {
             self.dataManager.songs += DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
         }
@@ -256,6 +307,9 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         alertController.index = index
         if !fromPlayBar {
             alertController.song = self.dataManager.songs[index]
+            if self.playlist != nil && self.playlist.isLocal {
+                alertController.song.inPlaylst = true
+            }
         } else {
             alertController.song = AudioProvider.sharedInstance.currentSong
         }
@@ -275,7 +329,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     func addSongToDownloads(song: Song) {
-        DownloadManager.sharedInstance.donloadSong(song)
+        DownloadManager.sharedInstance.donloadSong(song, playlistId: -1)
         self.tableView.reloadData()
     }
     
@@ -294,6 +348,27 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         }
         reloadTable()
         self.tableView.reloadData()
+    }
+    
+    func removeSongFromPlaylistAlertActionClick(song: Song, index: Int) {
+        DataBaseManager.sharedInstance.removeSong("playlist\(self.playlist.id)", id: song.id)
+        if self.number == 6 {
+            self.dataManager.songs.removeAtIndex(index)
+        }
+        reloadTable()
+        self.tableView.reloadData()
+    }
+    
+    func addSongToPlaylist(song: Song) {
+        let nvc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController
+        let vc = nvc.viewControllers[0] as! PlaylistsTableViewController
+        vc.isSelection = true
+        vc.song = song
+        vc.navigationItem.title = "Добавление в плейлист"
+        vc.navigationItem.rightBarButtonItem = nil
+        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
+        self.showDetailViewController(nvc, sender: self)
+
     }
     
     //SongAlertControllerDelegate ENDS
@@ -319,7 +394,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         self.dataManager.songs.removeAll()
         if self.number != 1 {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                self.request = self.dataManager.getReqest(self.number)
+                self.request = self.dataManager.getReqest(self.number, params: [String: AnyObject]())
                 AudioProvider.sharedInstance.delegate = self
                 self.tableView.delegate = self
                 self.tableView.dataSource = self
@@ -372,6 +447,8 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
                     text = "Вы пока ничего не загрузили"
                 case 3:
                     text = "Нет рекомендаций"
+                case 6:
+                    text = "Плейлист пуст"
                 default:
                     text = ""
                 }
@@ -411,7 +488,12 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
         if self.dataManager.error != nil {
             if self.dataManager.error == DataManager.ErrorType.NoContent {
-                let text = "Поиск"
+                var text: String!
+                if self.number != 6 {
+                    text = "Поиск"
+                } else {
+                    text = "Добавить песни"
+                }
                 let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(20), NSForegroundColorAttributeName:  GlobalConstants.colors.VKBlue]
                 return NSAttributedString(string: text, attributes: attrs)
             }
@@ -446,23 +528,56 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     func emptyDataSetDidTapButton(scrollView: UIScrollView!) {
+        if self.number != 6 {
         performSegueWithIdentifier("SearchSegue", sender: self)
+        } else {
+            self.showAddViewController()
+        }
     }
     // EmptyDataSetDelegate ENDS
     
-
+    //MARK: AddSongToPlaylistTableViewCellDelegate FUNCS
+    
+    func addSongToVKPlaylist(cell: AddSongToPlaylistTableViewCell) {
+        let song = self.dataManager.songs[(tableView.indexPathForCell(cell)?.row)!]
+        if self.playlist.isLocal {
+            DataBaseManager.sharedInstance.addSongToTable(song, table: "playlist\(self.playlist.id)")
+        } else {
+            self.dataManager.addSongToVKPlaylist(song, albumId: self.playlist.id)
+        }
+        self.tableView.reloadRowsAtIndexPaths([self.tableView.indexPathForCell(cell)!], withRowAnimation: .None)
+    }
+    
+     //MARK: AddSongToPlaylistTableViewCellDelegate ENDS
+    
     func playerDidFinishPlaying(note: NSNotification) {
         self.tableView.reloadData()
         self.updatePlayerInfoBar()
-    }
-    
-    func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?) {
-        print(error?.description)
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "SearchSegue" {
             ((segue.destinationViewController as! UINavigationController).viewControllers.first as! SearchTableViewController).startIndex = self.number
+        }
+    }
+    
+    func dismissView() {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func showAddViewController() {
+        if self.playlist != nil {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let vc = storyboard.instantiateViewControllerWithIdentifier("MainMusicViewController")  as! MusicTableViewController
+            vc.type = .AddToPlaylist
+            vc.playlist = playlist
+            if self.playlist.isLocal {
+                vc.number = 1
+            } else {
+                vc.number = 0
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+
         }
     }
 }

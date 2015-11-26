@@ -236,7 +236,18 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
 
     
     func addSongToDownloads(song: Song) {
-        DownloadManager.sharedInstance.donloadSong(song)
+        DownloadManager.sharedInstance.donloadSong(song, playlistId: -1)
+    }
+    
+    func addSongToPlaylist(song: Song) {
+        let vc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistsTableViewController") as! PlaylistsTableViewController
+        vc.isSelection = true
+        vc.song = song
+        self.showDetailViewController(vc, sender: self)
+    }
+    
+    func removeSongFromPlaylistAlertActionClick(song: Song, index: Int) {
+        //
     }
     
     //SongAlertControllerDelegate ENDS

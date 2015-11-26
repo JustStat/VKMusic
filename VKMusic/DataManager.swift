@@ -20,11 +20,14 @@ class DataManager: NSObject {
     
     //MARK: Properties
     var songs = [Song]()
+    var localPlaylists = [Playlist]()
+    var vkPlylists = [Playlist]()
     var filteredTableData = [Song]()
     var searhReq = ""
     var isBusy = false
     var error: ErrorType!
     
+    //MARK: Songs DataManagment
     
     func getDataFormVK(request: VKRequest, refresh: Bool, onlyMine: Bool) {
         if !isBusy {
@@ -56,11 +59,6 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
-                    if self.songs.count == 0 {
-                        self.error = .NoContent
-                    } else {
-                        self.error = nil
-                    }
                 }
             } else {
                 count = json["items"].count
@@ -82,12 +80,12 @@ class DataManager: NSObject {
                     }
                     let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
                     self.songs.append(song)
-                    if self.songs.count == 0 {
-                        self.error = .NoContent
-                    } else {
-                        self.error = nil
-                    }
                 }
+            }
+            if self.songs.count == 0 {
+                self.error = .NoContent
+            } else {
+                self.error = nil
             }
         }, errorBlock: {(error) -> Void in
             self.songs.removeAll()
@@ -122,7 +120,7 @@ class DataManager: NSObject {
         do { try NSFileManager.defaultManager().removeItemAtPath(song.localUrl)} catch{print("Error")}
     }
     
-    func getReqest(index: Int) -> VKRequest {
+    func getReqest(index: Int, params: [String: AnyObject]) -> VKRequest {
         switch index {
         case 0:
             if VKSdk.getAccessToken() != nil {
@@ -132,6 +130,8 @@ class DataManager: NSObject {
             return VKRequest(method: "audio.getPopular", andParameters:[VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
         case 3:
             return VKRequest(method: "audio.getRecommendations", andParameters: [VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
+        case 6:
+            return VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: Int(params["albumId"] as! NSNumber), VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
         default:
             print("Whoops")
         }
@@ -151,6 +151,107 @@ class DataManager: NSObject {
         }
         return VKRequest()
     }
+    
+    func addSongToVKPlaylist(song: Song, albumId: Int) {
+        let req = VKRequest(method: "audio.moveToAlbum", andParameters: [VK_API_ALBUM_ID: "\(albumId)", "audio_ids": [song.id]], andHttpMethod: "GET")
+        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(error) -> Void in})
+        
+    }
+    
+    //Songs Managment ENDS
+    
+    //MARK: Playlists DataManagment
+    
+    func getPlaylistsFromVK() {
+        if VKSdk.getAccessToken() != nil {
+            let req = VKRequest(method: "audio.getAlbums", andParameters: [VK_API_OWNER_ID: VKSdk.getAccessToken().userId], andHttpMethod: "GET")
+            req.waitUntilDone = true
+            req.executeWithResultBlock({(response) -> Void in
+                let json = JSON(response.json)
+                print(json.description)
+                let count = json["items"].count
+                for var i = 0; i < count; i++ {
+                    let title = json["items"][i]["title"].stringValue
+                    let id = json["items"][i]["id"].intValue
+                    let owner_id = json["items"][i]["owner_id"].intValue
+                    self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
+                }
+                if self.vkPlylists.count == 0 {
+                    self.error = .NoContent
+                } else {
+                    self.error = nil
+                }
+            }, errorBlock: {(error) -> Void in
+                self.vkPlylists.removeAll()
+                self.error = .NoConnection
+            })
+
+
+        }
+    }
+    
+    func getPlaylistsFromDataBase() {
+        DataBaseManager.sharedInstance.GetPlaylistsFormDataBase()
+    }
+    
+    func addPlaylistToVK(name: String) -> Int {
+        var album_id: Int!
+        if VKSdk.getAccessToken() != nil {
+            let req = VKRequest(method: "audio.addAlbum", andParameters: ["title": name], andHttpMethod: "GET")
+            req.waitUntilDone = true
+            req.executeWithResultBlock({(response) -> Void in
+                let json = JSON(response.json)
+                print(json.description)
+                album_id = Int(json["album_id"].intValue)
+            }, errorBlock: {(error) -> Void in
+                album_id = -1
+            })
+        }
+        return album_id
+    }
+    
+    func downloadPlaylist(playlist: Playlist) {
+        DataBaseManager.sharedInstance.RemovePlaylistFromDataBase(playlist)
+        addPlaylistToDataBase(playlist)
+        let req = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: playlist.id, VK_API_OFFSET: self.songs.count], andHttpMethod: "GET")
+        self.getDataFormVK(req, refresh: false, onlyMine: false)
+        let playlistSongs = self.songs
+        for song in playlistSongs {
+            if song.localUrl == "" {
+                DownloadManager.sharedInstance.donloadSong(song, playlistId: playlist.id)
+            } else {
+                DataBaseManager.sharedInstance.addSongToTable(song, table: "playlist\(playlist.id)")
+            }
+        }
+    }
+    
+    func checkPlaylistDownload(playlist: Playlist) -> Bool {
+        let req = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: playlist.id, VK_API_OFFSET: self.songs.count], andHttpMethod: "GET")
+        req.waitUntilDone = true
+        self.getDataFormVK(req, refresh: false, onlyMine: false)
+        let playlistSongs = self.songs
+        for song in playlistSongs {
+            if song.localUrl == "" {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func addPlaylistToDataBase(playlist: Playlist) -> Int{
+       return DataBaseManager.sharedInstance.AddPlaylistToDataBase(playlist)
+    }
+    
+    func removePlaylist(playlist: Playlist) {
+        if playlist.isLocal {
+            DataBaseManager.sharedInstance.RemovePlaylistFromDataBase(playlist)
+        } else {
+            let req = VKRequest(method: "audio.deleteAlbum", andParameters: [VK_API_ALBUM_ID: playlist.id], andHttpMethod: "GET")
+            req.executeWithResultBlock(nil, errorBlock: nil)
+        }
+    }
+    
+    //Playlists Managment ENDS
 
 
 }

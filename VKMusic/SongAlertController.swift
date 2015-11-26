@@ -13,8 +13,10 @@ import AVFoundation
 protocol SongAlertControllerDelegate {
     func addSongToVKAlertActonClick(song: Song)
     func addSongToDownloads(song: Song)
+    func addSongToPlaylist(song: Song)
     func removeSongFromVKAlertActionClick(song: Song, index: Int)
     func removeSongFromDownloadsAlertActionClick(song: Song, index: Int)
+    func removeSongFromPlaylistAlertActionClick(song: Song, index: Int)
 }
 
 class SongAlertController: UIAlertController {
@@ -44,6 +46,9 @@ class SongAlertController: UIAlertController {
                 self.delegate?.addSongToVKAlertActonClick(self.song)
             }))
         }
+        self.addAction(UIAlertAction(title: "Добавить в плейлист...", style: .Default, handler: {(UIAlertAction) -> Void in
+            self.delegate?.addSongToPlaylist(self.song)
+        }))
         if !exist {
             self.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in
@@ -64,9 +69,16 @@ class SongAlertController: UIAlertController {
                     self.delegate?.removeSongFromDownloadsAlertActionClick(self.song, index: self.index)
                 }))
         }
+        
+        if self.song.inPlaylst {
+            self.addAction(UIAlertAction(title: "Удалить из это плейлиста", style: UIAlertActionStyle.Default, handler: {
+                (alert) -> Void in
+                    self.delegate?.removeSongFromPlaylistAlertActionClick(self.song, index: self.index)
+            }))
+        }
         self.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
         self.view.tintColor = GlobalConstants.colors.VKBlue
-        let titleView = UIView(frame: CGRectMake(self.view.frame.minX + 10, self.view.frame.minY + 10, 300, 50))
+        let titleView = UIView(frame: CGRectMake(self.view.frame.minX + 10, self.view.frame.minY + 10, self.view.frame.width - 70, 50))
         titleView.backgroundColor = self.view.backgroundColor
         var song: AVPlayerItem!
         var coverImage = UIImage(named: "DefCover")
@@ -74,7 +86,7 @@ class SongAlertController: UIAlertController {
         imageView.frame = CGRectMake(0, 0, 80, 80)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             if self.song.localUrl != "" {
-                song = AVPlayerItem(URL: NSURL(string: self.song.localUrl)!)
+                song = AVPlayerItem(URL: NSURL(fileURLWithPath: self.song.localUrl))
             } else {
                 song = AVPlayerItem(URL: NSURL(string: self.song.url)!)
             }

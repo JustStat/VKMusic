@@ -20,6 +20,8 @@ class DataBaseManager: NSObject {
         db = FMDatabase(path: docFolder + "/VKMusicData.sqlite")
     }
     
+    //MARK: Songs DB Managment
+    
     func GetSongsFromDataBase(table: String, offset: Int) -> [Song] {
         var songs = [Song]()
         if db != nil {
@@ -57,15 +59,17 @@ class DataBaseManager: NSObject {
     func checkExistance(table: String, id: Int) -> Bool {
         if db != nil {
             db.open()
-            if db.tableExists("downloads") {
+            if db.tableExists(table) {
                 let rs = db.executeQuery("SELECT * FROM \(table) WHERE vkid = ? OR ovkid = ?", withArgumentsInArray: [id, id])
                 if rs.next() {
                     return true
                 }
             }
+            db.close()
         }
         return false
     }
+    
     
     func addSongNewId(id: Int, newId: Int, table: String) {
         if db != nil {
@@ -73,6 +77,7 @@ class DataBaseManager: NSObject {
             if db.tableExists("downloads") {
                 _ = db.executeUpdate("UPDATE \(table) SET vkid = ? WHERE ovkid = ?", withArgumentsInArray: [newId, id])
             }
+            db.close()
         }
 
     }
@@ -84,6 +89,7 @@ class DataBaseManager: NSObject {
                     _ = db.executeUpdate("UPDATE \(table) SET id = id - 1 WHERE id > (SELECT id FROM \(table) WHERE vkid = ? OR ovkid = ?)", withArgumentsInArray: [id, id])
                     _ = db.executeUpdate("DELETE FROM \(table) WHERE vkid = ? OR ovkid = ?", withArgumentsInArray: [id, id])
             }
+            db.close()
         }
 
     }
@@ -97,6 +103,7 @@ class DataBaseManager: NSObject {
                     return rs.stringForColumn("local")
                 }
             }
+            db.close()
         }
         return ""
     }
@@ -108,7 +115,7 @@ class DataBaseManager: NSObject {
                 db.executeUpdate("UPDATE downloads SET local = ? WHERE vkid = ? OR ovkid = ?", withArgumentsInArray: [local, id, id])
             }
         }
-
+        db.close()
     }
     
     func downloadsSearchReqest(req :String) -> [Song] {
@@ -134,6 +141,66 @@ class DataBaseManager: NSObject {
         }
         return songs
     }
+        
+    //Songs DB Managment ENDS
+    
+    //MARK: Playlists DB Managment
+    
+    func GetPlaylistsFormDataBase() -> [Playlist]{
+        var playlists: [Playlist] = []
+        if db != nil {
+            db.open()
+            if db.tableExists("playlists") {
+                let req = db.executeQuery("SELECT * FROM playlists", withArgumentsInArray: [])
+                if req != nil {
+                    while req.next() {
+                        let title = req.stringForColumn("name")
+                        let owner = 180051661
+                        let id = req.intForColumn("albumId")
+                        playlists.append(Playlist(name: title, owner: owner, id: Int(id),isLocal: true))
+                    }
+                return playlists
+                }
+            }
+        }
+        db.close()
+        return []
+    }
+    
+    func AddPlaylistToDataBase(playlist: Playlist) -> Int {
+        var album_id = 0
+        if db != nil {
+            db.open()
+            if !db.tableExists("playlists") {
+                db.executeUpdate("CREATE TABLE playlists (albumLocalId NUMBER, albumId NUMBER, name TEXT)", withArgumentsInArray: [])
+            }
+            let req = db.executeQuery("SELECT * FROM playlists WHERE albumId = ?", withArgumentsInArray: [playlist.id])
+            if req != nil && !req.next() {
+                let req = db.executeQuery("SELECT COUNT(*) FROM playlists", withArgumentsInArray: [])
+                if req != nil && req.next() {
+                    album_id = Int(req.intForColumnIndex(0))
+                }
+                db.executeUpdate("INSERT INTO playlists VALUES (?, ?, ?)", withArgumentsInArray: [album_id, playlist.id, playlist.name])
+            }
+            db.close()
+        }
+        return album_id
+    }
+    
+    func RemovePlaylistFromDataBase(playlist: Playlist) {
+        if db != nil {
+            db.open()
+            if db.tableExists("playlists") {
+                db.executeUpdate("DELETE FROM playlists WHERE albumId = ?", withArgumentsInArray: [playlist.id])
+            }
+            if db.tableExists("playlist\(playlist.id)") {
+                db.executeUpdate("DROP TABLE playlist\(playlist.id)", withArgumentsInArray: [])
+            }
+            db.close()
+        }
+    }
+    
+    //Playlists DB Managment ENDS
     
 
 }
