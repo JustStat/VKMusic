@@ -14,6 +14,7 @@ import VK_ios_sdk
 
 class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertControllerDelegate {
     @IBOutlet weak var moreButton: UIButton!
+    @IBOutlet weak var broadCastButton: UIButton!
     @IBOutlet weak var VolumeControlView: UIView!
     @IBOutlet weak var coverImage: UIImageView!
     @IBOutlet weak var songProgressBar: UIView!
@@ -153,10 +154,6 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         if AudioProvider.sharedInstance.player.rate == 1.0 {
             UpadateSliderValue()
         }
-
-    }
-    
-    override func viewWillAppear(animated: Bool) {
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
@@ -166,36 +163,46 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         if AudioProvider.sharedInstance.playlist.count != 0 {
             if currentSongIndex >= 0 {
                 if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id != AudioProvider.sharedInstance.playlist[currentSongIndex].id {
-                        AudioProvider.sharedInstance.currentSong.isPlaying = false
-                        AudioProvider.sharedInstance.pausePlayer()
-                        AudioProvider.sharedInstance.startPlayer(currentSongIndex)
+                    AudioProvider.sharedInstance.currentSong.isPlaying = false
+                    AudioProvider.sharedInstance.pausePlayer()
+                    AudioProvider.sharedInstance.startPlayer(currentSongIndex)
                 } else if AudioProvider.sharedInstance.currentSong == nil {
-                        AudioProvider.sharedInstance.pausePlayer()
-                        AudioProvider.sharedInstance.startPlayer(currentSongIndex)
+                    AudioProvider.sharedInstance.pausePlayer()
+                    AudioProvider.sharedInstance.startPlayer(currentSongIndex)
                 }
             }
-            AudioProvider.sharedInstance.delegate = self
-            updateSongInfo()
-            if AudioProvider.sharedInstance.player.rate == 0.0 {
-                self.playPauseButton.setImage(UIImage(named:"Play"), forState:UIControlState.Normal)
-            } else {
-                self.playPauseButton.setImage(UIImage(named:"Pause"), forState:UIControlState.Normal)
-            }
-
-            if AudioProvider.sharedInstance.mode == AudioProvider.playerMode.noRepeat {
-                self.playModeButton.setImage(UIImage(named: "Repeat"), forState: UIControlState.Normal)
-            } else if AudioProvider.sharedInstance.mode == AudioProvider.playerMode.playListRepeat {
-                self.playModeButton.setImage(UIImage(named: "RepeatFilled"), forState: UIControlState.Normal)
-            } else {
-                self.playModeButton.setImage(UIImage(named: "RepeatOne"), forState: UIControlState.Normal)
-            }
-                
-            if AudioProvider.sharedInstance.shuffled {
-                self.shuffleButton.setImage(UIImage(named: "suffleFilled"), forState:UIControlState.Normal)
-            } else {
-                self.shuffleButton.setImage(UIImage(named: "Shuffle"), forState: UIControlState.Normal)
-            }
             
+        }
+
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        AudioProvider.sharedInstance.delegate = self
+        updateSongInfo()
+        if AudioProvider.sharedInstance.player.rate == 0.0 {
+            self.playPauseButton.setImage(UIImage(named:"Play"), forState:UIControlState.Normal)
+        } else {
+            self.playPauseButton.setImage(UIImage(named:"Pause"), forState:UIControlState.Normal)
+        }
+        
+        if AudioProvider.sharedInstance.mode == AudioProvider.playerMode.noRepeat {
+            self.playModeButton.setImage(UIImage(named: "Repeat"), forState: UIControlState.Normal)
+        } else if AudioProvider.sharedInstance.mode == AudioProvider.playerMode.playListRepeat {
+            self.playModeButton.setImage(UIImage(named: "RepeatFilled"), forState: UIControlState.Normal)
+        } else {
+            self.playModeButton.setImage(UIImage(named: "RepeatOne"), forState: UIControlState.Normal)
+        }
+        
+        if AudioProvider.sharedInstance.shuffled {
+            self.shuffleButton.setImage(UIImage(named: "suffleFilled"), forState:UIControlState.Normal)
+        } else {
+            self.shuffleButton.setImage(UIImage(named: "Shuffle"), forState: UIControlState.Normal)
+        }
+        
+        if !AudioProvider.sharedInstance.isBroadcasting {
+            self.broadCastButton.setImage(UIImage(named: "Megaphone"), forState: .Normal)
+        } else {
+            self.broadCastButton.setImage(UIImage(named: "MegaphoneFilled"), forState: .Normal)
         }
     }
     
@@ -250,12 +257,40 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         //
     }
     
+    func playNextAlertActionClick(song: Song) {
+        print(AudioProvider.sharedInstance.playlist.count)
+        print(AudioProvider.sharedInstance.currentIndex + 1)
+        if AudioProvider.sharedInstance.playlist.count <= AudioProvider.sharedInstance.currentIndex + 1 {
+             AudioProvider.sharedInstance.playlist.append(song)
+        } else {
+            AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + 1)
+        }
+        AudioProvider.sharedInstance.nextCount++
+    }
+    
+    func addToNext(song: Song) {
+        AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount + 1)
+        AudioProvider.sharedInstance.nextCount++
+    }
+    
     //SongAlertControllerDelegate ENDS
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.Portrait
     }
 
+    @IBAction func broadcastButtonClick(sender: AnyObject) {
+        if !AudioProvider.sharedInstance.isBroadcasting {
+            AudioProvider.sharedInstance.isBroadcasting = true
+            self.broadCastButton.setImage(UIImage(named: "MegaphoneFilled"), forState: .Normal)
+            AudioProvider.sharedInstance.startBroadcast()
+        } else {
+            AudioProvider.sharedInstance.isBroadcasting = false
+            self.broadCastButton.setImage(UIImage(named: "Megaphone"), forState: .Normal)
+            AudioProvider.sharedInstance.stopBroadcast()
+
+        }
+    }
     
 
 }

@@ -22,6 +22,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         case Playlist
         case AddToPlaylist
         case Normal
+        case Next
     }
     
     @IBOutlet weak var openBackTableButton: UIBarButtonItem!
@@ -45,8 +46,10 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         }
         MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         self.refreshControl?.addTarget(self, action: Selector("refreshData"), forControlEvents: UIControlEvents.ValueChanged)
-        openBackTableButton.target = self.revealViewController()
-        openBackTableButton.action = Selector("revealToggle:")
+        if self.openBackTableButton != nil {
+            openBackTableButton.target = self.revealViewController()
+            openBackTableButton.action = Selector("revealToggle:")
+        }
         self.tableView.emptyDataSetDelegate = self
         self.tableView.emptyDataSetSource = self
         if self.number != 1 && self.number != 5{
@@ -254,13 +257,68 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        var next = [Song]()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewControllerWithIdentifier("MainPlayer") as! PlayerViewController
-        AudioProvider.sharedInstance.playlist = dataManager.songs
-        vc.currentSongIndex = indexPath.row
-        self.showDetailViewController(vc, sender: self)
-        if AudioProvider.sharedInstance.shuffled {
-            AudioProvider.sharedInstance.shuffle()
+        if AudioProvider.sharedInstance.nextCount > 0 {
+            let alertController = UIAlertController(title: "Вернуться к песням, добавленным в список \"Далее\", по окончании воспроизведения", message: "", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "Сохранить \"Далее\"", style: UIAlertActionStyle.Default, handler: {
+                (action) -> Void in
+                next = AudioProvider.sharedInstance.saveNext()
+                AudioProvider.sharedInstance.playlist = self.dataManager.songs
+                AudioProvider.sharedInstance.playlist.insertContentsOf(next, at: vc.currentSongIndex + 1)
+                AudioProvider.sharedInstance.number = self.number
+                AudioProvider.sharedInstance.viewPlaylist = self.playlist
+                vc.currentSongIndex = indexPath.row
+                if next.count > 0 {
+                    AudioProvider.sharedInstance.playlist.insertContentsOf(next, at: vc.currentSongIndex + 1)
+                }
+                self.showDetailViewController(vc, sender: self)
+                if AudioProvider.sharedInstance.shuffled {
+                    AudioProvider.sharedInstance.shuffle()
+                }
+
+            }))
+            alertController.addAction(UIAlertAction(title: "Отчистить \"Далее\"", style: .Default, handler: {
+                (action) -> Void in
+                AudioProvider.sharedInstance.nextCount = 0
+                AudioProvider.sharedInstance.playlist = self.dataManager.songs
+                AudioProvider.sharedInstance.number = self.number
+                AudioProvider.sharedInstance.viewPlaylist = self.playlist
+                vc.currentSongIndex = indexPath.row
+                self.showDetailViewController(vc, sender: self)
+                if AudioProvider.sharedInstance.shuffled {
+                    AudioProvider.sharedInstance.shuffle()
+                }
+
+            }))
+            alertController.addAction(UIAlertAction(title: "Отмена", style: .Cancel, handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            AudioProvider.sharedInstance.nextCount = 0
+            AudioProvider.sharedInstance.playlist = self.dataManager.songs
+            AudioProvider.sharedInstance.number = self.number
+            AudioProvider.sharedInstance.viewPlaylist = self.playlist
+            vc.currentSongIndex = indexPath.row
+            self.showDetailViewController(vc, sender: self)
+            if AudioProvider.sharedInstance.shuffled {
+                AudioProvider.sharedInstance.shuffle()
+            }
+//            AudioProvider.sharedInstance.playlist = self.dataManager.songs
+//            var index = 0
+//            for var i = 0; i < indexPath.section; ++i {
+//                index += tableView.numberOfRowsInSection(i) - 1
+//                if index < 0 {
+//                    index = 0
+//                }
+//            }
+//            index += indexPath.row
+//            vc.currentSongIndex = index
+//            self.showDetailViewController(vc, sender: self)
+//            if AudioProvider.sharedInstance.shuffled {
+//                AudioProvider.sharedInstance.shuffle()
+//            }
+
         }
     }
     
@@ -278,7 +336,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         } else if self.number == 6 && !self.playlist.isLocal{
             self.request = self.dataManager.getReqest(self.number, params: ["albumId":self.playlist.id])
         } else if self.number == 6 && self.playlist.isLocal {
-            self.dataManager.songs = DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(self.playlist.id)", offset: self.dataManager.songs.count)
+            self.dataManager.songs += DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(self.playlist.id)", offset: self.dataManager.songs.count)
         } else {
             self.dataManager.songs += DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
         }
@@ -369,6 +427,32 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
         vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
         self.showDetailViewController(nvc, sender: self)
 
+    }
+    
+    func playNextAlertActionClick(song: Song) {
+        AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + 1)
+        AudioProvider.sharedInstance.nextCount++
+        if AudioProvider.sharedInstance.playlist.count == 1 {
+            AudioProvider.sharedInstance.startPlayer(0)
+            AudioProvider.sharedInstance.pausePlayer()
+            self.navigationController?.toolbar.hidden = false
+            self.preparePalayerInfoBar()
+            reloadTable()
+
+        }
+    }
+    
+    func addToNext(song: Song) {
+        AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount + 1)
+        AudioProvider.sharedInstance.nextCount++
+        if AudioProvider.sharedInstance.playlist.count == 1 {
+            AudioProvider.sharedInstance.startPlayer(0)
+            AudioProvider.sharedInstance.pausePlayer()
+            self.navigationController?.toolbar.hidden = false
+            self.preparePalayerInfoBar()
+            reloadTable()
+
+        }
     }
     
     //SongAlertControllerDelegate ENDS

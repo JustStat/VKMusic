@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     static let sharedInstance = AppDelegate()
     
     func vkAuthorization() {
-        VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS], revokeAccess: true, forceOAuth: false, inApp: true, display: VK_DISPLAY_IOS)
+        VKSdk.authorize([VK_PER_AUDIO, VK_PER_FRIENDS, VK_PER_GROUPS, VK_PER_STATUS], revokeAccess: true, forceOAuth: false, inApp: true, display: VK_DISPLAY_IOS)
     }
     
     func showHelloViewController(isErrorExist: Bool) {
@@ -119,6 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        AudioProvider.sharedInstance.stopBroadcast()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {

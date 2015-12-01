@@ -14,6 +14,7 @@ class Playlist: NSObject {
     var id: Int!
     var isLocal = false
     var isDownloaded = false
+    var songsCount = 0
     
     init(name: String, owner: Int, id: Int, isLocal: Bool) {
         self.name = name

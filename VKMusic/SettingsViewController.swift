@@ -22,6 +22,9 @@ class SettingsViewController: UIViewController, PKRevealing {
     
     @IBAction func unSignVK() {
         VKSdk.forceLogout()
+        let storyboard = UIStoryboard(name: "Hello", bundle: nil)
+        let vc = storyboard.instantiateViewControllerWithIdentifier("HelloView") as! HelloViewController
+        self.presentViewController(vc, animated: true, completion: nil)
     }
     @IBAction func deleteDownloadedContent() {
         let docFolder = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]

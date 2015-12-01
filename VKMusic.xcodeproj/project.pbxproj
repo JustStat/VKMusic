@@ -27,6 +27,7 @@
 		1449AD781BE626D60097CD03 /* DataBaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD771BE626D60097CD03 /* DataBaseManager.swift */; };
 		1449AD7A1BE6EA4E0097CD03 /* AudioProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD791BE6EA4E0097CD03 /* AudioProvider.swift */; };
 		1449AD7C1BE6F1DF0097CD03 /* PlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1449AD7B1BE6F1DF0097CD03 /* PlayerViewController.swift */; };
+		144E660E1C08476700C3D242 /* CurrentPlaylistTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144E660D1C08476700C3D242 /* CurrentPlaylistTableViewController.swift */; };
 		147309DF1BF1B33E009BA38A /* SearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147309DE1BF1B33E009BA38A /* SearchTableViewController.swift */; };
 		147309E11BF22C9D009BA38A /* MusicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147309E01BF22C9D009BA38A /* MusicTableViewController.swift */; };
 		147DA4A11BE50A0B008BBEC9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147DA4A01BE50A0B008BBEC9 /* AppDelegate.swift */; };
@@ -58,6 +59,7 @@
 		1449AD771BE626D60097CD03 /* DataBaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBaseManager.swift; sourceTree = "<group>"; };
 		1449AD791BE6EA4E0097CD03 /* AudioProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioProvider.swift; sourceTree = "<group>"; };
 		1449AD7B1BE6F1DF0097CD03 /* PlayerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerViewController.swift; sourceTree = "<group>"; };
+		144E660D1C08476700C3D242 /* CurrentPlaylistTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentPlaylistTableViewController.swift; sourceTree = "<group>"; };
 		147309DE1BF1B33E009BA38A /* SearchTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchTableViewController.swift; sourceTree = "<group>"; };
 		147309E01BF22C9D009BA38A /* MusicTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTableViewController.swift; sourceTree = "<group>"; };
 		147DA49D1BE50A0B008BBEC9 /* VKMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VKMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +133,7 @@
 				147DA4A41BE50A0B008BBEC9 /* Main.storyboard */,
 				141D0EB91BF346340060623E /* MainMenuTableViewController.swift */,
 				147309E01BF22C9D009BA38A /* MusicTableViewController.swift */,
+				144E660D1C08476700C3D242 /* CurrentPlaylistTableViewController.swift */,
 				147DA4A91BE50A0B008BBEC9 /* LaunchScreen.storyboard */,
 				14F8DBDF1BE86EB4002B66D4 /* PlayerInfoBar.swift */,
 				140D40301C04186C009B0EE8 /* Playlist.swift */,
@@ -301,6 +304,7 @@
 				1449AD661BE5DB300097CD03 /* HelloViewController.swift in Sources */,
 				141D0EC21BF4432B0060623E /* SongAlertController.swift in Sources */,
 				1449AD721BE609410097CD03 /* DataManager.swift in Sources */,
+				144E660E1C08476700C3D242 /* CurrentPlaylistTableViewController.swift in Sources */,
 				1449AD701BE604BF0097CD03 /* SongTableViewCell.swift in Sources */,
 				147DA4A11BE50A0B008BBEC9 /* AppDelegate.swift in Sources */,
 				141D0EBA1BF346340060623E /* MainMenuTableViewController.swift in Sources */,

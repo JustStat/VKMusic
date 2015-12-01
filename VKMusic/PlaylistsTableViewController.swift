@@ -144,6 +144,53 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
     
     func createPlaylistAlertController(playlist: Playlist) {
         let alertController = UIAlertController(title: playlist.name, message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
+        alertController.addAction(UIAlertAction(title: "Воспроизвести далее", style: .Default, handler: {(alert) -> Void in
+            var playlistSongs = [Song]()
+            if playlist.isLocal {
+                var curSize = 0
+                var newSize = 0
+                repeat {
+                    curSize = playlistSongs.count
+                    playlistSongs += DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(playlist.id)", offset: playlistSongs.count)
+                    newSize = playlistSongs.count
+                } while curSize != newSize
+            } else {
+                let req = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: playlist.id], andHttpMethod: "GET")
+                self.dataManager.getDataFormVK(req, refresh: true, onlyMine: false)
+                playlistSongs = self.dataManager.songs
+            }
+            var count = 0
+            for song in playlistSongs {
+                count++
+                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + count)
+                AudioProvider.sharedInstance.nextCount++
+            }
+
+        }))
+        alertController.addAction(UIAlertAction(title: "Добавить в \"Далее\"", style: .Default, handler: {(alert) -> Void in
+            var playlistSongs = [Song]()
+            if playlist.isLocal {
+                var curSize = 0
+                var newSize = 0
+                repeat {
+                    curSize = playlistSongs.count
+                    playlistSongs += DataBaseManager.sharedInstance.GetSongsFromDataBase("playlist\(playlist.id)", offset: playlistSongs.count)
+                    newSize = playlistSongs.count
+                } while curSize != newSize
+            } else {
+                let req = VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: playlist.id], andHttpMethod: "GET")
+                self.dataManager.getDataFormVK(req, refresh: false, onlyMine: false)
+                playlistSongs = self.dataManager.songs
+            }
+            var count = 0
+            for song in playlistSongs {
+                count++
+                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount + count)
+                AudioProvider.sharedInstance.nextCount++
+            }
+
+        }))
+
         if !playlist.isDownloaded {
             alertController.addAction(UIAlertAction(title: "Сделать доступным оффлайн", style: UIAlertActionStyle.Default, handler: {
             (alertAction) -> Void in

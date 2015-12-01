@@ -17,6 +17,8 @@ protocol SongAlertControllerDelegate {
     func removeSongFromVKAlertActionClick(song: Song, index: Int)
     func removeSongFromDownloadsAlertActionClick(song: Song, index: Int)
     func removeSongFromPlaylistAlertActionClick(song: Song, index: Int)
+    func playNextAlertActionClick(song: Song)
+    func addToNext(song: Song)
 }
 
 class SongAlertController: UIAlertController {
@@ -40,6 +42,12 @@ class SongAlertController: UIAlertController {
                 (button).enabled = false
             }
         }
+        self.addAction(UIAlertAction(title: "Воспроизвести далее", style: .Default, handler: {(alert) -> Void in
+            self.delegate?.playNextAlertActionClick(self.song)
+        }))
+        self.addAction(UIAlertAction(title: "Добавить в \"Далее\"", style: .Default, handler: {(alert) -> Void in
+            self.delegate?.addToNext(self.song)
+        }))
         if self.song.ownerId != Int(VKSdk.getAccessToken().userId) {
             self.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in
