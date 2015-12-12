@@ -37,7 +37,7 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
     }
     
     override func viewWillAppear(animated: Bool){
-        super.viewWillAppear(animated)
+        //super.viewWillAppear(animated)
         self.number = 8
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: 88))
         self.searchBar.sizeToFit()
