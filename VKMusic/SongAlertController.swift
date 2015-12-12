@@ -26,6 +26,7 @@ class SongAlertController: UIAlertController {
     var delegate: SongAlertControllerDelegate?
     var song: Song!
     var index: Int!
+    var isMyMusic = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,9 +55,11 @@ class SongAlertController: UIAlertController {
                 self.delegate?.addSongToVKAlertActonClick(self.song)
             }))
         }
-        self.addAction(UIAlertAction(title: "Добавить в плейлист...", style: .Default, handler: {(UIAlertAction) -> Void in
+        //if isMyMusic {
+            self.addAction(UIAlertAction(title: "Добавить в плейлист...", style: .Default, handler: {(UIAlertAction) -> Void in
             self.delegate?.addSongToPlaylist(self.song)
         }))
+      //  }
         if !exist {
             self.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in

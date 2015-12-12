@@ -65,15 +65,18 @@ class MainMenuTableViewController: UITableViewController {
         }
         }
 
-        if indexPath.row == 5 {
+        if indexPath.row == 6 {
             let vc = storyboard!.instantiateViewControllerWithIdentifier("SettingsVC") as! SettingsViewController
             let nvc = self.revealViewController().frontViewController as! UINavigationController
             nvc.setViewControllers([vc], animated: false)
         }
         
-        if indexPath.row == 4 {
+        if indexPath.row == 4 || indexPath.row == 5 {
             let vc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistsTableViewController") as! PlaylistsTableViewController
             let nvc = self.revealViewController().frontViewController as! UINavigationController
+            if indexPath.row == 5 {
+                vc.friendsMode = true
+            }
             nvc.setViewControllers([vc], animated: false)
         }
         
@@ -95,6 +98,7 @@ class MainMenuTableViewController: UITableViewController {
         addMenuItem("Популярное", image: UIImage(named: "TopRated")!)
         addMenuItem("Рекомендуемое", image: UIImage(named: "Recom")!)
         addMenuItem("Плейлисты", image: UIImage(named: "Playlists")!)
+        addMenuItem("Друзья", image: UIImage(named: "Friends")!)
         addMenuItem("Настройки", image: UIImage(named: "Settings")!)
     }
     

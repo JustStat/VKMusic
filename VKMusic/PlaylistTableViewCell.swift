@@ -9,7 +9,7 @@
 import UIKit
 
 protocol PlaylistTableViewCellDelegate {
-    func createPlaylistAlertController(playlist: Playlist)
+    func createPlaylistAlertController(playlist: Playlist, cell: PlaylistTableViewCell)
 }
 
 class PlaylistTableViewCell: UITableViewCell {
@@ -17,7 +17,7 @@ class PlaylistTableViewCell: UITableViewCell {
     @IBOutlet weak var playlistTitleLabel: UILabel!
     @IBOutlet weak var moreButton: UIButton!
     @IBAction func MoreButtonClick(sender: AnyObject) {
-        self.delegate.createPlaylistAlertController(self.playlist)
+        self.delegate.createPlaylistAlertController(self.playlist, cell: self)
     }
     var playlist: Playlist!
     var delegate: PlaylistTableViewCellDelegate!

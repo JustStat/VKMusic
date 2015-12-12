@@ -28,15 +28,18 @@ class PlayerInfoBar: UIView {
         NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("UpadateSliderValue"), userInfo: nil, repeats: true)
         self.titleLabel.text = AudioProvider.sharedInstance.currentSong.title
         self.artistLabel.text = AudioProvider.sharedInstance.currentSong.artist
-        self.coverImage.image = AudioProvider.sharedInstance.coverImage
+        //self.coverImage.image = AudioProvider.sharedInstance.coverImage
     }
     
     func UpadateSliderValue() {
+        if self.songProgress != nil {
             self.songProgress.progress = Float(CMTimeGetSeconds(AudioProvider.sharedInstance.player.currentTime()))/Float(AudioProvider.sharedInstance.currentSong.duration)
+            self.songProgress.reloadInputViews()
+        }
     }
     
     @IBAction func moreButtonClick(sender: AnyObject) {
-        self.delegate.createAlertController(AudioProvider.sharedInstance.currentIndex, filtered: false, fromPlayBar: true)
+        self.delegate.createAlertController(AudioProvider.sharedInstance.currentIndex,song: AudioProvider.sharedInstance.currentSong, filtered: false, fromPlayBar: true)
     }
     
     @IBAction func playerButtonClick(sender: AnyObject) {

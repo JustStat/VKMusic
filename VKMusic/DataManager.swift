@@ -88,6 +88,7 @@ class DataManager: NSObject {
                 self.error = nil
             }
         }, errorBlock: {(error) -> Void in
+            print(error.description)
             self.songs.removeAll()
             self.error = .NoConnection
         })
@@ -95,29 +96,42 @@ class DataManager: NSObject {
         }
     }
     
-    func addSongToVK(song: Song) {
+    func addSongToVK(song: Song) -> (Bool, Int) {
+        var error = false
+        var newId = -1
         let req = VKRequest(method: "audio.add", andParameters: [VK_API_OWNER_ID: song.ownerId, "audio_id": song.id], andHttpMethod: "GET")
         req.waitUntilDone = true
         req.executeWithResultBlock({
             (response) -> Void in
             let json = JSON(response.json)
-            let newId = json.int
-            DataBaseManager.sharedInstance.addSongNewId(song.id, newId: newId!, table: "downloads")
-            }, errorBlock: {(error) -> Void in
-                print(error.description)
+            newId = json.int!
+            DataBaseManager.sharedInstance.addSongNewId(song.id, newId: newId, table: "downloads")
+            }, errorBlock: {(e) -> Void in
+                print(e.description)
+                error = true
         })
-
+        return (error, newId)
     }
     
-    func removeSongFromVK(song: Song) {
+    func removeSongFromVK(song: Song) -> Bool {
+        var error = false
         let req = VKRequest(method: "audio.delete", andParameters: ["audio_id": song.id, "owner_id": song.ownerId], andHttpMethod: "GET")
         req.waitUntilDone = true
-        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(error) -> Void in})
+        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(e) -> Void in
+            print(e.description)
+            error = true})
+        return error
     }
     
-    func removeSongFromDownloads(song: Song) {
+    func removeSongFromDownloads(song: Song) -> Bool{
+        var errorCheck = false
         DataBaseManager.sharedInstance.removeSong("downloads", id: song.id)
-        do { try NSFileManager.defaultManager().removeItemAtPath(song.localUrl)} catch{print("Error")}
+        do { try NSFileManager.defaultManager().removeItemAtPath(song.localUrl)}
+        catch{
+            print("Error")
+            errorCheck = true
+        }
+        return errorCheck
     }
     
     func getReqest(index: Int, params: [String: AnyObject]) -> VKRequest {
@@ -131,7 +145,14 @@ class DataManager: NSObject {
         case 3:
             return VKRequest(method: "audio.getRecommendations", andParameters: [VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
         case 6:
-            return VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: Int(params["albumId"] as! NSNumber), VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
+            if params["albumId"] != nil {
+                print(params["albumId"])
+                return VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: VKSdk.getAccessToken().userId,VK_API_ALBUM_ID: Int(params["albumId"] as! NSNumber), VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
+            }
+        case 7:
+            if params["friendId"] != nil {
+                return VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: Int(params["friendId"] as! NSNumber), VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
+            }
         default:
             print("Whoops")
         }
@@ -152,29 +173,100 @@ class DataManager: NSObject {
         return VKRequest()
     }
     
-    func addSongToVKPlaylist(song: Song, albumId: Int) {
-        let req = VKRequest(method: "audio.moveToAlbum", andParameters: [VK_API_ALBUM_ID: "\(albumId)", "audio_ids": [song.id]], andHttpMethod: "GET")
-        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(error) -> Void in})
-        
+    func addSongToVKPlaylist(songId: Int, albumId: Int) -> Bool {
+        var error = false
+        let req = VKRequest(method: "audio.moveToAlbum", andParameters: [VK_API_ALBUM_ID: "\(albumId)", "audio_ids": [songId]], andHttpMethod: "GET")
+        req.waitUntilDone = true
+        req.executeWithResultBlock({(response) -> Void in print("Succes")}, errorBlock: {(e) -> Void in
+            print(error.description)
+            error = true
+        })
+        return error
+    }
+    
+    func checkSongExistanceInPlaylist(playlist: Playlist) -> [Int: Bool] {
+        var checkList = [Int: Bool]()
+        if VKSdk.getAccessToken() != nil {
+            var songIds = [Int]()
+            for song in self.songs {
+                songIds.append(song.id)
+            }
+            let req = VKRequest(method: "audio.get", andParameters: ["owner_id": VKSdk.getAccessToken().userId, "album_id": playlist.id, "audio_ids": songIds], andHttpMethod: "GET")
+            req.waitUntilDone = true
+            req.executeWithResultBlock({(response) -> Void in
+                let json = JSON(response.json)
+                print(json.description)
+                for var i = 0; i < json["items"].count; i++ {
+                    let id = json["items"][i]["id"].intValue
+                    checkList[id] = true
+                }
+            }, errorBlock: nil)
+        }
+       return checkList
+    }
+    
+    func removeSongFromVKPlaylist(song: Song, playlist: Playlist) -> Bool {
+        var error = false
+        var songIds = [Int]()
+        let deleteReq = VKRequest(method: "audio.deleteAlbum", andParameters: ["album_id": playlist.id], andHttpMethod: "GET")
+        deleteReq.waitUntilDone = true
+        deleteReq.executeWithResultBlock(nil, errorBlock: {(response) -> Void in error = true})
+        if !error {
+            playlist.id = self.addPlaylistToVK(playlist.name)
+            for asong in self.songs {
+                if asong.id != song.id {
+                    songIds.append(asong.id)
+                }
+            }
+        }
+        if !error {
+            let moveReq = VKRequest(method: "audio.moveToAlbum", andParameters: ["album_id": playlist.id, "audio_ids": songIds.reverse()], andHttpMethod: "GET")
+            moveReq.executeWithResultBlock(nil, errorBlock: {(response) -> Void in error = true})
+        }
+        return error
     }
     
     //Songs Managment ENDS
     
     //MARK: Playlists DataManagment
     
-    func getPlaylistsFromVK() {
+    func getPlaylistsFromVK(isFriends: Bool) {
         if VKSdk.getAccessToken() != nil {
-            let req = VKRequest(method: "audio.getAlbums", andParameters: [VK_API_OWNER_ID: VKSdk.getAccessToken().userId], andHttpMethod: "GET")
+            self.vkPlylists.removeAll()
+            let req: VKRequest!
+            if !isFriends {
+                req = VKRequest(method: "audio.getAlbums", andParameters: [VK_API_OWNER_ID: VKSdk.getAccessToken().userId], andHttpMethod: "GET")
+            } else {
+                req = VKRequest(method: "friends.get", andParameters: ["order": "hints", "count": 50, "offset": self.vkPlylists.count, "fields": ["nickname", "photo_100"]], andHttpMethod: "GET")
+            }
             req.waitUntilDone = true
             req.executeWithResultBlock({(response) -> Void in
                 let json = JSON(response.json)
                 print(json.description)
                 let count = json["items"].count
                 for var i = 0; i < count; i++ {
-                    let title = json["items"][i]["title"].stringValue
-                    let id = json["items"][i]["id"].intValue
-                    let owner_id = json["items"][i]["owner_id"].intValue
-                    self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
+                    var title = ""
+                    var owner_id = -1
+                    var id = -1
+                    var image = UIImage()
+                    if !isFriends {
+                        title = json["items"][i]["title"].stringValue
+                        id = json["items"][i]["id"].intValue
+                        owner_id = json["items"][i]["owner_id"].intValue
+                    } else {
+                        title = json["items"][i]["first_name"].stringValue
+                        title += " \(json["items"][i]["last_name"].stringValue)"
+                        id = json["items"][i]["id"].intValue
+                        owner_id = Int(VKSdk.getAccessToken().userId)!
+                        let imageData = NSData(contentsOfURL: NSURL(string: json["items"][i]["photo_100"].stringValue)!)
+                        image = UIImage(data: imageData!)!
+                    }
+                    if !isFriends {
+                        self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
+                    } else {
+                        self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
+                        self.vkPlylists[self.vkPlylists.count - 1].image = image
+                    }
                 }
                 if self.vkPlylists.count == 0 {
                     self.error = .NoContent
@@ -202,7 +294,7 @@ class DataManager: NSObject {
             req.executeWithResultBlock({(response) -> Void in
                 let json = JSON(response.json)
                 print(json.description)
-                album_id = Int(json["albumId"].intValue)
+                album_id = Int(json["album_id"].intValue)
             }, errorBlock: {(error) -> Void in
                 album_id = -1
             })
@@ -242,13 +334,16 @@ class DataManager: NSObject {
        return DataBaseManager.sharedInstance.AddPlaylistToDataBase(playlist)
     }
     
-    func removePlaylist(playlist: Playlist) {
+    func removePlaylist(playlist: Playlist) -> Bool{
+        var error = false
         if playlist.isLocal {
             DataBaseManager.sharedInstance.RemovePlaylistFromDataBase(playlist)
         } else {
             let req = VKRequest(method: "audio.deleteAlbum", andParameters: [VK_API_ALBUM_ID: playlist.id], andHttpMethod: "GET")
-            req.executeWithResultBlock(nil, errorBlock: nil)
+            req.waitUntilDone = true
+            req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(e) -> Void in error = true})
         }
+        return error
     }
     
     //Playlists Managment ENDS

@@ -7,14 +7,19 @@
 //
 
 import UIKit
+import AVFoundation
+import AVKit
+import SWTableViewCell
+import MBProgressHUD
 
-class CurrentPlaylistTableViewController: MusicTableViewController {
+class CurrentPlaylistTableViewController: MusicTableViewController, SWTableViewCellDelegate {
     
     var sectionTitles = ["ИСТОРИЯ", "ИСПОЛНЯЕТСЯ", "ДАЛЕЕ"]
     var history: [Song]!
     var nextSongs = [Song]()
     var start = true
-
+    var currentSongProgress =  UIProgressView(frame: CGRectMake(0,0,UIScreen.mainScreen().bounds.width, 2))
+    
     override func viewDidLoad() {
         //super.viewDidLoad()
         self.navigationItem.title = "Далее"
@@ -62,7 +67,17 @@ class CurrentPlaylistTableViewController: MusicTableViewController {
     
 //    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        if section == 2 {
-//            let headerView = UIView(frame: <#T##CGRect#>)
+//            let headerView = UIView(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 28))
+//            let addButton = UIButton(frame: CGRectMake(0, 0, 40, 28))
+//            addButton.backgroundColor = UIColor.clearColor()
+//            addButton.titleLabel?.text = "Добавить"
+//            addButton.tintColor = GlobalConstants.colors.VKBlue
+//            addButton.addTarget(self, action: "AddButtonClick", forControlEvents: UIControlEvents.TouchUpInside)
+//            headerView.addSubview(addButton)
+//            addButton.center = CGPoint(x: headerView.frame.maxX - addButton.frame.width * 3 + addButton.frame.width / 2, y: headerView.center.y)
+//            return headerView
+//        } else {
+//            return nil
 //        }
 //    }
 
@@ -78,7 +93,6 @@ class CurrentPlaylistTableViewController: MusicTableViewController {
         case 1:
             return 1
         case 2:
-            print(AudioProvider.sharedInstance.playlist.count - AudioProvider.sharedInstance.currentIndex - 1)
             return AudioProvider.sharedInstance.playlist.count - AudioProvider.sharedInstance.currentIndex - 1
         default:
             return 0
@@ -152,42 +166,56 @@ class CurrentPlaylistTableViewController: MusicTableViewController {
             }
             return cell
         } else if indexPath.section == 1 {
-            let cellIdentifier = "NextSongCell"
+            let cellIdentifier = "NextTableViewCell"
             let song = AudioProvider.sharedInstance.currentSong
-            let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
-            cell.textLabel?.text = song.title
-            (cell.subviews[0].subviews[1] as! UILabel).text = song.artist
+            let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! NextTableViewCell
+            cell.titleLabel.text = song.title
+            cell.artistLabel.text = song.artist
+            cell.deleteButton.hidden = true
+            NSTimer.scheduledTimerWithTimeInterval(0.1, target: cell, selector: Selector("UpdateSliderValue"), userInfo: nil, repeats: true)
             return cell
         } else {
-            let cellIdentifier = "NextSongCell"
+            let cellIdentifier = "NextTableViewCell"
             let index = AudioProvider.sharedInstance.currentIndex + 1 + indexPath.row
             print(AudioProvider.sharedInstance.playlist.count)
             print(indexPath.row)
             print(tableView.numberOfRowsInSection(2))
             let song = AudioProvider.sharedInstance.playlist[index]
-            let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
-            cell.textLabel?.text = song.title
-            (cell.subviews[0].subviews[1] as! UILabel).text = song.artist
+            let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! NextTableViewCell
+            cell.titleLabel.text = song.title
+            cell.artistLabel.text = song.artist
+            cell.songProgress.hidden = true
             cell.showsReorderControl = true
+            cell.deleteButton.hidden = true
+            cell.delegate = self
+            cell.rightUtilityButtons = self.rightButtons() as [AnyObject]
+//            cell.delegate = self
             return cell
         }
 
+    }
+    
+    override func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        return .None
+    }
+    
+    override func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 0 {
             let index = AudioProvider.sharedInstance.currentIndex
             let song = self.history[indexPath.row]
-            AudioProvider.sharedInstance.playlist.insert(song, atIndex: index)
-            AudioProvider.sharedInstance.startPlayer(index)
+            AudioProvider.sharedInstance.playlist.insert(song, atIndex: index + 1)
+            AudioProvider.sharedInstance.startPlayer(index + 1)
         } else if indexPath.section == 1 {
             dismissViewControllerAnimated(true, completion: nil)
         } else {
+            MBProgressHUD.showHUDAddedTo(self.tableView, animated: true)
             let index = AudioProvider.sharedInstance.currentIndex + indexPath.row + 1
             AudioProvider.sharedInstance.startPlayer(index)
         }
-        reloadPlaylist()
-        self.tableView.reloadData()
     }
     
     override func tableView(tableView: UITableView, targetIndexPathForMoveFromRowAtIndexPath sourceIndexPath: NSIndexPath, toProposedIndexPath proposedDestinationIndexPath: NSIndexPath) -> NSIndexPath {
@@ -217,6 +245,59 @@ class CurrentPlaylistTableViewController: MusicTableViewController {
         self.tableView.reloadData()
     }
     
+    override func createCellAlertController(cell: SongTableViewCell) {
+        let indexPath = tableView.indexPathForCell(cell)
+        if indexPath?.section == 0 {
+            let index = tableView.indexPathForCell(cell)?.row
+            let song = self.history[indexPath!.row]
+            self.createAlertController(index!,song: song, filtered: false, fromPlayBar: false)
+        } else {
+            super.createCellAlertController(cell)
+        }
+
+    }
+    
+    //SWTableViewCellDelegate FUNCS
+    
+    func swipeableTableViewCell(cell: SWTableViewCell!, didTriggerRightUtilityButtonWithIndex index: Int) {
+        let songIndex = AudioProvider.sharedInstance.currentIndex + (self.tableView.indexPathForCell(cell)?.row)! + 1
+        AudioProvider.sharedInstance.playlist.removeAtIndex(songIndex)
+        self.tableView.reloadData()
+    }
+    
+    func swipeableTableViewCellShouldHideUtilityButtonsOnSwipe(cell: SWTableViewCell!) -> Bool {
+        return true
+    }
+    
+    func swipeableTableViewCell(cell: SWTableViewCell!, canSwipeToState state: SWCellState) -> Bool {
+        return true
+    }
+    
+    func rightButtons() -> NSMutableArray {
+        let buttons = NSMutableArray()
+        buttons.sw_addUtilityButtonWithColor(UIColor(red: 1, green: 0.231, blue: 0.188, alpha: 1), attributedTitle: NSAttributedString(string: "Удалить"))
+        return buttons
+    }
+    
+    override func respondsToSelector(aSelector: Selector) -> Bool {
+        if Selector("tableView:commitEditingStyle:forRowAtIndexPath:") == aSelector {
+            return false
+        } else {
+            return super.respondsToSelector(aSelector)
+        }
+    }
+    
+    override func finishLoadingSong() {
+        reloadPlaylist()
+        self.tableView.reloadData()
+        MBProgressHUD.hideHUDForView(self.tableView, animated: true)
+    }
+    
+    override func playerDidFinishPlaying(note: NSNotification) {
+        reloadPlaylist()
+        self.tableView.reloadData()
+    }
+    
     
 
     /*
@@ -227,17 +308,14 @@ class CurrentPlaylistTableViewController: MusicTableViewController {
     }
     */
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
+//    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+//        if editingStyle == .Delete {
+//            // Delete the row from the data source
+//            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+//        } else if editingStyle == .Insert {
+//            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+//        }    
+//    }
 
     /*
     // Override to support rearranging the table view.

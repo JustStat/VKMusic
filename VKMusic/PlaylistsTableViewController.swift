@@ -8,18 +8,25 @@
 
 import UIKit
 import VK_ios_sdk
+import DZNEmptyDataSet
+import SWTableViewCell
+import KVNProgress
 
-class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, PlaylistTableViewCellDelegate {
+class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, PlaylistTableViewCellDelegate, DZNEmptyDataSetSource {
     
     @IBOutlet weak var addPlayList: UIBarButtonItem!
     
     var dataManager = DataManager()
+    var playerInfoBar: PlayerInfoBar!
     var sectionTitles = ["Плейлисты ВКонтакте", "Локальные плейлисты"]
     var isSelection = false
     var song: Song!
+    var friendsMode = false
     
+    @IBOutlet weak var openBackTableButton: UIBarButtonItem!
     @IBAction func addPlaylistButtonClick() {
         let alertController = UIAlertController()
+        alertController.view.tintColor = GlobalConstants.colors.VKBlue
         alertController.addAction(UIAlertAction(title: "Локальный плейлист", style: UIAlertActionStyle.Default, handler: {
             (controller) -> Void in
             let alertView = UIAlertView(title: "Новый локальный плейлист", message: "Введите название плейлиста", delegate: self, cancelButtonTitle: "Отмена", otherButtonTitles: "Ок")
@@ -39,9 +46,49 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        self.dataManager.localPlaylists = DataBaseManager.sharedInstance.GetPlaylistsFormDataBase()
-        self.dataManager.getPlaylistsFromVK()
+        //super.viewDidLoad()
+        KVNProgress.configuration().minimumSuccessDisplayTime = 2
+        KVNProgress.configuration().successColor = GlobalConstants.colors.VKBlue
+        KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+        KVNProgress.configuration().minimumErrorDisplayTime = 2
+        KVNProgress.configuration().errorColor = GlobalConstants.colors.VKBlue
+        if self.openBackTableButton != nil {
+            openBackTableButton.target = self.revealViewController()
+            openBackTableButton.action = Selector("revealToggle:")
+        }
+        if self.friendsMode {
+            self.navigationItem.title = "Друзья"
+            self.navigationItem.rightBarButtonItems = []
+            KVNProgress.showWithStatus("Загрузка списка друзей")
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                if !self.friendsMode {
+                    self.dataManager.localPlaylists = DataBaseManager.sharedInstance.GetPlaylistsFormDataBase()
+                }
+                self.dataManager.getPlaylistsFromVK(self.friendsMode)
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.tableView.reloadData()
+                    KVNProgress.dismiss()
+                }
+            }
+
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        self.navigationController?.toolbar.hidden = true
+        if !self.friendsMode {
+            KVNProgress.showWithStatus("Загрузка списка плейлистов")
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                if !self.friendsMode {
+                    self.dataManager.localPlaylists = DataBaseManager.sharedInstance.GetPlaylistsFormDataBase()
+                }
+                self.dataManager.getPlaylistsFromVK(self.friendsMode)
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.tableView.reloadData()
+                    KVNProgress.dismiss()
+                }
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,51 +99,75 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
     // MARK: - Table view data source
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.sectionTitles[section]
+        if !self.friendsMode {
+            return self.sectionTitles[section]
+        } else {
+            return nil
+        }
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        if self.song != nil && self.song.localUrl == "" {
-            return 1
+        if !friendsMode {
+            if self.song != nil && self.song.localUrl == "" {
+                return 1
+            } else {
+                return 2
+            }
         } else {
-            return 2
+            return 1
         }
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        if section == 1 {
-            return self.dataManager.localPlaylists.count
+        if !friendsMode {
+            if section == 1 {
+                return self.dataManager.localPlaylists.count
+            } else {
+                return self.dataManager.vkPlylists.count
+            }
         } else {
             return self.dataManager.vkPlylists.count
         }
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("PlaylistTableViewCell", forIndexPath: indexPath) as! PlaylistTableViewCell
-        cell.delegate = self
-        if isSelection {
-            cell.moreButton.hidden = true
-            cell.accessoryType = UITableViewCellAccessoryType.None
-        }
-        if indexPath.section == 1 {
-            cell.playlistTitleLabel.text = self.dataManager.localPlaylists[indexPath.row].name
-            cell.playlist = self.dataManager.localPlaylists[indexPath.row]
-            cell.playlist.isDownloaded = true
+        if !friendsMode {
+            let cell = tableView.dequeueReusableCellWithIdentifier("PlaylistTableViewCell", forIndexPath: indexPath) as! PlaylistTableViewCell
+            cell.delegate = self
+            if isSelection {
+                cell.moreButton.hidden = true
+                cell.accessoryType = UITableViewCellAccessoryType.None
+            }
+            if indexPath.section == 1 {
+                cell.playlistTitleLabel.text = self.dataManager.localPlaylists[indexPath.row].name
+                cell.playlist = self.dataManager.localPlaylists[indexPath.row]
+                cell.playlist.isDownloaded = true
+            } else {
+                cell.playlistTitleLabel.text = self.dataManager.vkPlylists[indexPath.row].name
+                cell.playlist = self.dataManager.vkPlylists[indexPath.row]
+                cell.playlist.isDownloaded = self.dataManager.checkPlaylistDownload(cell.playlist)
+            }
+            return cell
         } else {
-            cell.playlistTitleLabel.text = self.dataManager.vkPlylists[indexPath.row].name
-            cell.playlist = self.dataManager.vkPlylists[indexPath.row]
-            cell.playlist.isDownloaded = self.dataManager.checkPlaylistDownload(cell.playlist)
+            let cell = tableView.dequeueReusableCellWithIdentifier("FriendsTableViewCell", forIndexPath: indexPath)
+            cell.textLabel?.text = self.dataManager.vkPlylists[indexPath.row].name
+            cell.imageView?.image = self.dataManager.vkPlylists[indexPath.row].image
+            return cell
         }
-        return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        var error = false
         if !isSelection {
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc = storyboard.instantiateViewControllerWithIdentifier("MainMusicViewController")  as! MusicTableViewController
-            vc.number = 6
+            if !self.friendsMode {
+                vc.number = 6
+            } else {
+                vc.number = 7
+            }
             vc.type = .Playlist
             if indexPath.section == 1 {
                 vc.playlist = self.dataManager.localPlaylists[indexPath.row]
@@ -108,9 +179,16 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
             if indexPath.section == 1 {
                DataBaseManager.sharedInstance.addSongToTable(song, table: "playlist\(self.dataManager.localPlaylists[indexPath.row].id)")
             } else {
-                self.dataManager.addSongToVKPlaylist(self.song, albumId: self.dataManager.vkPlylists[indexPath.row].id)
+                error = self.dataManager.addSongToVKPlaylist(self.song.id, albumId: self.dataManager.vkPlylists[indexPath.row].id)
+                //error = self.dataManager.removeSongFromVK(self.song)
             }
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismissViewControllerAnimated(true, completion: {
+                if !error {
+                    KVNProgress.showSuccessWithStatus("Добавлено")
+                } else {
+                    KVNProgress.showErrorWithStatus("Ошибка")
+                }
+            })
         }
     }
     
@@ -142,8 +220,9 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
     
     //MARK: PlaylistTableViewCellDelegate FUNCS
     
-    func createPlaylistAlertController(playlist: Playlist) {
+    func createPlaylistAlertController(playlist: Playlist, cell: PlaylistTableViewCell) {
         let alertController = UIAlertController(title: playlist.name, message: "", preferredStyle: UIAlertControllerStyle.ActionSheet)
+        alertController.view.tintColor = GlobalConstants.colors.VKBlue
         alertController.addAction(UIAlertAction(title: "Воспроизвести далее", style: .Default, handler: {(alert) -> Void in
             var playlistSongs = [Song]()
             if playlist.isLocal {
@@ -165,7 +244,7 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
                 AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + count)
                 AudioProvider.sharedInstance.nextCount++
             }
-
+            self.showStatus(false, isAddition: true)
         }))
         alertController.addAction(UIAlertAction(title: "Добавить в \"Далее\"", style: .Default, handler: {(alert) -> Void in
             var playlistSongs = [Song]()
@@ -182,13 +261,11 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
                 self.dataManager.getDataFormVK(req, refresh: false, onlyMine: false)
                 playlistSongs = self.dataManager.songs
             }
-            var count = 0
             for song in playlistSongs {
-                count++
-                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount + count)
+                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount)
                 AudioProvider.sharedInstance.nextCount++
             }
-
+            self.showStatus(false, isAddition: true)
         }))
 
         if !playlist.isDownloaded {
@@ -199,11 +276,137 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
         }
         alertController.addAction(UIAlertAction(title: "Удалить плейлист", style: UIAlertActionStyle.Default, handler: {
             (alertAction) -> Void in
-            self.dataManager.removePlaylist(playlist)
+            let error = self.dataManager.removePlaylist(playlist)
+            self.dataManager.localPlaylists = DataBaseManager.sharedInstance.GetPlaylistsFormDataBase()
+            self.dataManager.getPlaylistsFromVK(self.friendsMode)
+            self.tableView.reloadData()
+            self.showStatus(error, isAddition: false)
         }))
         alertController.addAction(UIAlertAction(title: "Отменить", style: UIAlertActionStyle.Cancel, handler: nil))
         self.presentViewController(alertController, animated: true, completion: nil)
     }
+    
+    func showStatus(error: Bool, isAddition: Bool) {
+        if !error {
+            KVNProgress.configuration().minimumSuccessDisplayTime = 2
+            KVNProgress.configuration().successColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+            if isAddition {
+                KVNProgress.showSuccessWithStatus("Добавлено")
+            } else {
+                KVNProgress.showSuccessWithStatus("Удалено")
+            }
+        } else {
+            KVNProgress.configuration().minimumErrorDisplayTime = 2
+            KVNProgress.configuration().errorColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+            KVNProgress.showErrorWithStatus("Ошибка")
+        }
+    }
+    
+    //MARK: EmptyDataSetDelegate FUNCS
+    
+    func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
+        if self.dataManager.error != nil {
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                return UIImage(named: "NoInternet")
+            } else {
+                if friendsMode {
+                    return UIImage(named: "FriendsEmpty")
+                } else {
+                    return UIImage(named: "NoContent")
+                }
+            }
+        }
+        return UIImage()
+    }
+    
+    func titleForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            let text:String!
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                text = "Ошибка подлючения к серверам Вконтакте"
+            } else {
+                if friendsMode {
+                    text = "Список друзей пуст"
+                } else {
+                    text = "Список плейлистов пуст"
+                }
+            }
+            let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(18), NSForegroundColorAttributeName: UIColor.grayColor()]
+            return NSAttributedString(string: text, attributes: attrs)
+        }
+        return NSAttributedString()
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            let text:String!
+            if self.dataManager.error == DataManager.ErrorType.NoConnection {
+                text = "Проверьте интернет подключение и перезагрузите таблицу"
+            } else {
+                if friendsMode {
+                    text = "Добавьте своих друзей и знакомых в список \"Друзья\" в ВКонтакте"
+                } else {
+                    text = "Создайте плейлисты и группируйте музыку под любое насторение"
+                }            }
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = NSLineBreakMode.ByWordWrapping
+            paragraph.alignment = NSTextAlignment.Center
+            let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(14), NSForegroundColorAttributeName: UIColor.lightGrayColor(), NSParagraphStyleAttributeName: paragraph]
+            return NSAttributedString(string: text, attributes: attrs)
+        }
+        return NSAttributedString()
+    }
+    
+    func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
+        if self.dataManager.error != nil {
+            if self.dataManager.error == DataManager.ErrorType.NoContent {
+                var text: String!
+                if !self.friendsMode {
+                    text = "Создать плейлист"
+                } else {
+                    return nil
+                }
+                let attrs = [NSFontAttributeName: UIFont.boldSystemFontOfSize(20), NSForegroundColorAttributeName:  GlobalConstants.colors.VKBlue]
+                return NSAttributedString(string: text, attributes: attrs)
+            }
+        }
+        return nil
+    }
+    
+    func backgroundColorForEmptyDataSet(scrollView: UIScrollView!) -> UIColor! {
+        return UIColor.whiteColor()
+    }
+    
+    func verticalOffsetForEmptyDataSet(scrollView: UIScrollView!) -> CGFloat {
+        return self.tableView.frame.size.height/16
+    }
+    
+    func emptyDataSetShouldDisplay(scrollView: UIScrollView!) -> Bool {
+        if self.dataManager.error != nil {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+            return true
+        } else {
+            self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+            return false
+        }
+    }
+    
+    func emptyDataSetShouldAllowTouch(scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetShouldAllowScroll(scrollView: UIScrollView!) -> Bool {
+        return true
+    }
+    
+    func emptyDataSetDidTapButton(scrollView: UIScrollView!) {
+        self.addPlaylistButtonClick()
+    }
+    // EmptyDataSetDelegate ENDS
+    
+
     
     
 

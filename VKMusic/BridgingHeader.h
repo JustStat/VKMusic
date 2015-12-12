@@ -15,5 +15,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "SWRevealViewController.h"
 #import <LLACircularProgressView/LLACircularProgressView.h>
+#import <SWTableViewCell/SWTableViewCell.h>
+#import <KVNProgress/KVNProgress.h>
 
 #endif /* BridgingHeader_h */

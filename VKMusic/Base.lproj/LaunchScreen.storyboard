@@ -16,8 +16,22 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="2Hh-DR-QAy">
+                                <rect key="frame" x="87" y="211" width="146" height="145"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="145" id="LJb-os-lGB"/>
+                                    <constraint firstAttribute="width" constant="146" id="SZT-X1-lqt"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="2Hh-DR-QAy" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="WMs-kf-vEc"/>
+                            <constraint firstItem="2Hh-DR-QAy" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="fMv-xg-sfV"/>
+                        </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
@@ -26,4 +40,7 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="LaunchIcon" width="250" height="250"/>
+    </resources>
 </document>

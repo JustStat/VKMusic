@@ -22,6 +22,7 @@ class SettingsViewController: UIViewController, PKRevealing {
     
     @IBAction func unSignVK() {
         VKSdk.forceLogout()
+        DataBaseManager.sharedInstance.deleteUserInfoFromDataBase()
         let storyboard = UIStoryboard(name: "Hello", bundle: nil)
         let vc = storyboard.instantiateViewControllerWithIdentifier("HelloView") as! HelloViewController
         self.presentViewController(vc, animated: true, completion: nil)
@@ -45,19 +46,13 @@ class SettingsViewController: UIViewController, PKRevealing {
         super.viewDidLoad()
         openBackTableButton.target = self.revealViewController()
         openBackTableButton.action = Selector("revealToggle:")
-        Alamofire.request(.GET, "http://api.vkontakte.ru/method/users.get?uids="+VKSdk.getAccessToken().userId+"&fields=photo_200").responseJSON(completionHandler: {(response) -> Void in
-//            if response.result.value != nil {
-            let json = JSON(response.result.value!)
-            print(json.description)
-            let userImagePath = json["response"][0]["photo_200"].stringValue
-            let fullName = json["response"][0]["first_name"].stringValue + " " + json["response"][0]["last_name"].stringValue
-            self.userImage.sd_setImageWithURL(NSURL(string: userImagePath), placeholderImage: UIImage(named: "UserIcon"))
+        let userInfo = DataBaseManager.sharedInstance.getUserInfoFromDataBase()
+        if userInfo.count != 0 {
+            self.userImage.image = UIImage(contentsOfFile: userInfo[1])
             self.userImage.layer.cornerRadius = self.userImage.frame.size.width / 2
             self.userImage.clipsToBounds = true
-            self.userName.text = fullName
-//            } else {
-//            }
-        })
+            self.userName.text = userInfo[0]
+        }
     }
     
     override func didReceiveMemoryWarning() {

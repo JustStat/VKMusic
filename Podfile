@@ -13,5 +13,7 @@ target 'VKMusic' do
 	pod 'PKRevealController'
 	pod 'LLACircularProgressView'
 	pod 'SDWebImage', '~>3.7'
+	pod 'SWTableViewCell', '~> 0.3.7'
+	pod 'KVNProgress'
 end
 

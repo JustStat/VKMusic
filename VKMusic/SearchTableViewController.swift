@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KVNProgress
 
 class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, UISearchResultsUpdating {
     
@@ -14,6 +15,14 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
     var startIndex = 0
 
     override func viewDidLoad() {
+        let StatusConfig = KVNProgressConfiguration.defaultConfiguration()
+        StatusConfig.minimumDisplayTime = 2
+        StatusConfig.circleStrokeForegroundColor = GlobalConstants.colors.VKBlue
+        StatusConfig.statusColor = GlobalConstants.colors.VKBlue
+        StatusConfig.errorColor = GlobalConstants.colors.VKBlue
+        StatusConfig.fullScreen = true
+        KVNProgress.setConfiguration(StatusConfig)
+
         self.searchBar = UISearchBar(frame: CGRectMake(0, 0, UIScreen.mainScreen().bounds.width, 88))
         self.searchBar.delegate = self
         self.searchBar.scopeButtonTitles = ["Моя музыка", "Загрузки", "ВКонтакте"]
@@ -29,6 +38,7 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
     
     override func viewWillAppear(animated: Bool){
         super.viewWillAppear(animated)
+        self.number = 8
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.width, height: 88))
         self.searchBar.sizeToFit()
         headerView.addSubview(searchBar)
@@ -65,6 +75,7 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
     
     func getFilteredData() {
         if self.searchBar.text != "" {
+            KVNProgress.showWithStatus("Поиск")
             self.dataManager.songs = []
             self.request = self.dataManager.getSearchRequest(self.searchBar.selectedScopeButtonIndex, query: searchBar.text!)
             if self.request != nil {
@@ -74,16 +85,29 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
                         self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: true)
                         dispatch_async(dispatch_get_main_queue()) {
                             self.tableView.reloadData()
+                            KVNProgress.dismiss()
+                            if self.dataManager.songs.count == 0 {
+                                KVNProgress.showErrorWithStatus("Не найдено")
+                            }
+                            
                         }
                     }
                 case 1:
                     self.dataManager.songs = DataBaseManager.sharedInstance.downloadsSearchReqest(self.searchBar.text!)
                     self.tableView.reloadData()
+                    KVNProgress.dismiss()
+                    if self.dataManager.songs.count == 0 {
+                        KVNProgress.showErrorWithStatus("Не найдено")
+                    }
                 case 2:
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                         self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: false)
                         dispatch_async(dispatch_get_main_queue()) {
                             self.tableView.reloadData()
+                            KVNProgress.dismiss()
+                            if self.dataManager.songs.count == 0 {
+                                KVNProgress.showErrorWithStatus("Не найдено")
+                            }
                         }
                     }
                 default:
@@ -134,8 +158,11 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
 //        return 0
 //    }
 //    
-//    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//    }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        AudioProvider.sharedInstance.scopeIndex = self.searchBar.selectedScopeButtonIndex
+        AudioProvider.sharedInstance.searchText = searchBar.text
+        super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+    }
     
     // MARK: UIStateRestoration
     

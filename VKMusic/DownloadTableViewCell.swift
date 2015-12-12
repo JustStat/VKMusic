@@ -40,7 +40,7 @@ class DownloadTableViewCell: UITableViewCell, DownloadManagerDelegate {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.progressView = LLACircularProgressView(frame: CGRectMake(0, 0, 35, 35))
+        self.progressView = LLACircularProgressView(frame: CGRectMake(0, 0, 25, 25))
         self.progressView.progress = 0
         let FingerTap = UITapGestureRecognizer(target: self, action: Selector("cancelTask"))
         self.progressView.addGestureRecognizer(FingerTap)

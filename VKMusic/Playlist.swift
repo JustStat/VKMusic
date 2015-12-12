@@ -15,6 +15,7 @@ class Playlist: NSObject {
     var isLocal = false
     var isDownloaded = false
     var songsCount = 0
+    var image: UIImage?
     
     init(name: String, owner: Int, id: Int, isLocal: Bool) {
         self.name = name

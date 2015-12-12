@@ -11,6 +11,7 @@ import AVFoundation
 import AVKit
 import MediaPlayer
 import VK_ios_sdk
+import KVNProgress
 
 class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertControllerDelegate {
     @IBOutlet weak var moreButton: UIButton!
@@ -72,13 +73,15 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     }
     
     @IBAction func rewindButtonClick(sender: AnyObject) {
+        KVNProgress.showWithStatus("Загрузка трека")
+        KVNProgress.configuration().fullScreen = true
         AudioProvider.sharedInstance.rewind()
-        updateSongInfo()
     }
     
     @IBAction func forwardButtonClick(sender: AnyObject) {
+        KVNProgress.showWithStatus("Загрузка трека")
+        KVNProgress.configuration().fullScreen = true
         AudioProvider.sharedInstance.forward()
-        updateSongInfo()
     }
     
     @IBAction func changeValue(sender: AnyObject) {
@@ -90,6 +93,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     
     @IBAction func EditCurrentTime(sender: AnyObject) {
         AudioProvider.sharedInstance.player.seekToTime(CMTimeMakeWithSeconds(Double(self.SongProgressSlider.value), AudioProvider.sharedInstance.player.currentTime().timescale))
+        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo![MPNowPlayingInfoPropertyElapsedPlaybackTime] = Double(self.SongProgressSlider.value)
         if self.wasPlaying {
             AudioProvider.sharedInstance.player.play()
             self.wasPlaying = false
@@ -103,7 +107,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
        updateUI()
     }
     
-    func UpadateSliderValue() {
+    func UpdateSliderValue() {
         if !self.isChangingTime {
         self.SongProgressSlider.value = Float(CMTimeGetSeconds(AudioProvider.sharedInstance.player.currentTime()))
         updateUI()
@@ -117,6 +121,12 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     
     func playerDidFinishPlaying(note: NSNotification) {
         self.updateSongInfo()
+        
+    }
+    
+    func finishLoadingSong() {
+        self.updateSongInfo()
+        KVNProgress.dismiss()
     }
     
     func loadMore() {
@@ -130,15 +140,17 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     
     func updateUI() {
         let currentTime = CMTimeGetSeconds(AudioProvider.sharedInstance.player.currentTime())
-        var time = String(format: "%02d:%02d", arguments: [Int(currentTime / 60), Int(currentTime % 60)])
-        self.currentSecondsLabel.text = time
-        let duration = self.SongProgressSlider.maximumValue
-        time = String(format: "%02d:%02d", arguments: [(Int(duration) - Int(currentTime)) / 60, (Int(duration) - Int(currentTime)) % 60])
-        self.secondsLeftLabel.text = time
+        if !currentTime.isNaN {
+            var time = String(format: "%02d:%02d", arguments: [Int(currentTime / 60), Int(currentTime % 60)])
+            self.currentSecondsLabel.text = time
+            let duration = self.SongProgressSlider.maximumValue
+            time = String(format: "%02d:%02d", arguments: [(Int(duration) - Int(currentTime)) / 60, (Int(duration) - Int(currentTime)) % 60])
+            self.secondsLeftLabel.text = time
+        }
     }
     
     func updateSongInfo() {
-        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("UpadateSliderValue"), userInfo: nil, repeats: true)
+        NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("UpdateSliderValue"), userInfo: nil, repeats: true)
         self.coverImage.image = AudioProvider.sharedInstance.coverImage
         self.SongTtitleLabel.text = AudioProvider.sharedInstance.currentSong.title
         self.SongArtistLabel.text = AudioProvider.sharedInstance.currentSong.artist
@@ -147,12 +159,15 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        KVNProgress.configuration().fullScreen = true
+        KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+        KVNProgress.showWithStatus("Загрузка трека")
         self.coverImage.userInteractionEnabled = true
         let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("doneButtonClick:"))
         downSwipe.direction = UISwipeGestureRecognizerDirection.Down
         self.coverImage.addGestureRecognizer(downSwipe)
         if AudioProvider.sharedInstance.player.rate == 1.0 {
-            UpadateSliderValue()
+            UpdateSliderValue()
         }
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
@@ -171,14 +186,18 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
                     AudioProvider.sharedInstance.startPlayer(currentSongIndex)
                 }
             }
-            
         }
-
+        if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == AudioProvider.sharedInstance.playlist[currentSongIndex].id {
+            self.finishLoadingSong()
+        }
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         AudioProvider.sharedInstance.delegate = self
-        updateSongInfo()
+        if AudioProvider.sharedInstance.currentSong != nil {
+            updateSongInfo()
+        }
         if AudioProvider.sharedInstance.player.rate == 0.0 {
             self.playPauseButton.setImage(UIImage(named:"Play"), forState:UIControlState.Normal)
         } else {
@@ -247,10 +266,14 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     }
     
     func addSongToPlaylist(song: Song) {
-        let vc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistsTableViewController") as! PlaylistsTableViewController
+        let nvc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController
+        let vc = nvc.viewControllers[0] as! PlaylistsTableViewController
         vc.isSelection = true
         vc.song = song
-        self.showDetailViewController(vc, sender: self)
+        vc.navigationItem.title = "Добавление в плейлист"
+        vc.navigationItem.rightBarButtonItem = nil
+        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
+        self.showDetailViewController(nvc, sender: self)
     }
     
     func removeSongFromPlaylistAlertActionClick(song: Song, index: Int) {

@@ -8,7 +8,8 @@
 
 import UIKit
 import VK_ios_sdk
-
+import Alamofire
+import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
@@ -54,6 +55,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         //VKInfo.sharedInstance.UserID = VKSdk.getAccessToken().userId
+        Alamofire.request(.GET, "http://api.vkontakte.ru/method/users.get?uids="+VKSdk.getAccessToken().userId+"&fields=photo_200").responseJSON(completionHandler: {(response) -> Void in
+            let json = JSON(response.result.value!)
+            print(json.description)
+            let userImagePath = json["response"][0]["photo_200"].stringValue
+            let fullName = json["response"][0]["first_name"].stringValue + " " + json["response"][0]["last_name"].stringValue
+            let destination = Alamofire.Request.suggestedDownloadDestination(directory: .DocumentDirectory, domain: .UserDomainMask)
+            Alamofire.download(.GET, userImagePath, destination: destination).response { request, response, _, error in
+                let URL = destination(NSURL(string: "")!, response!)
+                let ImagelocalUrl = URL.path
+                DataBaseManager.sharedInstance.addUserInfoToDataBase([fullName, ImagelocalUrl!])
+            }
+
+        })
+
         let vc = storyboard.instantiateViewControllerWithIdentifier("revealController")
         self.window?.rootViewController = vc
         UITabBar.appearance().tintColor = GlobalConstants.colors.VKBlue
@@ -96,13 +111,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
         if event!.type == UIEventType.RemoteControl {
             if event!.subtype == UIEventSubtype.RemoteControlPlay {
-                print("received remote play")
                 AudioProvider.sharedInstance.player.play()
             } else if event!.subtype == UIEventSubtype.RemoteControlPause {
-                print("received remote pause")
                 AudioProvider.sharedInstance.player.pause()
             } else if event!.subtype == UIEventSubtype.RemoteControlNextTrack {
-                print("received nex")
                 AudioProvider.sharedInstance.forward()
             } else if event!.subtype == UIEventSubtype.RemoteControlPreviousTrack {
                 AudioProvider.sharedInstance.rewind()

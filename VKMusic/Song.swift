@@ -19,6 +19,7 @@ class Song: NSObject {
     var isPlaying = false
     var inPlaylst = false
     var downloadId: Int
+    var canPlay = true
     
     init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int) {
         self.title = title
