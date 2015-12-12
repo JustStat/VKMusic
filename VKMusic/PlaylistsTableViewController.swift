@@ -262,8 +262,8 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
                 playlistSongs = self.dataManager.songs
             }
             for song in playlistSongs {
-                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount)
                 AudioProvider.sharedInstance.nextCount++
+                AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount)
             }
             self.showStatus(false, isAddition: true)
         }))
