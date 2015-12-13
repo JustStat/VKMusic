@@ -29,6 +29,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     @IBOutlet weak var SongTtitleLabel: UILabel!
     @IBOutlet weak var secondsLeftLabel: UILabel!
     @IBOutlet weak var currentSecondsLabel: UILabel!
+    var volumeControl: MPVolumeView!
     var currentSongIndex = 0
     var isChangingTime = false
     var wasPlaying = false
@@ -170,7 +171,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
             UpdateSliderValue()
         }
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
-        let volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
+        volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
         volumeControl.tintColor = GlobalConstants.colors.VKBlue
         volumeControl.sizeToFit()
@@ -191,6 +192,11 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
             self.finishLoadingSong()
         }
         
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        volumeControl.frame = self.VolumeControlView.bounds
     }
     
     override func viewWillAppear(animated: Bool) {
