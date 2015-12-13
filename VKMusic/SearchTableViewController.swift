@@ -44,6 +44,15 @@ class SearchTableViewController: MusicTableViewController, UISearchBarDelegate, 
         headerView.addSubview(searchBar)
         self.navigationController!.view.addSubview(headerView)
         self.tableView.contentInset = UIEdgeInsetsMake(88,0,0,0);
+        AudioProvider.sharedInstance.delegate = self
+        if AudioProvider.sharedInstance.currentSong != nil {
+            self.navigationController?.toolbar.hidden = false
+            self.preparePalayerInfoBar()
+        } else {
+            self.navigationController?.toolbar.hidden = true
+        }
+        self.tableView.reloadData()
+
     }
     
     override func prefersStatusBarHidden() -> Bool {

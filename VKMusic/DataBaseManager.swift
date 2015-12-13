@@ -25,6 +25,19 @@ class DataBaseManager: NSObject {
         db.close()
     }
     
+    func reloadDB() {
+        db.close()
+        db.open()
+    }
+    
+    func removeDownloadsDB() {
+        if db != nil {
+            if db.tableExists("downloads") {
+                db.executeUpdate("DROP TABLE downloads", withArgumentsInArray: [])
+            }
+        }
+    }
+    
     //MARK: Songs DB Managment
     
     func GetSongsFromDataBase(table: String, offset: Int) -> [Song] {

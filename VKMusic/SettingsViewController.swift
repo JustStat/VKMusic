@@ -29,14 +29,17 @@ class SettingsViewController: UIViewController, PKRevealing {
     }
     @IBAction func deleteDownloadedContent() {
         let docFolder = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)[0]
-        do {let docContent = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(docFolder)
-            for file in docContent {
-                print(docFolder.stringByAppendingString(file))
-                try NSFileManager.defaultManager().removeItemAtPath(docFolder.stringByAppendingString("/" + file))
+        do {let docContent: NSArray = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(docFolder)
+            let mp3Files = docContent.filteredArrayUsingPredicate(NSPredicate(format: "self ENDSWITH '.mp3'"))
+            for file in mp3Files {
+                print(docFolder.stringByAppendingString(file as! String))
+                try NSFileManager.defaultManager().removeItemAtPath(docFolder.stringByAppendingString("/" + (file as! String)))
             }
             let alertController = UIAlertController(title: "Удаление", message: "Загруженные файлы были успешно удалены", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "ОК", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alertController, animated: true, completion: nil)
+            DataBaseManager.sharedInstance.removeDownloadsDB()
+            DataBaseManager.sharedInstance.reloadDB()
         } catch {
             print("Error while deleting")
         }
@@ -44,6 +47,7 @@ class SettingsViewController: UIViewController, PKRevealing {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.toolbar.hidden = true
         openBackTableButton.target = self.revealViewController()
         openBackTableButton.action = Selector("revealToggle:")
         let userInfo = DataBaseManager.sharedInstance.getUserInfoFromDataBase()
