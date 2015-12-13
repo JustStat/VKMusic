@@ -237,7 +237,9 @@ class DataBaseManager: NSObject {
     
     func deleteUserInfoFromDataBase() {
         if db != nil {
-            db.executeUpdate("DROP TABLE UserInfo", withArgumentsInArray: [])
+            if db.tableExists("UserInfo") {
+                db.executeUpdate("DROP TABLE UserInfo", withArgumentsInArray: [])
+            }
         }
     }
     
