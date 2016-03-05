@@ -198,11 +198,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -214,11 +214,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471191504.40118"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
             landmarkName = "DataManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -244,11 +244,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471191504.40118"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
+            startingLineNumber = "98"
+            endingLineNumber = "98"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -260,11 +260,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -558,11 +558,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -588,11 +588,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -950,11 +950,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471191504.40118"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1012,11 +1012,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
             landmarkName = "viewWillLayoutSubviews()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1315,7 +1315,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
             endingLineNumber = "107"
-            landmarkName = "removeSong(_:id:)"
+            landmarkName = "addSongNewOwner(_:owner:table:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1354,11 +1354,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
             landmarkName = "DataManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -1370,11 +1370,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "removeSongFromDownloads(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1433,7 +1433,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "120"
             endingLineNumber = "120"
-            landmarkName = "getLocalPath(_:)"
+            landmarkName = "removeSong(_:id:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1492,11 +1492,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "addSongToVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1508,11 +1508,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "addSongToVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -1852,11 +1852,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "doneButtonClick(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2204,11 +2204,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
             landmarkName = "getSearchRequest(_:query:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2236,11 +2236,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2252,11 +2252,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470021634.521557"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2268,11 +2268,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "removeSongFromVK(_:)"
             landmarkType = "5">
             <Locations>
@@ -2764,11 +2764,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471535226.388436"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "addSongToVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2844,11 +2844,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "DataManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -2860,11 +2860,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
             landmarkName = "getPlaylistsFromVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -2876,11 +2876,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "271"
-            endingLineNumber = "271"
+            startingLineNumber = "273"
+            endingLineNumber = "273"
             landmarkName = "getPlaylistsFromVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3057,7 +3057,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "197"
             endingLineNumber = "197"
-            landmarkName = "AddPlaylistToDataBase(_:)"
+            landmarkName = "GetPlaylistsFormDataBase()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3073,7 +3073,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
             endingLineNumber = "196"
-            landmarkName = "AddPlaylistToDataBase(_:)"
+            landmarkName = "GetPlaylistsFormDataBase()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3089,8 +3089,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "181"
             endingLineNumber = "181"
-            landmarkName = "GetPlaylistsFormDataBase()"
-            landmarkType = "5">
+            landmarkName = "DataBaseManager"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3116,11 +3116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "DataManager"
             landmarkType = "3">
          </BreakpointContent>
@@ -3132,11 +3132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "307"
-            endingLineNumber = "307"
+            startingLineNumber = "309"
+            endingLineNumber = "309"
             landmarkName = "addPlaylistToVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3148,11 +3148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301"
+            startingLineNumber = "303"
+            endingLineNumber = "303"
             landmarkName = "addPlaylistToVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3164,11 +3164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3180,23 +3180,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127667.215668"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "VKMusic/DataManager.swift"
-            timestampString = "470127659.161387"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
@@ -3212,11 +3196,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "470149419.260392"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "57"
-            endingLineNumber = "57"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
+            landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "VKMusic/DataManager.swift"
+            timestampString = "478879510.880206"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3356,11 +3356,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "316"
-            endingLineNumber = "316"
+            startingLineNumber = "318"
+            endingLineNumber = "318"
             landmarkName = "downloadPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3388,11 +3388,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
             landmarkName = "downloadPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3404,11 +3404,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "326"
-            endingLineNumber = "326"
+            startingLineNumber = "328"
+            endingLineNumber = "328"
             landmarkName = "downloadPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3505,7 +3505,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "173"
             endingLineNumber = "173"
-            landmarkName = "GetPlaylistsFormDataBase()"
+            landmarkName = "downloadsSearchReqest(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3628,11 +3628,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "477044529.898222"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "328"
-            endingLineNumber = "328"
+            startingLineNumber = "356"
+            endingLineNumber = "356"
             landmarkName = "removeSongFromPlaylistAlertActionClick(_:index:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3740,11 +3740,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "477044529.898222"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
+            startingLineNumber = "387"
+            endingLineNumber = "387"
             landmarkName = "addSongToPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3756,11 +3756,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "477044529.898222"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "352"
-            endingLineNumber = "352"
+            startingLineNumber = "380"
+            endingLineNumber = "380"
             landmarkName = "addSongToPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3809,7 +3809,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "214"
             endingLineNumber = "214"
-            landmarkName = "RemovePlaylistFromDataBase(_:)"
+            landmarkName = "AddPlaylistToDataBase(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3900,11 +3900,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "addSongToVKPlaylist(_:albumId:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -3916,11 +3916,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "getReqest(_:params:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4028,11 +4028,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471546091.444675"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "getReqest(_:params:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4076,11 +4076,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471191504.40118"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "getDataFormVK(_:refresh:onlyMine:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4092,11 +4092,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -4108,11 +4108,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -4124,11 +4124,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -4188,11 +4188,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "243"
-            endingLineNumber = "243"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
             landmarkName = "getPlaylistsFromVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4252,11 +4252,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476288130.314038"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
             landmarkName = "updateSongInfo()"
             landmarkType = "5">
          </BreakpointContent>
@@ -4268,11 +4268,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476288130.314038"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "updateUI()"
             landmarkType = "5">
          </BreakpointContent>
@@ -4284,11 +4284,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "282"
-            endingLineNumber = "282"
+            startingLineNumber = "284"
+            endingLineNumber = "284"
             landmarkName = "getPlaylistsFromVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4300,11 +4300,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283"
+            startingLineNumber = "285"
+            endingLineNumber = "285"
             landmarkName = "getPlaylistsFromVK(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4348,11 +4348,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
             landmarkName = "addSongToVKPlaylist(_:albumId:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4476,11 +4476,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
             landmarkName = "addSongToVKPlaylist(_:albumId:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4492,11 +4492,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "188"
-            endingLineNumber = "188"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "addSongToVKPlaylist(_:albumId:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4684,11 +4684,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471546091.444675"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
             landmarkName = "getReqest(_:params:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4700,11 +4700,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471546158.546808"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "147"
-            endingLineNumber = "147"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "getReqest(_:params:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4716,11 +4716,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "200"
-            endingLineNumber = "200"
+            startingLineNumber = "202"
+            endingLineNumber = "202"
             landmarkName = "checkSongExistanceInPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4732,11 +4732,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "checkSongExistanceInPlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4844,11 +4844,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "472882354.588862"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
             landmarkName = "removeSongFromVKPlaylist(_:playlist:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -4860,11 +4860,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "478873306.305422"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "351"
-            endingLineNumber = "351"
+            startingLineNumber = "353"
+            endingLineNumber = "353"
             landmarkName = "removePlaylist(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5020,11 +5020,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "471760258.209374"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
             landmarkName = "removeSongFromDownloads(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5052,11 +5052,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "219"
-            endingLineNumber = "219"
+            startingLineNumber = "247"
+            endingLineNumber = "247"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5100,11 +5100,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/DataManager.swift"
-            timestampString = "474302740.004736"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "getReqest(_:params:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5212,11 +5212,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -5228,11 +5228,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
@@ -5244,11 +5244,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546268.874585"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5260,11 +5260,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "477044529.898222"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
             landmarkName = "viewDidAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5276,11 +5276,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546102.594339"
+            timestampString = "478879510.880206"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "finishLoadingSong()"
             landmarkType = "5">
          </BreakpointContent>
@@ -5292,11 +5292,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "477044529.898222"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
+            startingLineNumber = "287"
+            endingLineNumber = "287"
             landmarkName = "viewDidAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5308,11 +5308,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546268.874585"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "285"
+            endingLineNumber = "285"
             landmarkName = "viewDidAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5324,11 +5324,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546229.081028"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
+            startingLineNumber = "248"
+            endingLineNumber = "248"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5340,11 +5340,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546245.88234"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -5356,11 +5356,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VKMusic/PlayerViewController.swift"
-            timestampString = "476546325.542452"
+            timestampString = "478881993.288681"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "253"
-            endingLineNumber = "253"
+            startingLineNumber = "281"
+            endingLineNumber = "281"
             landmarkName = "viewWillAppear(_:)"
             landmarkType = "5">
          </BreakpointContent>

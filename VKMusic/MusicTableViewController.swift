@@ -506,7 +506,7 @@ class MusicTableViewController: UITableViewController, SongTableViewCellDelegate
     }
     
     func addSongToPlaylist(song: Song) {
-        if self.number != 0 {
+        if song.ownerId != Int(VKSdk.getAccessToken().userId) {
             let alertController = UIAlertController(title: "Трек \(song.title) - \(song.artist) также будет добавлен в \"Моя музыка\"", message: "Продолжить?", preferredStyle: .Alert)
             alertController.addAction(UIAlertAction(title: "Ок", style: .Default, handler: {(alert) -> Void in
                 let nvc = self.storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController

@@ -50,6 +50,7 @@ class DataManager: NSObject {
                     let id = json[i]["id"].intValue
                     let local = DataBaseManager.sharedInstance.getLocalPath(id)
                     let ownerId = json[i]["owner_id"].intValue
+                    let lyricsId = json[i]["lyrics_id"].intValue
                     if onlyMine {
                         if VKSdk.getAccessToken() != nil {
                             if ownerId != Int(VKSdk.getAccessToken().userId) {
@@ -57,7 +58,7 @@ class DataManager: NSObject {
                             }
                         }
                     }
-                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId, lyricsId: lyricsId)
                     self.songs.append(song)
                 }
             } else {
@@ -70,6 +71,7 @@ class DataManager: NSObject {
                     let id = json["items"][i]["id"].intValue
                     let local = DataBaseManager.sharedInstance.getLocalPath(id)
                     let ownerId = json["items"][i]["owner_id"].intValue
+                    let lyricsId = json["items"][i]["lyrics_id"].intValue
                     if onlyMine {
                         if VKSdk.getAccessToken() != nil {
                             print(VKSdk.getAccessToken().userId)
@@ -78,7 +80,7 @@ class DataManager: NSObject {
                             }
                         }
                     }
-                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId)
+                    let song = Song(title: title, artist: artist, duration: duration, url: url, localUrl: local, id: id, ownerId: ownerId, lyricsId: lyricsId)
                     self.songs.append(song)
                 }
             }

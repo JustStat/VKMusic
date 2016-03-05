@@ -16,12 +16,13 @@ class Song: NSObject {
     var localUrl: String!
     var id: Int!
     var ownerId: Int!
+    var lyricsId: Int!
     var isPlaying = false
     var inPlaylst = false
     var downloadId: Int
     var canPlay = true
     
-    init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int) {
+    init(title: String, artist: String, duration: Int, url: String, localUrl: String, id: Int, ownerId: Int, lyricsId: Int) {
         self.title = title
         self.artist = artist
         self.duration = duration
@@ -29,6 +30,7 @@ class Song: NSObject {
         self.localUrl = localUrl
         self.id = id
         self.ownerId = ownerId
+        self.lyricsId = lyricsId
         self.isPlaying = false
         self.downloadId = -1
     }

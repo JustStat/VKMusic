@@ -52,7 +52,7 @@ class DataBaseManager: NSObject {
                 let req = db.executeQuery("SELECT * FROM \(table) WHERE id >= \(offset) ORDER BY id LIMIT 50", withArgumentsInArray: [])
                 if req != nil {
                     while req.next() {
-                        songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("ovkid")), ownerId: Int(req.intForColumn("ownerId"))))
+                        songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("ovkid")), ownerId: Int(req.intForColumn("ownerId")), lyricsId: Int(req.intForColumn("lyricsId"))))
                     }
                 }
             } else {
@@ -68,7 +68,7 @@ class DataBaseManager: NSObject {
          //   db.open()
             print(self.docFolder)
             if !db.tableExists(table) {
-                db.executeUpdate("CREATE TABLE \(table)(id NUMBER NOT NULL, ovkid NUMBER NOT NULL, vkid NUMBER NOT NULL, ownerId NUMBER NOT NULL, title TEXT, artist TEXT, url TEXT NOT NULL, local TEXT NOT NULL, duration NUMBER NOT NULL, upTitle TEXT, upArtist TEXT)", withArgumentsInArray: [])
+                db.executeUpdate("CREATE TABLE \(table)(id NUMBER NOT NULL, ovkid NUMBER NOT NULL, vkid NUMBER NOT NULL, ownerId NUMBER NOT NULL, title TEXT, artist TEXT, url TEXT NOT NULL, local TEXT NOT NULL, duration NUMBER NOT NULL, upTitle TEXT, upArtist TEXT, lyricsId NUMBER)", withArgumentsInArray: [])
             }
             db.executeUpdate("UPDATE \(table) SET id = id + 1", withArgumentsInArray: [])
             db.executeUpdate("INSERT INTO \(table) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", withArgumentsInArray: [0, song.id, -1, song.ownerId, song.title, song.artist, song.url, song.localUrl, song.duration, song.title.uppercaseString, song.artist.uppercaseString])
@@ -165,7 +165,7 @@ class DataBaseManager: NSObject {
                     let req = db.executeQuery(request, withArgumentsInArray: [])
                     if req != nil {
                         while req.next() {
-                            songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("ovkid")), ownerId: Int(req.intForColumn("ownerId"))))
+                            songs.append(Song(title: req.stringForColumn("title"), artist: req.stringForColumn("artist"), duration: Int(req.intForColumn("duration")), url: req.stringForColumn("url"), localUrl: req.stringForColumn("local"), id: Int(req.intForColumn("ovkid")), ownerId: Int(req.intForColumn("ownerId")), lyricsId: Int(req.intForColumn("lyricsId"))))
                         }
                     }
                 }

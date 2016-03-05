@@ -13,6 +13,7 @@ import MediaPlayer
 import VK_ios_sdk
 import KVNProgress
 import MarqueeLabel
+import SwiftyJSON
 
 class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertControllerDelegate {
     @IBOutlet weak var moreButton: UIButton!
@@ -35,6 +36,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     var volumeControl: MPVolumeView!
     var songArtistLabel: MarqueeLabel!
     var songTitleLabel: MarqueeLabel!
+    var lyricsView: UITextView!
     var currentSongIndex = 0
     var isChangingTime = false
     var wasPlaying = false
@@ -164,6 +166,30 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         self.songArtistLabel.text = AudioProvider.sharedInstance.currentSong.artist
         self.SongProgressSlider.maximumValue = Float(AudioProvider.sharedInstance.currentSong.duration)
     }
+    
+    func lyricsViewClick() {
+        self.lyricsView.removeFromSuperview()
+    }
+    
+    func coverImageClick() {
+        self.lyricsView = UITextView(frame: self.coverImage.frame)
+        self.lyricsView.backgroundColor = UIColor.blackColor()
+        self.lyricsView.alpha = 0.8
+        self.lyricsView.textColor = UIColor.whiteColor()
+        self.lyricsView.font = UIFont.boldSystemFontOfSize(15)
+        self.lyricsView.textAlignment = .Center
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:Selector("lyricsViewClick"))
+        self.lyricsView.addGestureRecognizer(tapGestureRecognizer)
+        self.coverImage.addSubview(self.lyricsView)
+        let request = VKApi.requestWithMethod("audio.getLyrics", andParameters: ["lyrics_id": AudioProvider.sharedInstance.currentSong.lyricsId], andHttpMethod: "GET")
+        request.executeWithResultBlock({(response) -> Void in
+                let json = JSON(response.json)
+                print(json.description)
+                self.lyricsView.text.appendContentsOf(json["text"].stringValue)
+            }, errorBlock: {(error) -> Void in
+                self.lyricsView.text.appendContentsOf("Ошибка: Не удалось получить слова")
+        })
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -175,6 +201,8 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("doneButtonClick:"))
         downSwipe.direction = UISwipeGestureRecognizerDirection.Down
         self.coverImage.addGestureRecognizer(downSwipe)
+        let tapGestureRecognizer = UITapGestureRecognizer(target:self, action:Selector("coverImageClick"))
+        self.coverImage.addGestureRecognizer(tapGestureRecognizer)
         if AudioProvider.sharedInstance.player.rate == 1.0 {
             UpdateSliderValue()
         }
