@@ -17,5 +17,7 @@
 #import <LLACircularProgressView/LLACircularProgressView.h>
 #import <SWTableViewCell/SWTableViewCell.h>
 #import <KVNProgress/KVNProgress.h>
+#import <MarqueeLabel/MarqueeLabel.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #endif /* BridgingHeader_h */

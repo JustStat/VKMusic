@@ -15,6 +15,7 @@ import VK_ios_sdk
 protocol AudioProviderDelegate {
     func playerDidFinishPlaying(note: NSNotification)
     func finishLoadingSong()
+    func loadMore()
     //func updatePlayerInfoBar()
 }
 
@@ -139,7 +140,7 @@ class AudioProvider: NSObject {
             last = true
             self.delegate?.finishLoadingSong()
         }
-        if playlist.count > 2 && playlist.count - currentIndex < 2 {
+        if playlist.count >= 50 && playlist.count - currentIndex == 2 {
             self.loadMore()
         }
         if self.nextCount > 0 {
@@ -172,13 +173,9 @@ class AudioProvider: NSObject {
         }
     }
     
-    func setPlayerMode() {
-        
-    }
-    
     func loadMore() {
         self.dataManager.songs = self.playlist
-        if self.number != 1 && self.number != 6 && self.number != 8 {
+        if self.number != 1 && self.number != 6 && self.number != 8 && self.number != 7{
             self.request = self.dataManager.getReqest(self.number, params: [String: AnyObject]())
             if (self.request != nil) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
@@ -201,13 +198,28 @@ class AudioProvider: NSObject {
             self.request = self.dataManager.getSearchRequest(scopeIndex, query: searchText)
             if (self.request != nil) {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                    self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: true)
+                    var onlyMine = false
+                    switch self.scopeIndex {
+                    case 0:
+                        onlyMine = true
+                    default:
+                        onlyMine = false
+                    }
+                    self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: onlyMine)
                     self.playlist = self.dataManager.songs
                 }
             }
         } else if self.number == 1{
             self.dataManager.songs += DataBaseManager.sharedInstance.GetSongsFromDataBase("downloads", offset: self.dataManager.songs.count)
             self.playlist = self.dataManager.songs
+        } else if self.number == 7 {
+            self.request = self.dataManager.getReqest(self.number, params: ["friendId":self.viewPlaylist.id])
+            if (self.request != nil) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                    self.dataManager.getDataFormVK(self.request, refresh: false, onlyMine: false)
+                    self.playlist = self.dataManager.songs
+                }
+            }
         }
     }
     

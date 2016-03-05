@@ -96,11 +96,22 @@ class DataBaseManager: NSObject {
         if db != nil {
          //   db.open()
             if db.tableExists("downloads") {
-                _ = db.executeUpdate("UPDATE \(table) SET vkid = ? WHERE ovkid = ?", withArgumentsInArray: [newId, id])
+                db.executeUpdate("UPDATE \(table) SET vkid = ? WHERE ovkid = ?", withArgumentsInArray: [newId, id])
             }
         //    db.close()
         }
 
+    }
+    
+    func addSongNewOwner(id: Int, owner: Int, table: String) {
+        if db != nil {
+            //   db.open()
+            if db.tableExists("downloads") {
+                db.executeUpdate("UPDATE \(table) SET ownerId = ? WHERE ovkid = ?", withArgumentsInArray: [owner, id])
+            }
+            //    db.close()
+        }
+ 
     }
     
     func removeSong(table: String, id: Int) {

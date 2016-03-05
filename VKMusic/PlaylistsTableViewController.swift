@@ -153,7 +153,8 @@ class PlaylistsTableViewController: UITableViewController, UIAlertViewDelegate, 
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier("FriendsTableViewCell", forIndexPath: indexPath)
             cell.textLabel?.text = self.dataManager.vkPlylists[indexPath.row].name
-            cell.imageView?.image = self.dataManager.vkPlylists[indexPath.row].image
+            cell.imageView?.sd_setImageWithURL(NSURL(string: self.dataManager.vkPlylists[indexPath.row].imageURL!), placeholderImage: UIImage(named: "UserIcon"))
+
             return cell
         }
     }

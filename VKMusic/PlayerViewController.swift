@@ -12,12 +12,15 @@ import AVKit
 import MediaPlayer
 import VK_ios_sdk
 import KVNProgress
+import MarqueeLabel
 
 class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertControllerDelegate {
     @IBOutlet weak var moreButton: UIButton!
     @IBOutlet weak var broadCastButton: UIButton!
+    @IBOutlet weak var controlsView: UIView!
     @IBOutlet weak var VolumeControlView: UIView!
     @IBOutlet weak var coverImage: UIImageView!
+    @IBOutlet weak var mainView: UIView!
     @IBOutlet weak var songProgressBar: UIView!
     @IBOutlet weak var playModeButton: UIButton!
     @IBOutlet weak var shuffleButton: UIButton!
@@ -25,15 +28,18 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     @IBOutlet weak var SongProgressSlider: UISlider!
     @IBOutlet weak var skipToNextButton: UIButton!
     @IBOutlet weak var playPauseButton: UIButton!
-    @IBOutlet weak var SongArtistLabel: UILabel!
-    @IBOutlet weak var SongTtitleLabel: UILabel!
+    @IBOutlet weak var songArtistLabelView: UIView!
+    @IBOutlet weak var songTitleLabelView: UIView!
     @IBOutlet weak var secondsLeftLabel: UILabel!
     @IBOutlet weak var currentSecondsLabel: UILabel!
     var volumeControl: MPVolumeView!
+    var songArtistLabel: MarqueeLabel!
+    var songTitleLabel: MarqueeLabel!
     var currentSongIndex = 0
     var isChangingTime = false
     var wasPlaying = false
     var dataManager = DataManager()
+    var songIsLoaded = false
     @IBAction func startEditingTime(sender: AnyObject) {
         self.isChangingTime = true
         if AudioProvider.sharedInstance.player.rate == 1.0 {
@@ -128,6 +134,7 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     func finishLoadingSong() {
         self.updateSongInfo()
         KVNProgress.dismiss()
+        songIsLoaded = true
     }
     
     func loadMore() {
@@ -153,16 +160,17 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     func updateSongInfo() {
         NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("UpdateSliderValue"), userInfo: nil, repeats: true)
         self.coverImage.image = AudioProvider.sharedInstance.coverImage
-        self.SongTtitleLabel.text = AudioProvider.sharedInstance.currentSong.title
-        self.SongArtistLabel.text = AudioProvider.sharedInstance.currentSong.artist
+        self.songTitleLabel.text = AudioProvider.sharedInstance.currentSong.title
+        self.songArtistLabel.text = AudioProvider.sharedInstance.currentSong.artist
         self.SongProgressSlider.maximumValue = Float(AudioProvider.sharedInstance.currentSong.duration)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        songIsLoaded = false
         KVNProgress.configuration().fullScreen = true
         KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
-        KVNProgress.showWithStatus("Загрузка трека")
+        KVNProgress.configuration().minimumDisplayTime = 2
         self.coverImage.userInteractionEnabled = true
         let downSwipe = UISwipeGestureRecognizer(target: self, action: Selector("doneButtonClick:"))
         downSwipe.direction = UISwipeGestureRecognizerDirection.Down
@@ -170,6 +178,16 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         if AudioProvider.sharedInstance.player.rate == 1.0 {
             UpdateSliderValue()
         }
+        songArtistLabelView.backgroundColor = UIColor.clearColor()
+        songArtistLabel = MarqueeLabel(frame: self.songArtistLabelView.bounds, duration: 8, andFadeLength: 10)
+        songArtistLabel.textAlignment = .Center
+        songArtistLabel.sizeToFit()
+        songArtistLabelView.addSubview(songArtistLabel)
+        songTitleLabelView.backgroundColor = UIColor.clearColor()
+        songTitleLabel = MarqueeLabel(frame: self.songTitleLabelView.bounds, duration: 8, andFadeLength: 10)
+        songTitleLabel.textAlignment = .Center
+        songTitleLabel.sizeToFit()
+        songTitleLabelView.addSubview(songTitleLabel)
         self.VolumeControlView.backgroundColor = UIColor.clearColor()
         volumeControl = MPVolumeView(frame: self.VolumeControlView.bounds)
         volumeControl.showsRouteButton = false
@@ -188,18 +206,20 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
                 }
             }
         }
-        if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == AudioProvider.sharedInstance.playlist[currentSongIndex].id {
-            self.finishLoadingSong()
-        }
-        
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         volumeControl.frame = self.VolumeControlView.bounds
+        songArtistLabel.frame = self.songArtistLabelView.bounds
+        songTitleLabel.frame = self.songTitleLabelView.bounds
     }
     
+    
     override func viewWillAppear(animated: Bool) {
+        if !songIsLoaded {
+            KVNProgress.showWithStatus("Загрузка трека")
+        }
         AudioProvider.sharedInstance.delegate = self
         if AudioProvider.sharedInstance.currentSong != nil {
             updateSongInfo()
@@ -229,6 +249,15 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
         } else {
             self.broadCastButton.setImage(UIImage(named: "MegaphoneFilled"), forState: .Normal)
         }
+        if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == AudioProvider.sharedInstance.playlist[currentSongIndex].id {
+            KVNProgress.dismiss()
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        if AudioProvider.sharedInstance.currentSong != nil && AudioProvider.sharedInstance.currentSong.id == AudioProvider.sharedInstance.playlist[currentSongIndex].id {
+            KVNProgress.dismiss()
+        }
     }
     
 
@@ -254,52 +283,104 @@ class PlayerViewController: UIViewController, AudioProviderDelegate, SongAlertCo
     
     //SongAlertControllerDelegate FUNCS
     
-    func addSongToVKAlertActonClick(song: Song) {
-        self.dataManager.addSongToVK(song)
-    }
-    
-    func removeSongFromVKAlertActionClick(song: Song, index: Int) {
-        self.dataManager.removeSongFromVK(song)
-    }
-    
-    func removeSongFromDownloadsAlertActionClick(song: Song, index: Int) {
-        self.dataManager.removeSongFromDownloads(song)
+    func showStatus(error: Bool, isAddition: Bool) {
+        if !error {
+            KVNProgress.configuration().minimumSuccessDisplayTime = 2
+            KVNProgress.configuration().successColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().fullScreen = true
+            if isAddition {
+                KVNProgress.showSuccessWithStatus("Добавлено")
+            } else {
+                KVNProgress.showSuccessWithStatus("Удалено")
+            }
+        } else {
+            KVNProgress.configuration().minimumErrorDisplayTime = 2
+            KVNProgress.configuration().errorColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().statusColor = GlobalConstants.colors.VKBlue
+            KVNProgress.configuration().fullScreen = true
+            KVNProgress.showErrorWithStatus("Ошибка")
+        }
     }
 
     
-    func addSongToDownloads(song: Song) {
-        DownloadManager.sharedInstance.donloadSong(song, playlistId: -1)
+    func addSongToVKAlertActonClick(song: Song) {
+        var error = false
+        (error, _) = self.dataManager.addSongToVK(song)
+        showStatus(error, isAddition: true)
     }
     
-    func addSongToPlaylist(song: Song) {
-        let nvc = storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController
-        let vc = nvc.viewControllers[0] as! PlaylistsTableViewController
-        vc.isSelection = true
-        vc.song = song
-        vc.navigationItem.title = "Добавление в плейлист"
-        vc.navigationItem.rightBarButtonItem = nil
-        vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
-        self.showDetailViewController(nvc, sender: self)
+    func addSongToDownloads(song: Song) {
+        DownloadManager.sharedInstance.donloadSong(song, playlistId: -1)
+        showStatus(false, isAddition: true)
+    }
+    
+    func removeSongFromVKAlertActionClick(song: Song, index: Int) {
+        let error = self.dataManager.removeSongFromVK(song)
+        showStatus(error, isAddition: false)
+    }
+    
+    func removeSongFromDownloadsAlertActionClick(song: Song, index: Int) {
+        let error = self.dataManager.removeSongFromDownloads(song)
+        showStatus(error, isAddition: false)
     }
     
     func removeSongFromPlaylistAlertActionClick(song: Song, index: Int) {
         //
+            }
+    
+    func addSongToPlaylist(song: Song) {
+        if song.ownerId != Int(VKSdk.getAccessToken().userId) {
+            let alertController = UIAlertController(title: "Трек \(song.title) - \(song.artist) также будет добавлен в \"Моя музыка\"", message: "Продолжить?", preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "Ок", style: .Default, handler: {(alert) -> Void in
+                let nvc = self.storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController
+                let vc = nvc.viewControllers[0] as! PlaylistsTableViewController
+                vc.isSelection = true
+                vc.song = song
+                let (_, newId) = self.dataManager.addSongToVK(song)
+                vc.song.id = newId
+                vc.song.ownerId = Int(VKSdk.getAccessToken().userId)
+                vc.navigationItem.title = "Добавление в плейлист"
+                vc.navigationItem.rightBarButtonItem = nil
+                vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
+                self.showDetailViewController(nvc, sender: self)
+            }))
+            alertController.addAction(UIAlertAction(title: "Отмена", style: .Cancel, handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        } else {
+            let nvc = self.storyboard!.instantiateViewControllerWithIdentifier("PlaylistNC") as! UINavigationController
+            let vc = nvc.viewControllers[0] as! PlaylistsTableViewController
+            vc.isSelection = true
+            vc.song = song
+            vc.navigationItem.title = "Добавление в плейлист"
+            vc.navigationItem.rightBarButtonItem = nil
+            vc.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: vc, action: Selector("dismissView"))
+            self.showDetailViewController(nvc, sender: self)
+        }
     }
     
     func playNextAlertActionClick(song: Song) {
-        print(AudioProvider.sharedInstance.playlist.count)
-        print(AudioProvider.sharedInstance.currentIndex + 1)
-        if AudioProvider.sharedInstance.playlist.count <= AudioProvider.sharedInstance.currentIndex + 1 {
-             AudioProvider.sharedInstance.playlist.append(song)
-        } else {
-            AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + 1)
-        }
+        AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + 1)
         AudioProvider.sharedInstance.nextCount++
+        showStatus(false, isAddition: true)
     }
     
     func addToNext(song: Song) {
         AudioProvider.sharedInstance.playlist.insert(song, atIndex: AudioProvider.sharedInstance.currentIndex + AudioProvider.sharedInstance.nextCount + 1)
         AudioProvider.sharedInstance.nextCount++
+        showStatus(false, isAddition: true)
+    }
+    
+    func getSongRecomendations(song: Song) {
+        let nvc = self.storyboard!.instantiateViewControllerWithIdentifier("mainNavController") as! UINavigationController
+        let vc = nvc.viewControllers[0] as! MusicTableViewController
+        vc.number = 8
+        vc.song = song
+        vc.canUpdateInterface = false
+        vc.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: vc, action: Selector("dismissView"))
+        vc.navigationItem.leftBarButtonItem = nil
+        self.showDetailViewController(nvc, sender: self)
+
     }
     
     //SongAlertControllerDelegate ENDS

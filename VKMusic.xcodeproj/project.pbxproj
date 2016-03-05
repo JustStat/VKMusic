@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01C0BBC70E1EAAA3C2DD20B8 /* Pods_VKMusic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2E6CC3E8339184424F2CC3C /* Pods_VKMusic.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		140D402D1BFDF7C0009B0EE8 /* PlaylistTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140D402C1BFDF7C0009B0EE8 /* PlaylistTableViewCell.swift */; };
 		140D402F1BFDFEC3009B0EE8 /* PlaylistsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140D402E1BFDFEC3009B0EE8 /* PlaylistsTableViewController.swift */; };
 		140D40311C04186C009B0EE8 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140D40301C04186C009B0EE8 /* Playlist.swift */; };
@@ -37,6 +36,7 @@
 		147DA4AB1BE50A0B008BBEC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 147DA4A91BE50A0B008BBEC9 /* LaunchScreen.storyboard */; };
 		14F8DBE01BE86EB4002B66D4 /* PlayerInfoBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F8DBDF1BE86EB4002B66D4 /* PlayerInfoBar.swift */; };
 		14F8DBE21BE89448002B66D4 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F8DBE11BE89448002B66D4 /* DownloadManager.swift */; };
+		6D89C4E455CC132F0807FDB4 /* Pods_VKMusic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB87A733DEFA56D4602861D4 /* Pods_VKMusic.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,9 +73,9 @@
 		147DA4B21BE516D2008BBEC9 /* BridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		14F8DBDF1BE86EB4002B66D4 /* PlayerInfoBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerInfoBar.swift; sourceTree = "<group>"; };
 		14F8DBE11BE89448002B66D4 /* DownloadManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
-		633CD11EA95D83E8B2C27953 /* Pods-VKMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKMusic.release.xcconfig"; path = "Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic.release.xcconfig"; sourceTree = "<group>"; };
-		9F6A0DD0CC89B2B2743D44B1 /* Pods-VKMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic.debug.xcconfig"; sourceTree = "<group>"; };
-		C2E6CC3E8339184424F2CC3C /* Pods_VKMusic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VKMusic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AE2C444D0125E63C28013EA /* Pods-VKMusic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKMusic.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic.debug.xcconfig"; sourceTree = "<group>"; };
+		9C3D5DB70D53A3D2F70A8E71 /* Pods-VKMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VKMusic.release.xcconfig"; path = "Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic.release.xcconfig"; sourceTree = "<group>"; };
+		BB87A733DEFA56D4602861D4 /* Pods_VKMusic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VKMusic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01C0BBC70E1EAAA3C2DD20B8 /* Pods_VKMusic.framework in Frameworks */,
+				6D89C4E455CC132F0807FDB4 /* Pods_VKMusic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,8 +106,8 @@
 			children = (
 				147DA49F1BE50A0B008BBEC9 /* VKMusic */,
 				147DA49E1BE50A0B008BBEC9 /* Products */,
-				594BF8DBB4BD32F772764208 /* Pods */,
-				C5F309AC915E0C89F26BD7D2 /* Frameworks */,
+				2176068A8D5BDB58C6D1BE68 /* Pods */,
+				CFBB8634D22A2EE0C09C3727 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -155,19 +155,19 @@
 			path = VKMusic;
 			sourceTree = "<group>";
 		};
-		594BF8DBB4BD32F772764208 /* Pods */ = {
+		2176068A8D5BDB58C6D1BE68 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				9F6A0DD0CC89B2B2743D44B1 /* Pods-VKMusic.debug.xcconfig */,
-				633CD11EA95D83E8B2C27953 /* Pods-VKMusic.release.xcconfig */,
+				6AE2C444D0125E63C28013EA /* Pods-VKMusic.debug.xcconfig */,
+				9C3D5DB70D53A3D2F70A8E71 /* Pods-VKMusic.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		C5F309AC915E0C89F26BD7D2 /* Frameworks */ = {
+		CFBB8634D22A2EE0C09C3727 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				C2E6CC3E8339184424F2CC3C /* Pods_VKMusic.framework */,
+				BB87A733DEFA56D4602861D4 /* Pods_VKMusic.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -179,12 +179,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 147DA4AF1BE50A0B008BBEC9 /* Build configuration list for PBXNativeTarget "VKMusic" */;
 			buildPhases = (
-				79D17D07BD43ADAED14BE4EC /* Check Pods Manifest.lock */,
+				7555B047EF0AADEB0E261401 /* Check Pods Manifest.lock */,
 				147DA4991BE50A0B008BBEC9 /* Sources */,
 				147DA49A1BE50A0B008BBEC9 /* Frameworks */,
 				147DA49B1BE50A0B008BBEC9 /* Resources */,
-				996F32BDCB4E220C67173075 /* Embed Pods Frameworks */,
-				5797ECABA0E52C5CBEE45CEF /* Copy Pods Resources */,
+				2FDD701F278CA47CD56A879F /* Embed Pods Frameworks */,
+				FE6248D2E97E6913D36C2E15 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -248,22 +248,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5797ECABA0E52C5CBEE45CEF /* Copy Pods Resources */ = {
+		2FDD701F278CA47CD56A879F /* Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		79D17D07BD43ADAED14BE4EC /* Check Pods Manifest.lock */ = {
+		7555B047EF0AADEB0E261401 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -278,19 +278,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		996F32BDCB4E220C67173075 /* Embed Pods Frameworks */ = {
+		FE6248D2E97E6913D36C2E15 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VKMusic/Pods-VKMusic-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -386,7 +386,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -424,7 +424,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -433,13 +433,14 @@
 		};
 		147DA4B01BE50A0B008BBEC9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9F6A0DD0CC89B2B2743D44B1 /* Pods-VKMusic.debug.xcconfig */;
+			baseConfigurationReference = 6AE2C444D0125E63C28013EA /* Pods-VKMusic.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = VKMusic/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mayak.vkmusic;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mayaik.musicvk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = VKMusic/BridgingHeader.h;
 			};
@@ -447,13 +448,14 @@
 		};
 		147DA4B11BE50A0B008BBEC9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 633CD11EA95D83E8B2C27953 /* Pods-VKMusic.release.xcconfig */;
+			baseConfigurationReference = 9C3D5DB70D53A3D2F70A8E71 /* Pods-VKMusic.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = VKMusic/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.mayak.vkmusic;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mayaik.musicvk;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = VKMusic/BridgingHeader.h;
 			};

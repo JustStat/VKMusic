@@ -110,14 +110,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, VKSdkDelegate {
     
     override func remoteControlReceivedWithEvent(event: UIEvent?) {
         if event!.type == UIEventType.RemoteControl {
-            if event!.subtype == UIEventSubtype.RemoteControlPlay {
+            switch event!.subtype {
+            case .RemoteControlPlay:
                 AudioProvider.sharedInstance.player.play()
-            } else if event!.subtype == UIEventSubtype.RemoteControlPause {
-                AudioProvider.sharedInstance.player.pause()
-            } else if event!.subtype == UIEventSubtype.RemoteControlNextTrack {
-                AudioProvider.sharedInstance.forward()
-            } else if event!.subtype == UIEventSubtype.RemoteControlPreviousTrack {
+                break
+            case .RemoteControlPreviousTrack:
                 AudioProvider.sharedInstance.rewind()
+                break
+            case .RemoteControlPause:
+                AudioProvider.sharedInstance.player.pause()
+                break
+            case .RemoteControlNextTrack:
+                AudioProvider.sharedInstance.forward()
+                break
+            case .RemoteControlBeginSeekingForward:
+                AudioProvider.sharedInstance.player.rate = 2
+            case .RemoteControlEndSeekingForward:
+                AudioProvider.sharedInstance.player.rate = 1
+            case .RemoteControlBeginSeekingBackward:
+                AudioProvider.sharedInstance.player.rate = -2
+            case .RemoteControlEndSeekingBackward:
+                AudioProvider.sharedInstance.player.rate = 1
+            case .RemoteControlTogglePlayPause:
+                if AudioProvider.sharedInstance.player.rate == 1 {
+                    AudioProvider.sharedInstance.player.pause()
+                } else {
+                    AudioProvider.sharedInstance.player.play()
+                }
+                break
+            default:
+                break
             }
         }
     }

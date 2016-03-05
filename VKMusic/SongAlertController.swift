@@ -19,6 +19,7 @@ protocol SongAlertControllerDelegate {
     func removeSongFromPlaylistAlertActionClick(song: Song, index: Int)
     func playNextAlertActionClick(song: Song)
     func addToNext(song: Song)
+    func getSongRecomendations(song: Song)
 }
 
 class SongAlertController: UIAlertController {
@@ -26,7 +27,6 @@ class SongAlertController: UIAlertController {
     var delegate: SongAlertControllerDelegate?
     var song: Song!
     var index: Int!
-    var isMyMusic = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,23 +43,29 @@ class SongAlertController: UIAlertController {
                 (button).enabled = false
             }
         }
+        
         self.addAction(UIAlertAction(title: "Воспроизвести далее", style: .Default, handler: {(alert) -> Void in
             self.delegate?.playNextAlertActionClick(self.song)
         }))
+        
         self.addAction(UIAlertAction(title: "Добавить в \"Далее\"", style: .Default, handler: {(alert) -> Void in
             self.delegate?.addToNext(self.song)
         }))
+        
         if self.song.ownerId != Int(VKSdk.getAccessToken().userId) {
             self.addAction(UIAlertAction(title: "Добавить в \"Моя Музыка\"", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in
                 self.delegate?.addSongToVKAlertActonClick(self.song)
             }))
         }
-        //if isMyMusic {
-            self.addAction(UIAlertAction(title: "Добавить в плейлист...", style: .Default, handler: {(UIAlertAction) -> Void in
-            self.delegate?.addSongToPlaylist(self.song)
+        
+        self.addAction(UIAlertAction(title: "Добавить в плейлист...", style: .Default, handler: {(UIAlertAction) -> Void in
+        self.delegate?.addSongToPlaylist(self.song)
         }))
-      //  }
+        self.addAction(UIAlertAction(title: "Рекомендации по этому треку", style: .Default, handler: {
+            (UIAlertAction) -> Void in
+            self.delegate?.getSongRecomendations(self.song)
+        }))
         if !exist {
             self.addAction(UIAlertAction(title: "Сделать доступной оффлайн", style: UIAlertActionStyle.Default, handler: {
                 (UIAlertAction) -> Void in
@@ -81,7 +87,7 @@ class SongAlertController: UIAlertController {
                 }))
         }
         
-        if self.song.inPlaylst {
+        if self.song.inPlaylst && self.song.ownerId == Int(VKSdk.getAccessToken().userId) {
             self.addAction(UIAlertAction(title: "Удалить из это плейлиста", style: UIAlertActionStyle.Default, handler: {
                 (alert) -> Void in
                     self.delegate?.removeSongFromPlaylistAlertActionClick(self.song, index: self.index)

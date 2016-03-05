@@ -9,6 +9,7 @@ PODS:
     - FMDB/common
   - KVNProgress (2.2.2)
   - LLACircularProgressView (0.1.1)
+  - MarqueeLabel (2.5.0)
   - MBProgressHUD (0.9.1)
   - PKRevealController (2.0.6)
   - SDWebImage (3.7.3):
@@ -25,6 +26,7 @@ DEPENDENCIES:
   - FMDB (from `https://github.com/ccgus/fmdb.git`, branch `swiftFramework`)
   - KVNProgress
   - LLACircularProgressView
+  - MarqueeLabel
   - MBProgressHUD (~> 0.9.1)
   - PKRevealController
   - SDWebImage (~> 3.7)
@@ -46,9 +48,10 @@ SPEC CHECKSUMS:
   Alamofire: 7c16ca65f3c7e681fd925fd7f2dec7747ff96855
   BTNavigationDropdownMenu: 23403214197d8fb208dd0ad996e3d236748473c9
   DZNEmptyDataSet: 0ec00bfc230d7450997b60c127afdd0b9f24f3b6
-  FMDB: 8e59e93d20d76d0b135db26ecc83ae88d016076d
+  FMDB: e298c06b460dc13e3a1933c092972ea9c686481c
   KVNProgress: 4697347e21e37fdaa5264ebc24e377c205a50328
   LLACircularProgressView: e179b0728217e9013cd07c2fadc7caa0c35b9199
+  MarqueeLabel: 6b8ff6915c0536c5099ac30992b7d72f9807df20
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   PKRevealController: ffb45a16f5a5032ad90a3d16e5cbb0d8e035bd58
   SDWebImage: 1d2b1a1efda1ade1b00b6f8498865f8ddedc8a84
@@ -56,4 +59,6 @@ SPEC CHECKSUMS:
   SWTableViewCell: 2a94aadc9d47b2b611fa064566bf57948b95b579
   VK-ios-sdk: f4b7df0d4e277e06d60fef6dc472be4260eeda6d
 
-COCOAPODS: 0.38.2
+PODFILE CHECKSUM: 929c369430e10483f79e4c4b71940215f96bd814
+
+COCOAPODS: 1.0.0.beta.3

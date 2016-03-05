@@ -15,5 +15,6 @@ target 'VKMusic' do
 	pod 'SDWebImage', '~>3.7'
 	pod 'SWTableViewCell', '~> 0.3.7'
 	pod 'KVNProgress'
+	pod 'MarqueeLabel'
 end
 

@@ -46,6 +46,10 @@ class CurrentPlaylistTableViewController: MusicTableViewController, SWTableViewC
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        //
+    }
+    
     func reloadPlaylist() {
         history = DataBaseManager.sharedInstance.GetSongsFromDataBase("history", offset: 0)
         history = history.reverse()
@@ -167,6 +171,7 @@ class CurrentPlaylistTableViewController: MusicTableViewController, SWTableViewC
             return cell
         } else if indexPath.section == 1 {
             let cellIdentifier = "NextTableViewCell"
+            print(indexPath.row)
             let song = AudioProvider.sharedInstance.currentSong
             let cell = self.tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! NextTableViewCell
             cell.titleLabel.text = song.title
@@ -241,7 +246,7 @@ class CurrentPlaylistTableViewController: MusicTableViewController, SWTableViewC
     }
     
     override func loadMore() {
-        AudioProvider.sharedInstance.loadMore()
+        //AudioProvider.sharedInstance.loadMore()
         self.tableView.reloadData()
     }
     

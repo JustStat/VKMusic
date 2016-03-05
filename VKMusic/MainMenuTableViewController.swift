@@ -57,12 +57,12 @@ class MainMenuTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.row < 4 {
-        if indexPath.row != curItem {
-            let vc = storyboard!.instantiateViewControllerWithIdentifier("MainMusicViewController") as! MusicTableViewController
-            vc.number = indexPath.row
-            let nvc = self.revealViewController().frontViewController as! UINavigationController
-            nvc.setViewControllers([vc], animated: false)
-        }
+            if indexPath.row != curItem {
+                let vc = storyboard!.instantiateViewControllerWithIdentifier("MainMusicViewController") as! MusicTableViewController
+                vc.number = indexPath.row
+                let nvc = self.revealViewController().frontViewController as! UINavigationController
+                nvc.setViewControllers([vc], animated: false)
+            }
         }
 
         if indexPath.row == 6 {

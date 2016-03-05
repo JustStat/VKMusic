@@ -106,6 +106,7 @@ class DataManager: NSObject {
             let json = JSON(response.json)
             newId = json.int!
             DataBaseManager.sharedInstance.addSongNewId(song.id, newId: newId, table: "downloads")
+            DataBaseManager.sharedInstance.addSongNewOwner(song.id, owner: Int(VKSdk.getAccessToken().userId)!, table: "downloads")
             }, errorBlock: {(e) -> Void in
                 print(e.description)
                 error = true
@@ -117,7 +118,9 @@ class DataManager: NSObject {
         var error = false
         let req = VKRequest(method: "audio.delete", andParameters: ["audio_id": song.id, "owner_id": song.ownerId], andHttpMethod: "GET")
         req.waitUntilDone = true
-        req.executeWithResultBlock({(response) -> Void in}, errorBlock: {(e) -> Void in
+        req.executeWithResultBlock({(response) -> Void in
+            DataBaseManager.sharedInstance.addSongNewOwner(song.id, owner: -1, table: "downloads")
+            }, errorBlock: {(e) -> Void in
             print(e.description)
             error = true})
         return error
@@ -153,6 +156,12 @@ class DataManager: NSObject {
             if params["friendId"] != nil {
                 return VKRequest(method: "audio.get", andParameters: [VK_API_USER_ID: Int(params["friendId"] as! NSNumber), VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
             }
+        case 8:
+            if params["song"] != nil {
+                let song = params["song"] as! Song
+                return VKRequest(method: "audio.getRecommendations", andParameters: ["target_audio": "\(song.ownerId)_\(song.id)",VK_API_OFFSET: self.songs.count, "count": 50], andHttpMethod: "GET")
+            }
+
         default:
             print("Whoops")
         }
@@ -248,7 +257,7 @@ class DataManager: NSObject {
                     var title = ""
                     var owner_id = -1
                     var id = -1
-                    var image = UIImage()
+                    var imageURL: String?
                     if !isFriends {
                         title = json["items"][i]["title"].stringValue
                         id = json["items"][i]["id"].intValue
@@ -258,14 +267,13 @@ class DataManager: NSObject {
                         title += " \(json["items"][i]["last_name"].stringValue)"
                         id = json["items"][i]["id"].intValue
                         owner_id = Int(VKSdk.getAccessToken().userId)!
-                        let imageData = NSData(contentsOfURL: NSURL(string: json["items"][i]["photo_100"].stringValue)!)
-                        image = UIImage(data: imageData!)!
+                        imageURL = json["items"][i]["photo_100"].stringValue
                     }
                     if !isFriends {
                         self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
                     } else {
                         self.vkPlylists.append(Playlist(name: title, owner: owner_id, id: id, isLocal: false))
-                        self.vkPlylists[self.vkPlylists.count - 1].image = image
+                        self.vkPlylists[self.vkPlylists.count - 1].imageURL = imageURL
                     }
                 }
                 if self.vkPlylists.count == 0 {
